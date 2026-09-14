@@ -1,0 +1,23 @@
+NetworkDesign/
+    ├── data/                        # Input and output data
+    │   ├── input/
+    │   ├── output/
+    ├── grid/                        # Grid zone generation
+    │   ├── __init__.py
+    │   ├── grid_generator.py
+    │   ├── zone.py
+    ├── network/                     # Network structure
+    │   ├── __init__.py
+    │   ├── path.py
+    │   ├── leg.py
+    │   ├── pt_stop.py
+    ├── demand/                      # OD demand generation
+    │   ├── __init__.py
+    │   ├── demand_generator.py
+    │   ├── car_benchmark.py
+    ├── solver/                      # K-shortest paths and optimization
+    │   ├── __init__.py
+    │   ├── network_constructor.py
+    │   ├── shortest_path_solver.py
+    │   ├── traffic_assignment.py
+    ├── main.py                      # Entry point

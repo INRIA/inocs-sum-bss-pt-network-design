@@ -1,0 +1,21 @@
+{
+  "id": "S2_balanced",
+  "title": "Balanced network",
+  "audience_pitch": "The city funds a solid network -- the reference plan studied for Geneva.",
+  "narrative": "This is the configuration of the published Geneva proof-of-concept (80 000 EUR, 2.5% operational budget), with one change: the demand period weights are the ones observed in the real trip data instead of random draws, so the design targets the actual morning and evening peaks. Coverage is broad, most trips are served on a standard Monday, and the network roughly breaks even.",
+  "model_parameters": {
+    "total_budget": 80000,
+    "op_budget_ratio": 0.025,
+    "demand_periods": 3,
+    "period_weights": [0.169, 0.343, 0.488],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  },
+  "expected_story": {
+    "service": "high coverage; occasional empty/full stations at peaks",
+    "environment": "solid daily CO2 gain",
+    "economics": "reference cost per served trip; the plan to beat"
+  }
+}

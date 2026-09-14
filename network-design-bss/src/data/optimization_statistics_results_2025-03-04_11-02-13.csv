@@ -1,0 +1,2 @@
+Budget,Total demand,K,Penalty coefficient,Capacity upperbound,Total Setup Cost,Avg Station Distance,Subway Station Count,Subway Avg Capacity,Non-Subway Station Count,Non-Subway Avg Capacity,Bike Utilization,Bike Only Flow,Bike PT Flow,Walk PT Flow,Avg Travel Time by Bike Only Mode,Avg Travel Time by Bike PT Mode,Avg Travel Time by Walk PT  Mode,Demand Satisfaction Rate,Primary Path Usage Rate
+12000,6000,1,0.1,50,12000.0,3.2386442529357673,4,27.25,22,6.409090909090909,3.0,178.0,504.0,120.0,7.294195899216394,17.157554412498722,9.200302583018235,0.13366666666666666,1.0

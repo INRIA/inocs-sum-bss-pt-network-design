@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+env/
+venv/
+.venv/
+
+# Solver / run artefacts
+*.log
+*.lp
+*.mps
+*.sol
+gurobi.log
+
+# Generated output (regenerable; kept out of history to stay lightweight)
+data/output/
+data/cache/
+data/shortest_paths_result/
+data/cached_runs/
+data/execution_*/
+cache/
+osm_cache/
+plot/
+h3_instances_json/
+diagnostics/
+experiment_results.csv
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+# NOTE: input data under data/geojson/ is intentionally NOT ignored.
+# The previous blanket rules (*.json, *.csv, *.txt) silently swallowed the
+# model's input files -- notably data/geojson/<version>/od.csv, which was
+# therefore never committed. Keep exclusions path-scoped, not extension-wide.

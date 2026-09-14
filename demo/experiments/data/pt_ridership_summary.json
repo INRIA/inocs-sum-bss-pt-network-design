@@ -1,0 +1,1485 @@
+{
+  "source": "/demo/experiments/data/geneva_1.5km-radius/ridership.geojson",
+  "n_stops": 156,
+  "aggregation": "yearly sums per (stop, day-of-week, hour); daily averages divide by 52 (approximate)",
+  "daily_boardings_avg": {
+    "friday": 240335,
+    "monday": 221490,
+    "saturday": 173738,
+    "sunday": 104072,
+    "thursday": 233813,
+    "tuesday": 235701,
+    "wednesday": 234310
+  },
+  "hourly_share": {
+    "friday": [
+      0.01424,
+      0.00714,
+      0.00428,
+      0.00153,
+      0.00102,
+      0.00615,
+      0.01523,
+      0.04443,
+      0.05801,
+      0.04516,
+      0.04332,
+      0.05234,
+      0.06307,
+      0.06269,
+      0.06245,
+      0.06904,
+      0.08411,
+      0.09653,
+      0.08353,
+      0.06226,
+      0.03997,
+      0.03062,
+      0.02888,
+      0.02399
+    ],
+    "monday": [
+      0.0047,
+      0.00038,
+      0.0,
+      5e-05,
+      0.00075,
+      0.00643,
+      0.01747,
+      0.05232,
+      0.07167,
+      0.05015,
+      0.04562,
+      0.05316,
+      0.06372,
+      0.0642,
+      0.0614,
+      0.06928,
+      0.08623,
+      0.10737,
+      0.09409,
+      0.06007,
+      0.03481,
+      0.02538,
+      0.01923,
+      0.0115
+    ],
+    "saturday": [
+      0.02046,
+      0.01143,
+      0.0066,
+      0.00256,
+      0.00244,
+      0.00535,
+      0.00791,
+      0.01294,
+      0.02377,
+      0.03553,
+      0.04663,
+      0.05833,
+      0.06685,
+      0.06862,
+      0.07546,
+      0.08149,
+      0.08699,
+      0.09117,
+      0.08789,
+      0.0569,
+      0.04386,
+      0.03812,
+      0.03692,
+      0.03179
+    ],
+    "sunday": [
+      0.00952,
+      0.00085,
+      1e-05,
+      0.00024,
+      0.00387,
+      0.00791,
+      0.00985,
+      0.01284,
+      0.02009,
+      0.03327,
+      0.0449,
+      0.0563,
+      0.06788,
+      0.07317,
+      0.07534,
+      0.08201,
+      0.08801,
+      0.09215,
+      0.09101,
+      0.07378,
+      0.05817,
+      0.04496,
+      0.03203,
+      0.02182
+    ],
+    "thursday": [
+      0.00775,
+      0.00068,
+      1e-05,
+      4e-05,
+      0.00073,
+      0.00597,
+      0.01627,
+      0.0502,
+      0.06975,
+      0.04868,
+      0.04397,
+      0.05185,
+      0.06165,
+      0.06173,
+      0.06008,
+      0.06686,
+      0.08347,
+      0.10286,
+      0.09074,
+      0.06114,
+      0.04117,
+      0.03101,
+      0.02608,
+      0.01732
+    ],
+    "tuesday": [
+      0.00611,
+      0.00101,
+      0.0003,
+      0.00015,
+      0.00063,
+      0.00597,
+      0.0171,
+      0.05289,
+      0.07325,
+      0.05096,
+      0.04541,
+      0.05274,
+      0.06206,
+      0.06201,
+      0.06033,
+      0.06725,
+      0.08483,
+      0.10483,
+      0.09341,
+      0.06075,
+      0.03574,
+      0.02708,
+      0.02191,
+      0.0133
+    ],
+    "wednesday": [
+      0.00598,
+      0.00052,
+      0.0,
+      4e-05,
+      0.00075,
+      0.00604,
+      0.01649,
+      0.04908,
+      0.06627,
+      0.0483,
+      0.0447,
+      0.05461,
+      0.06768,
+      0.06578,
+      0.06547,
+      0.07003,
+      0.08251,
+      0.10097,
+      0.09141,
+      0.06047,
+      0.03637,
+      0.0285,
+      0.02294,
+      0.01508
+    ]
+  },
+  "peak_hours": {
+    "friday": [
+      17,
+      16,
+      18
+    ],
+    "monday": [
+      17,
+      18,
+      16
+    ],
+    "saturday": [
+      17,
+      18,
+      16
+    ],
+    "sunday": [
+      17,
+      18,
+      16
+    ],
+    "thursday": [
+      17,
+      18,
+      16
+    ],
+    "tuesday": [
+      17,
+      18,
+      16
+    ],
+    "wednesday": [
+      17,
+      18,
+      16
+    ]
+  },
+  "stops": [
+    {
+      "stop_id": "8587057:0:H",
+      "boardings": 4279789,
+      "alightings": 3255483,
+      "name": "Gare Cornavin",
+      "lat": 46.20991938,
+      "lon": 6.1414582
+    },
+    {
+      "stop_id": "8587057:0:D",
+      "boardings": 3641778,
+      "alightings": 2811777,
+      "name": "Gare Cornavin",
+      "lat": 46.20989452,
+      "lon": 6.14294941
+    },
+    {
+      "stop_id": "unmatched_BAIR05",
+      "boardings": 3536447,
+      "alightings": 1817505,
+      "name": "Bel-Air",
+      "lat": 46.203716,
+      "lon": 6.144637
+    },
+    {
+      "stop_id": "unmatched_BAIR01",
+      "boardings": 2943271,
+      "alightings": 1549425,
+      "name": "Bel-Air",
+      "lat": 46.204826,
+      "lon": 6.143483
+    },
+    {
+      "stop_id": "unmatched_CVIN10",
+      "boardings": 2833873,
+      "alightings": 3696149,
+      "name": "Gare Cornavin",
+      "lat": 46.209656,
+      "lon": 6.141788
+    },
+    {
+      "stop_id": "8587057:0:E",
+      "boardings": 2725346,
+      "alightings": 3292764,
+      "name": "Gare Cornavin",
+      "lat": 46.21039805,
+      "lon": 6.14363213
+    },
+    {
+      "stop_id": "8587387:0:C",
+      "boardings": 2455112,
+      "alightings": 1275390,
+      "name": "Bel-Air",
+      "lat": 46.20506408,
+      "lon": 6.14297636
+    },
+    {
+      "stop_id": "8587057:0:K",
+      "boardings": 2233095,
+      "alightings": 1464331,
+      "name": "Gare Cornavin",
+      "lat": 46.20888743,
+      "lon": 6.14020955
+    },
+    {
+      "stop_id": "unmatched_BAIR02",
+      "boardings": 1737026,
+      "alightings": 2697295,
+      "name": "Bel-Air",
+      "lat": 46.204601,
+      "lon": 6.143449
+    },
+    {
+      "stop_id": "8592883:0:Z",
+      "boardings": 1513341,
+      "alightings": 845787,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.20250259,
+      "lon": 6.15555277
+    },
+    {
+      "stop_id": "unmatched_RIVE08",
+      "boardings": 1439878,
+      "alightings": 1127868,
+      "name": "Rive",
+      "lat": 46.201912,
+      "lon": 6.152286
+    },
+    {
+      "stop_id": "Parent8587061",
+      "boardings": 1406499,
+      "alightings": 1340353,
+      "name": "Rive",
+      "lat": 46.2018622,
+      "lon": 6.15281291
+    },
+    {
+      "stop_id": "8587387:0:D",
+      "boardings": 1323425,
+      "alightings": 2006849,
+      "name": "Bel-Air",
+      "lat": 46.2042372,
+      "lon": 6.14206008
+    },
+    {
+      "stop_id": "8587907:0:B",
+      "boardings": 1200972,
+      "alightings": 696174,
+      "name": "Plainpalais",
+      "lat": 46.19864149,
+      "lon": 6.14204211
+    },
+    {
+      "stop_id": "8587061:0:J",
+      "boardings": 1193710,
+      "alightings": 490806,
+      "name": "Rive",
+      "lat": 46.20263937,
+      "lon": 6.1539358
+    },
+    {
+      "stop_id": "unmatched_METR00",
+      "boardings": 1178402,
+      "alightings": 752189,
+      "name": "M\u00e9tropole",
+      "lat": 46.203381,
+      "lon": 6.151448
+    },
+    {
+      "stop_id": "unmatched_BAIR06",
+      "boardings": 1162686,
+      "alightings": 2994885,
+      "name": "Bel-Air",
+      "lat": 46.203976,
+      "lon": 6.143879
+    },
+    {
+      "stop_id": "Parent8592862",
+      "boardings": 1152055,
+      "alightings": 835068,
+      "name": "Molard",
+      "lat": 46.20311189,
+      "lon": 6.14718047
+    },
+    {
+      "stop_id": "unmatched_COUT01",
+      "boardings": 1115046,
+      "alightings": 892690,
+      "name": "Coutance",
+      "lat": 46.207619,
+      "lon": 6.142212
+    },
+    {
+      "stop_id": "Parent8592801",
+      "boardings": 1088626,
+      "alightings": 510908,
+      "name": "Chantepoulet",
+      "lat": 46.20815387,
+      "lon": 6.14355128
+    },
+    {
+      "stop_id": "unmatched_COUT00",
+      "boardings": 1019586,
+      "alightings": 1118865,
+      "name": "Coutance",
+      "lat": 46.207294,
+      "lon": 6.141909
+    },
+    {
+      "stop_id": "unmatched_COUT03",
+      "boardings": 933962,
+      "alightings": 1129928,
+      "name": "Coutance",
+      "lat": 46.207607,
+      "lon": 6.142186
+    },
+    {
+      "stop_id": "8587907",
+      "boardings": 932849,
+      "alightings": 577368,
+      "name": "Plainpalais",
+      "lat": 46.19803836,
+      "lon": 6.14281466
+    },
+    {
+      "stop_id": "unmatched_COUT02",
+      "boardings": 932751,
+      "alightings": 877401,
+      "name": "Coutance",
+      "lat": 46.207325,
+      "lon": 6.142012
+    },
+    {
+      "stop_id": "8592804:0:P",
+      "boardings": 849653,
+      "alightings": 573291,
+      "name": "Cirque",
+      "lat": 46.20080523,
+      "lon": 6.1406048
+    },
+    {
+      "stop_id": "unmatched_RIVE06",
+      "boardings": 835036,
+      "alightings": 1588185,
+      "name": "Rive",
+      "lat": 46.20171,
+      "lon": 6.152692
+    },
+    {
+      "stop_id": "8587907:0:A",
+      "boardings": 808922,
+      "alightings": 1275006,
+      "name": "Plainpalais",
+      "lat": 46.19828085,
+      "lon": 6.14194329
+    },
+    {
+      "stop_id": "8592924:0:Y",
+      "boardings": 794553,
+      "alightings": 505455,
+      "name": "Villereuse",
+      "lat": 46.20069953,
+      "lon": 6.15822077
+    },
+    {
+      "stop_id": "unmatched_STND03",
+      "boardings": 781866,
+      "alightings": 402300,
+      "name": "Stand",
+      "lat": 46.20414,
+      "lon": 6.140182
+    },
+    {
+      "stop_id": "8587057:0:B",
+      "boardings": 770255,
+      "alightings": 1611265,
+      "name": "Gare Cornavin",
+      "lat": 46.21009966,
+      "lon": 6.14283263
+    },
+    {
+      "stop_id": "8592885:0:I",
+      "boardings": 723416,
+      "alightings": 484667,
+      "name": "Place de Neuve",
+      "lat": 46.20099176,
+      "lon": 6.14385671
+    },
+    {
+      "stop_id": "8592910:0:U",
+      "boardings": 717379,
+      "alightings": 551804,
+      "name": "Terrassi\u00e8re",
+      "lat": 46.20114719,
+      "lon": 6.15590311
+    },
+    {
+      "stop_id": "8592862:0:Z",
+      "boardings": 698385,
+      "alightings": 946677,
+      "name": "Molard",
+      "lat": 46.20320515,
+      "lon": 6.14692894
+    },
+    {
+      "stop_id": "unmatched_ISAM02",
+      "boardings": 670052,
+      "alightings": 370492,
+      "name": "Mercier",
+      "lat": 46.20723,
+      "lon": 6.139525
+    },
+    {
+      "stop_id": "Parent8592910",
+      "boardings": 644628,
+      "alightings": 728647,
+      "name": "Terrassi\u00e8re",
+      "lat": 46.2010788,
+      "lon": 6.15641515
+    },
+    {
+      "stop_id": "unmatched_NAVI01",
+      "boardings": 618983,
+      "alightings": 78719,
+      "name": "Navigation",
+      "lat": 46.211781,
+      "lon": 6.149591
+    },
+    {
+      "stop_id": "8592837:0:I",
+      "boardings": 617846,
+      "alightings": 499345,
+      "name": "H\u00f4pital",
+      "lat": 46.19473658,
+      "lon": 6.14945321
+    },
+    {
+      "stop_id": "Parent8592887",
+      "boardings": 616510,
+      "alightings": 315200,
+      "name": "Pont-d'Arve",
+      "lat": 46.19489825,
+      "lon": 6.14342551
+    },
+    {
+      "stop_id": "8592864:0:G",
+      "boardings": 602586,
+      "alightings": 286156,
+      "name": "Mont-Blanc",
+      "lat": 46.20703485,
+      "lon": 6.14735115
+    },
+    {
+      "stop_id": "Parent8592924",
+      "boardings": 600914,
+      "alightings": 834762,
+      "name": "Villereuse",
+      "lat": 46.2006187,
+      "lon": 6.15854416
+    },
+    {
+      "stop_id": "unmatched_PLPA02",
+      "boardings": 590830,
+      "alightings": 815545,
+      "name": "Plainpalais",
+      "lat": 46.197704,
+      "lon": 6.142965
+    },
+    {
+      "stop_id": "unmatched_STND00",
+      "boardings": 580366,
+      "alightings": 599908,
+      "name": "Stand",
+      "lat": 46.203667,
+      "lon": 6.139831
+    },
+    {
+      "stop_id": "8592900:0:T",
+      "boardings": 570446,
+      "alightings": 250616,
+      "name": "Rue du Lac",
+      "lat": 46.20352223,
+      "lon": 6.15748415
+    },
+    {
+      "stop_id": "unmatched_CVIN06",
+      "boardings": 559320,
+      "alightings": 533508,
+      "name": "Gare Cornavin",
+      "lat": 46.2094,
+      "lon": 6.142338
+    },
+    {
+      "stop_id": "8592906:0:I",
+      "boardings": 542645,
+      "alightings": 543621,
+      "name": "Stand",
+      "lat": 46.20397608,
+      "lon": 6.13994903
+    },
+    {
+      "stop_id": "8587061:0:I",
+      "boardings": 534987,
+      "alightings": 336536,
+      "name": "Rive",
+      "lat": 46.2020052,
+      "lon": 6.15350461
+    },
+    {
+      "stop_id": "Parent8592831",
+      "boardings": 515960,
+      "alightings": 965395,
+      "name": "Goulart",
+      "lat": 46.20753841,
+      "lon": 6.14144922
+    },
+    {
+      "stop_id": "8587057:0:C",
+      "boardings": 514915,
+      "alightings": 434891,
+      "name": "Gare Cornavin",
+      "lat": 46.21046022,
+      "lon": 6.14324585
+    },
+    {
+      "stop_id": "unmatched_RIVE09",
+      "boardings": 472483,
+      "alightings": 348062,
+      "name": "Rive",
+      "lat": 46.201645,
+      "lon": 6.151813
+    },
+    {
+      "stop_id": "Parent8592925",
+      "boardings": 470443,
+      "alightings": 128574,
+      "name": "Vollandes",
+      "lat": 46.20523194,
+      "lon": 6.16028689
+    },
+    {
+      "stop_id": "8592885:0:J",
+      "boardings": 467629,
+      "alightings": 964529,
+      "name": "Place de Neuve",
+      "lat": 46.2006871,
+      "lon": 6.14329975
+    },
+    {
+      "stop_id": "8592885:0:L",
+      "boardings": 462568,
+      "alightings": 331311,
+      "name": "Place de Neuve",
+      "lat": 46.20096689,
+      "lon": 6.14464722
+    },
+    {
+      "stop_id": "unmatched_PLPA96",
+      "boardings": 445444,
+      "alightings": 1871,
+      "name": "Plainpalais",
+      "lat": 46.198524,
+      "lon": 6.143059
+    },
+    {
+      "stop_id": "8592804:0:Q",
+      "boardings": 431543,
+      "alightings": 616491,
+      "name": "Cirque",
+      "lat": 46.20035135,
+      "lon": 6.14083837
+    },
+    {
+      "stop_id": "unmatched_STND01",
+      "boardings": 428215,
+      "alightings": 910934,
+      "name": "Stand",
+      "lat": 46.203709,
+      "lon": 6.140944
+    },
+    {
+      "stop_id": "8592864:0:H",
+      "boardings": 426798,
+      "alightings": 840509,
+      "name": "Mont-Blanc",
+      "lat": 46.20760679,
+      "lon": 6.14665047
+    },
+    {
+      "stop_id": "8592856:0:N",
+      "boardings": 426168,
+      "alightings": 747691,
+      "name": "M\u00e9tropole",
+      "lat": 46.20337301,
+      "lon": 6.15094441
+    },
+    {
+      "stop_id": "Parent8592854",
+      "boardings": 420052,
+      "alightings": 106017,
+      "name": "Merle-d'Aubign\u00e9",
+      "lat": 46.20668049,
+      "lon": 6.16189488
+    },
+    {
+      "stop_id": "8592804:0:T",
+      "boardings": 401846,
+      "alightings": 356077,
+      "name": "Cirque",
+      "lat": 46.20145185,
+      "lon": 6.13948191
+    },
+    {
+      "stop_id": "Parent8592773",
+      "boardings": 396868,
+      "alightings": 359293,
+      "name": "31 D\u00e9cembre",
+      "lat": 46.20170055,
+      "lon": 6.16211946
+    },
+    {
+      "stop_id": "unmatched_TRSI03",
+      "boardings": 358895,
+      "alightings": 362782,
+      "name": "Terrassi\u00e8re",
+      "lat": 46.201035,
+      "lon": 6.155883
+    },
+    {
+      "stop_id": "8592804:0:S",
+      "boardings": 355349,
+      "alightings": 371270,
+      "name": "Cirque",
+      "lat": 46.20129641,
+      "lon": 6.139967
+    },
+    {
+      "stop_id": "8592883:0:P",
+      "boardings": 352029,
+      "alightings": 489931,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.20235959,
+      "lon": 6.15578633
+    },
+    {
+      "stop_id": "unmatched_TRSI02",
+      "boardings": 349505,
+      "alightings": 406102,
+      "name": "Terrassi\u00e8re",
+      "lat": 46.200729,
+      "lon": 6.155241
+    },
+    {
+      "stop_id": "unmatched_31DC00",
+      "boardings": 346133,
+      "alightings": 328339,
+      "name": "31 D\u00e9cembre",
+      "lat": 46.201679,
+      "lon": 6.161931
+    },
+    {
+      "stop_id": "Parent8592837",
+      "boardings": 342355,
+      "alightings": 570727,
+      "name": "H\u00f4pital",
+      "lat": 46.19459978,
+      "lon": 6.14901304
+    },
+    {
+      "stop_id": "unmatched_PLPA99",
+      "boardings": 330670,
+      "alightings": 48194,
+      "name": "Plainpalais",
+      "lat": 46.198368,
+      "lon": 6.143676
+    },
+    {
+      "stop_id": "Parent8592885",
+      "boardings": 329426,
+      "alightings": 488993,
+      "name": "Place de Neuve",
+      "lat": 46.20119693,
+      "lon": 6.1441801
+    },
+    {
+      "stop_id": "8592805:0:P",
+      "boardings": 326751,
+      "alightings": 611184,
+      "name": "Place Clapar\u00e8de",
+      "lat": 46.19505993,
+      "lon": 6.15116001
+    },
+    {
+      "stop_id": "8592887:0:T",
+      "boardings": 283902,
+      "alightings": 355128,
+      "name": "Pont-d'Arve",
+      "lat": 46.19502262,
+      "lon": 6.14301229
+    },
+    {
+      "stop_id": "unmatched_MOTU01",
+      "boardings": 282954,
+      "alightings": 56159,
+      "name": "Monthoux",
+      "lat": 46.210117,
+      "lon": 6.148554
+    },
+    {
+      "stop_id": "8587387:0:G",
+      "boardings": 267307,
+      "alightings": 443507,
+      "name": "Bel-Air",
+      "lat": 46.20332949,
+      "lon": 6.14251822
+    },
+    {
+      "stop_id": "unmatched_MLRD00",
+      "boardings": 256136,
+      "alightings": 191244,
+      "name": "Molard",
+      "lat": 46.203964,
+      "lon": 6.148441
+    },
+    {
+      "stop_id": "8592837:0:J",
+      "boardings": 252423,
+      "alightings": 90916,
+      "name": "H\u00f4pital",
+      "lat": 46.19502884,
+      "lon": 6.14882439
+    },
+    {
+      "stop_id": "8592804:0:R",
+      "boardings": 238255,
+      "alightings": 224247,
+      "name": "Cirque",
+      "lat": 46.20075549,
+      "lon": 6.139967
+    },
+    {
+      "stop_id": "8592805:0:O",
+      "boardings": 235803,
+      "alightings": 109814,
+      "name": "Place Clapar\u00e8de",
+      "lat": 46.1963906,
+      "lon": 6.15039644
+    },
+    {
+      "stop_id": "unmatched_PLPA08",
+      "boardings": 234516,
+      "alightings": 441153,
+      "name": "Plainpalais",
+      "lat": 46.198124,
+      "lon": 6.142787
+    },
+    {
+      "stop_id": "8587061:0:D",
+      "boardings": 221354,
+      "alightings": 326090,
+      "name": "Rive",
+      "lat": 46.20191816,
+      "lon": 6.1524446
+    },
+    {
+      "stop_id": "8592878:0:D",
+      "boardings": 215115,
+      "alightings": 68816,
+      "name": "Gen\u00e8ve-Champel-Gare/Peschier",
+      "lat": 46.19412097,
+      "lon": 6.15309139
+    },
+    {
+      "stop_id": "8592810:0:Q",
+      "boardings": 212998,
+      "alightings": 231958,
+      "name": "Contamines",
+      "lat": 46.1963222,
+      "lon": 6.15633431
+    },
+    {
+      "stop_id": "8592841:0:T",
+      "boardings": 202065,
+      "alightings": 65969,
+      "name": "Mercier",
+      "lat": 46.20680483,
+      "lon": 6.13904174
+    },
+    {
+      "stop_id": "8592878:0:C",
+      "boardings": 188863,
+      "alightings": 242692,
+      "name": "Gen\u00e8ve-Champel-Gare/Peschier",
+      "lat": 46.19408366,
+      "lon": 6.15433106
+    },
+    {
+      "stop_id": "8587061:0:F",
+      "boardings": 188169,
+      "alightings": 361784,
+      "name": "Rive",
+      "lat": 46.20163216,
+      "lon": 6.15185171
+    },
+    {
+      "stop_id": "unmatched_BVYL00",
+      "boardings": 175770,
+      "alightings": 121400,
+      "name": "Bovy-Lysberg",
+      "lat": 46.202396,
+      "lon": 6.142854
+    },
+    {
+      "stop_id": "unmatched_RIVE11",
+      "boardings": 169925,
+      "alightings": 471017,
+      "name": "Rive",
+      "lat": 46.202789,
+      "lon": 6.153457
+    },
+    {
+      "stop_id": "unmatched_BANS00",
+      "boardings": 167265,
+      "alightings": 126268,
+      "name": "Bains",
+      "lat": 46.199898,
+      "lon": 6.137472
+    },
+    {
+      "stop_id": "unmatched_UNIM99",
+      "boardings": 158312,
+      "alightings": 16089,
+      "name": "Uni-Mail",
+      "lat": 46.195499,
+      "lon": 6.141982
+    },
+    {
+      "stop_id": "Parent8592819",
+      "boardings": 154965,
+      "alightings": 232276,
+      "name": "Ecole-de-M\u00e9decine",
+      "lat": 46.19760932,
+      "lon": 6.13930225
+    },
+    {
+      "stop_id": "unmatched_ATHE01",
+      "boardings": 154957,
+      "alightings": 75585,
+      "name": "Ath\u00e9n\u00e9e",
+      "lat": 46.198406,
+      "lon": 6.148546
+    },
+    {
+      "stop_id": "unmatched_RIVE01",
+      "boardings": 145192,
+      "alightings": 1099,
+      "name": "Rive",
+      "lat": 46.20155,
+      "lon": 6.153603
+    },
+    {
+      "stop_id": "8592900:0:U",
+      "boardings": 129922,
+      "alightings": 347839,
+      "name": "Rue du Lac",
+      "lat": 46.20410664,
+      "lon": 6.15854416
+    },
+    {
+      "stop_id": "8592805:0:N",
+      "boardings": 128960,
+      "alightings": 304446,
+      "name": "Place Clapar\u00e8de",
+      "lat": 46.19552629,
+      "lon": 6.15076475
+    },
+    {
+      "stop_id": "Parent8592777",
+      "boardings": 121454,
+      "alightings": 94817,
+      "name": "Alpes",
+      "lat": 46.2090242,
+      "lon": 6.14718946
+    },
+    {
+      "stop_id": "Parent8592870",
+      "boardings": 117251,
+      "alightings": 127188,
+      "name": "Mus\u00e9um",
+      "lat": 46.19852335,
+      "lon": 6.15730449
+    },
+    {
+      "stop_id": "8592870:0:C",
+      "boardings": 111544,
+      "alightings": 174502,
+      "name": "Mus\u00e9um",
+      "lat": 46.19838034,
+      "lon": 6.1583106
+    },
+    {
+      "stop_id": "8592925:0:W",
+      "boardings": 109247,
+      "alightings": 471163,
+      "name": "Vollandes",
+      "lat": 46.20512625,
+      "lon": 6.16025096
+    },
+    {
+      "stop_id": "8587907:0:F",
+      "boardings": 107526,
+      "alightings": 171567,
+      "name": "Plainpalais",
+      "lat": 46.19768394,
+      "lon": 6.14356026
+    },
+    {
+      "stop_id": "unmatched_PLEY01",
+      "boardings": 102213,
+      "alightings": 69854,
+      "name": "Palais Eynard",
+      "lat": 46.200092,
+      "lon": 6.146719
+    },
+    {
+      "stop_id": "unmatched_NAVI00",
+      "boardings": 99927,
+      "alightings": 540156,
+      "name": "Navigation",
+      "lat": 46.211964,
+      "lon": 6.149625
+    },
+    {
+      "stop_id": "Parent8592912",
+      "boardings": 98865,
+      "alightings": 168872,
+      "name": "Tranch\u00e9es",
+      "lat": 46.19852957,
+      "lon": 6.15551684
+    },
+    {
+      "stop_id": "8592824:0:S",
+      "boardings": 83288,
+      "alightings": 103701,
+      "name": "Florissant",
+      "lat": 46.19724247,
+      "lon": 6.15384597
+    },
+    {
+      "stop_id": "8592837:0:L",
+      "boardings": 81372,
+      "alightings": 15210,
+      "name": "H\u00f4pital",
+      "lat": 46.19400904,
+      "lon": 6.14821353
+    },
+    {
+      "stop_id": "Parent8595022",
+      "boardings": 78779,
+      "alightings": 120982,
+      "name": "Th\u00e9\u00e2tre",
+      "lat": 46.20217307,
+      "lon": 6.14185346
+    },
+    {
+      "stop_id": "unmatched_MUSE01",
+      "boardings": 72180,
+      "alightings": 123619,
+      "name": "Mus\u00e9um",
+      "lat": 46.198498,
+      "lon": 6.157225
+    },
+    {
+      "stop_id": "unmatched_THRE00",
+      "boardings": 70349,
+      "alightings": 99124,
+      "name": "Th\u00e9\u00e2tre",
+      "lat": 46.202175,
+      "lon": 6.141693
+    },
+    {
+      "stop_id": "8592925:0:X",
+      "boardings": 69297,
+      "alightings": 10293,
+      "name": "Vollandes",
+      "lat": 46.20612097,
+      "lon": 6.15909213
+    },
+    {
+      "stop_id": "8592810:0:R",
+      "boardings": 66714,
+      "alightings": 100930,
+      "name": "Contamines",
+      "lat": 46.19575636,
+      "lon": 6.15633431
+    },
+    {
+      "stop_id": "8595021:0:S",
+      "boardings": 64889,
+      "alightings": 171431,
+      "name": "Palais Eynard",
+      "lat": 46.20009021,
+      "lon": 6.1466864
+    },
+    {
+      "stop_id": "8592779:0:O",
+      "boardings": 64709,
+      "alightings": 183959,
+      "name": "Ath\u00e9n\u00e9e",
+      "lat": 46.19846117,
+      "lon": 6.14878846
+    },
+    {
+      "stop_id": "8592854:0:H",
+      "boardings": 63021,
+      "alightings": 367596,
+      "name": "Merle-d'Aubign\u00e9",
+      "lat": 46.20636964,
+      "lon": 6.1617242
+    },
+    {
+      "stop_id": "Parent8592866",
+      "boardings": 62972,
+      "alightings": 294981,
+      "name": "Monthoux",
+      "lat": 46.21047887,
+      "lon": 6.148501
+    },
+    {
+      "stop_id": "unmatched_CTMI02",
+      "boardings": 60200,
+      "alightings": 81515,
+      "name": "Contamines",
+      "lat": 46.196194,
+      "lon": 6.15566
+    },
+    {
+      "stop_id": "8592883:0:Q",
+      "boardings": 58522,
+      "alightings": 107088,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.20232229,
+      "lon": 6.15658583
+    },
+    {
+      "stop_id": "Parent8592881",
+      "boardings": 58133,
+      "alightings": 36534,
+      "name": "Philosophes",
+      "lat": 46.19672016,
+      "lon": 6.14619233
+    },
+    {
+      "stop_id": "8592883:0:S",
+      "boardings": 51716,
+      "alightings": 5495,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.20175029,
+      "lon": 6.15690923
+    },
+    {
+      "stop_id": "8592841:0:U",
+      "boardings": 51386,
+      "alightings": 241601,
+      "name": "Mercier",
+      "lat": 46.20650642,
+      "lon": 6.13998497
+    },
+    {
+      "stop_id": "8592810:0:O",
+      "boardings": 37014,
+      "alightings": 47961,
+      "name": "Contamines",
+      "lat": 46.19583098,
+      "lon": 6.15593006
+    },
+    {
+      "stop_id": "unmatched_LOMB00",
+      "boardings": 36851,
+      "alightings": 125907,
+      "name": "Lombard",
+      "lat": 46.195595,
+      "lon": 6.147214
+    },
+    {
+      "stop_id": "8592824:0:T",
+      "boardings": 35791,
+      "alightings": 72443,
+      "name": "Florissant",
+      "lat": 46.19664554,
+      "lon": 6.15405258
+    },
+    {
+      "stop_id": "8592870:0:D",
+      "boardings": 32610,
+      "alightings": 56036,
+      "name": "Mus\u00e9um",
+      "lat": 46.19816271,
+      "lon": 6.15864298
+    },
+    {
+      "stop_id": "8592779:0:L",
+      "boardings": 31293,
+      "alightings": 36453,
+      "name": "Ath\u00e9n\u00e9e",
+      "lat": 46.19836168,
+      "lon": 6.14956999
+    },
+    {
+      "stop_id": "unmatched_STND04",
+      "boardings": 25273,
+      "alightings": 43526,
+      "name": "Stand",
+      "lat": 46.204193,
+      "lon": 6.140181
+    },
+    {
+      "stop_id": "8587057:0:G",
+      "boardings": 22103,
+      "alightings": 32459,
+      "name": "Gare Cornavin",
+      "lat": 46.2093599,
+      "lon": 6.14223974
+    },
+    {
+      "stop_id": "Parent8592779",
+      "boardings": 19696,
+      "alightings": 35478,
+      "name": "Ath\u00e9n\u00e9e",
+      "lat": 46.1981565,
+      "lon": 6.1489232
+    },
+    {
+      "stop_id": "8592883:0:R",
+      "boardings": 19493,
+      "alightings": 642834,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.20179381,
+      "lon": 6.15578633
+    },
+    {
+      "stop_id": "8587061:0:H",
+      "boardings": 18712,
+      "alightings": 137,
+      "name": "Rive",
+      "lat": 46.20150159,
+      "lon": 6.1535136
+    },
+    {
+      "stop_id": "8592851:0:O",
+      "boardings": 17673,
+      "alightings": 56549,
+      "name": "Mus\u00e9e d'art et d'histoire",
+      "lat": 46.19940005,
+      "lon": 6.15069289
+    },
+    {
+      "stop_id": "8592851:0:N",
+      "boardings": 15768,
+      "alightings": 29216,
+      "name": "Mus\u00e9e d'art et d'histoire",
+      "lat": 46.19986016,
+      "lon": 6.15165408
+    },
+    {
+      "stop_id": "8592837:0:M",
+      "boardings": 14871,
+      "alightings": 82433,
+      "name": "H\u00f4pital",
+      "lat": 46.19427643,
+      "lon": 6.14880642
+    },
+    {
+      "stop_id": "unmatched_BAIR18",
+      "boardings": 11154,
+      "alightings": 37795,
+      "name": "Bel-Air",
+      "lat": 46.20396,
+      "lon": 6.143731
+    },
+    {
+      "stop_id": "unmatched_PNEV05",
+      "boardings": 11147,
+      "alightings": 148,
+      "name": "Place de Neuve",
+      "lat": 46.201504,
+      "lon": 6.144029
+    },
+    {
+      "stop_id": "unmatched_CVIN00",
+      "boardings": 7281,
+      "alightings": 2438,
+      "name": "Gare Cornavin",
+      "lat": 46.209896,
+      "lon": 6.142624
+    },
+    {
+      "stop_id": "unmatched_STND97",
+      "boardings": 4925,
+      "alightings": 9145,
+      "name": "Stand",
+      "lat": 46.204212,
+      "lon": 6.14026
+    },
+    {
+      "stop_id": "8511621:0:B",
+      "boardings": 4174,
+      "alightings": 2958,
+      "name": "Gen\u00e8ve, Bains des P\u00e2quis",
+      "lat": 46.21075861,
+      "lon": 6.15184273
+    },
+    {
+      "stop_id": "unmatched_IZAC02",
+      "boardings": 4019,
+      "alightings": 9744,
+      "name": "Mercier",
+      "lat": 46.207275,
+      "lon": 6.139576
+    },
+    {
+      "stop_id": "unmatched_CNDL98",
+      "boardings": 2721,
+      "alightings": 310,
+      "name": "Gen\u00e8ve, De-Candolle",
+      "lat": 46.197765,
+      "lon": 6.145571
+    },
+    {
+      "stop_id": "Parent8592799",
+      "boardings": 2089,
+      "alightings": 5318,
+      "name": "Cath\u00e9drale",
+      "lat": 46.20146429,
+      "lon": 6.14781828
+    },
+    {
+      "stop_id": "Parent8592792",
+      "boardings": 1670,
+      "alightings": 4120,
+      "name": "Bourg-de-Four",
+      "lat": 46.20015239,
+      "lon": 6.14860879
+    },
+    {
+      "stop_id": "Parent8592820",
+      "boardings": 1668,
+      "alightings": 11783,
+      "name": "Eglise Russe",
+      "lat": 46.19841764,
+      "lon": 6.15280393
+    },
+    {
+      "stop_id": "Parent8592907",
+      "boardings": 1632,
+      "alightings": 25821,
+      "name": "Saint-Antoine",
+      "lat": 46.1999099,
+      "lon": 6.15098035
+    },
+    {
+      "stop_id": "8592838:0:O",
+      "boardings": 1520,
+      "alightings": 5924,
+      "name": "H\u00f4tel-de-Ville",
+      "lat": 46.20105393,
+      "lon": 6.14656063
+    },
+    {
+      "stop_id": "Parent8592906",
+      "boardings": 1216,
+      "alightings": 5407,
+      "name": "Stand",
+      "lat": 46.20369009,
+      "lon": 6.13988615
+    },
+    {
+      "stop_id": "8592879:0:G",
+      "boardings": 992,
+      "alightings": 6775,
+      "name": "Gen\u00e8ve, Conservatoire populaire",
+      "lat": 46.19765907,
+      "lon": 6.15171696
+    },
+    {
+      "stop_id": "8592909:0:P",
+      "boardings": 950,
+      "alightings": 5581,
+      "name": "Taconnerie",
+      "lat": 46.20083632,
+      "lon": 6.14819557
+    },
+    {
+      "stop_id": "unmatched_PNEV04",
+      "boardings": 945,
+      "alightings": 860,
+      "name": "Place de Neuve",
+      "lat": 46.201,
+      "lon": 6.1436
+    },
+    {
+      "stop_id": "8511617:0:M",
+      "boardings": 701,
+      "alightings": 1914,
+      "name": "Gen\u00e8ve, Chausse-Coq",
+      "lat": 46.19958036,
+      "lon": 6.14835727
+    },
+    {
+      "stop_id": "8592862:0:X",
+      "boardings": 600,
+      "alightings": 11052,
+      "name": "Molard",
+      "lat": 46.20409421,
+      "lon": 6.1483932
+    },
+    {
+      "stop_id": "8511618:0:H",
+      "boardings": 590,
+      "alightings": 1171,
+      "name": "Gen\u00e8ve, Saint-L\u00e9ger",
+      "lat": 46.19842386,
+      "lon": 6.14749488
+    },
+    {
+      "stop_id": "unmatched_CVIN75",
+      "boardings": 494,
+      "alightings": 507,
+      "name": "Gare Cornavin",
+      "lat": 46.209248,
+      "lon": 6.142323
+    },
+    {
+      "stop_id": "unmatched_PLEV99",
+      "boardings": 159,
+      "alightings": 173,
+      "name": "Place des Eaux-Vives",
+      "lat": 46.204052,
+      "lon": 6.15611
+    },
+    {
+      "stop_id": "unmatched_PLEY02",
+      "boardings": 153,
+      "alightings": 339,
+      "name": "Palais Eynard",
+      "lat": 46.19968,
+      "lon": 6.147648
+    },
+    {
+      "stop_id": "unmatched_ALPE01",
+      "boardings": 59,
+      "alightings": 93,
+      "name": "Alpes",
+      "lat": 46.209145,
+      "lon": 6.146775
+    },
+    {
+      "stop_id": "8592885:0:N",
+      "boardings": 29,
+      "alightings": 9939,
+      "name": "Place de Neuve (fictif)",
+      "lat": 46.20152646,
+      "lon": 6.14399145
+    },
+    {
+      "stop_id": "unmatched_FLIZ00",
+      "boardings": 17,
+      "alightings": 342,
+      "name": "Liszt",
+      "lat": 46.198833,
+      "lon": 6.149223
+    },
+    {
+      "stop_id": "unmatched_PLPA06",
+      "boardings": 1,
+      "alightings": 0,
+      "name": "Plainpalais",
+      "lat": 46.198837,
+      "lon": 6.143872
+    },
+    {
+      "stop_id": "8595022:0:Y",
+      "boardings": 1,
+      "alightings": 0,
+      "name": "Th\u00e9\u00e2tre",
+      "lat": 46.20188085,
+      "lon": 6.14166482
+    }
+  ]
+}

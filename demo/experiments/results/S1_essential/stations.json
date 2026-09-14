@@ -1,0 +1,317 @@
+{
+  "placeholder": false,
+  "provenance": "NetworkDesignRun(solve_mode='integrated', epsilon=0.04) on the frozen model in network-design-bss/src/ -- real optimiser output",
+  "scenario": "S1_essential",
+  "run": {
+    "ran_at": "2026-09-10T07:22:33+00:00",
+    "config_name": "Geneva_H3True_SEED20_DISmultinomial_P0.17-0.34-0.49_BUD20000_OP0.0250_SCALE1.00",
+    "solve_mode": "integrated",
+    "epsilon": 0.04,
+    "model_parameters": {
+      "total_budget": 20000,
+      "op_budget_ratio": 0.025,
+      "demand_periods": 3,
+      "period_weights": [
+        0.169,
+        0.343,
+        0.488
+      ],
+      "split_method": "multinomial",
+      "seed": 20,
+      "epsilon": 0.04,
+      "solve_mode": "integrated"
+    },
+    "gurobi_status": 2,
+    "gurobi_status_optimal": true,
+    "mip_gap": 0.0,
+    "n_variables": 53558,
+    "n_constraints": 36535,
+    "wall_clock_s": 20.7,
+    "src_commit": "d75a72f66ee6363938b76c0cf75cfa16b72f2b72",
+    "repo_commit": "77111e8e250ba8801d7a80d8b6a4d4c105104dee"
+  },
+  "capex_budget_eur": 20000,
+  "operational_budget_eur": 500.0,
+  "stations": [
+    {
+      "station": "BS-897a8dca1a3ffff",
+      "type": "BikeStation",
+      "lon": 6.1523080015167,
+      "lat": 46.21131722558726,
+      "capacity": 12.0,
+      "initial_bikes": 12.0
+    },
+    {
+      "station": "BS-897a8dcacd7ffff",
+      "type": "BikeStation",
+      "lon": 6.153056647895562,
+      "lat": 46.20235759828306,
+      "capacity": 11.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dc123bffff",
+      "type": "BikeStation",
+      "lon": 6.142942318053548,
+      "lat": 46.20255336075002,
+      "capacity": 10.0,
+      "initial_bikes": 10.0
+    },
+    {
+      "station": "BS-897a8dc1273ffff",
+      "type": "BikeStation",
+      "lon": 6.145096858694698,
+      "lat": 46.20698448063075,
+      "capacity": 10.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "BS-897a8dc127bffff",
+      "type": "BikeStation",
+      "lon": 6.1475006886689005,
+      "lat": 46.208428783083576,
+      "capacity": 10.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "transfer_PT_25-3",
+      "type": "TransferStation",
+      "lon": 6.15151934,
+      "lat": 46.20339788,
+      "capacity": 10.0,
+      "initial_bikes": 10.0
+    },
+    {
+      "station": "BS-897a8dc120bffff",
+      "type": "BikeStation",
+      "lon": 6.142443498907109,
+      "lat": 46.20852679506198,
+      "capacity": 9.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "BS-897a8dc126fffff",
+      "type": "BikeStation",
+      "lon": 6.1504034332047555,
+      "lat": 46.20389988223916,
+      "capacity": 9.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc1277ffff",
+      "type": "BikeStation",
+      "lon": 6.145346301939326,
+      "lat": 46.20399779562068,
+      "capacity": 9.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "BS-897a8dc1247ffff",
+      "type": "BikeStation",
+      "lon": 6.144847406353609,
+      "lat": 46.20997107336448,
+      "capacity": 9.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "BS-897a8dc1223ffff",
+      "type": "BikeStation",
+      "lon": 6.143191713984848,
+      "lat": 46.19956650519702,
+      "capacity": 9.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc120fffff",
+      "type": "BikeStation",
+      "lon": 6.142692913026572,
+      "lat": 46.20554012404232,
+      "capacity": 8.0,
+      "initial_bikes": 8.0
+    },
+    {
+      "station": "BS-897a8dcaccfffff",
+      "type": "BikeStation",
+      "lon": 6.15811333421407,
+      "lat": 46.20225972351935,
+      "capacity": 8.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcaccbffff",
+      "type": "BikeStation",
+      "lon": 6.157863727229427,
+      "lat": 46.20524629393072,
+      "capacity": 7.0,
+      "initial_bikes": 7.0
+    },
+    {
+      "station": "BS-897a8dc12abffff",
+      "type": "BikeStation",
+      "lon": 6.137884674627347,
+      "lat": 46.20265124845381,
+      "capacity": 7.0,
+      "initial_bikes": 7.0
+    },
+    {
+      "station": "BS-897a8dcac53ffff",
+      "type": "BikeStation",
+      "lon": 6.160516738526988,
+      "lat": 46.20370406841964,
+      "capacity": 7.0,
+      "initial_bikes": 7.0
+    },
+    {
+      "station": "transfer_PT_25-2",
+      "type": "TransferStation",
+      "lon": 6.15601091,
+      "lat": 46.2022912,
+      "capacity": 7.0,
+      "initial_bikes": 7.0
+    },
+    {
+      "station": "BS-897a8dcac57ffff",
+      "type": "BikeStation",
+      "lon": 6.160766374592204,
+      "lat": 46.20071748402882,
+      "capacity": 6.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dcacc3ffff",
+      "type": "BikeStation",
+      "lon": 6.155460245416849,
+      "lat": 46.20380197317223,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dcac93ffff",
+      "type": "BikeStation",
+      "lon": 6.148249105745643,
+      "lat": 46.1994686861078,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "BS-897a8dc1267ffff",
+      "type": "BikeStation",
+      "lon": 6.147999642492493,
+      "lat": 46.20245547735985,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcac5bffff",
+      "type": "BikeStation",
+      "lon": 6.162920027123126,
+      "lat": 46.20514835919167,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "BS-897a8dcacc7ffff",
+      "type": "BikeStation",
+      "lon": 6.155709814189103,
+      "lat": 46.20081532448962,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dcac9bffff",
+      "type": "BikeStation",
+      "lon": 6.150652934670258,
+      "lat": 46.20091316926199,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc1233ffff",
+      "type": "BikeStation",
+      "lon": 6.140538218479875,
+      "lat": 46.201108871742555,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dca1b7ffff",
+      "type": "BikeStation",
+      "lon": 6.1499044029444665,
+      "lat": 46.20987303140201,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dca127ffff",
+      "type": "BikeStation",
+      "lon": 6.160267093328597,
+      "lat": 46.20669056055972,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcac43ffff",
+      "type": "BikeStation",
+      "lon": 6.163169701399435,
+      "lat": 46.20216185306845,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "BS-897a8dc124fffff",
+      "type": "BikeStation",
+      "lon": 6.147251198104818,
+      "lat": 46.21141529753134,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc122fffff",
+      "type": "BikeStation",
+      "lon": 6.145845161126405,
+      "lat": 46.1980241488193,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dc1227ffff",
+      "type": "BikeStation",
+      "lon": 6.143441100817268,
+      "lat": 46.196579557395275,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_12-5",
+      "type": "TransferStation",
+      "lon": 6.15286681,
+      "lat": 46.2017192,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "transfer_PT_1-2",
+      "type": "TransferStation",
+      "lon": 6.14964186,
+      "lat": 46.21188998,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_25-4",
+      "type": "TransferStation",
+      "lon": 6.14699183,
+      "lat": 46.20734569,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "transfer_PT_6-1",
+      "type": "TransferStation",
+      "lon": 6.14355128,
+      "lat": 46.20815387,
+      "capacity": 5.0,
+      "initial_bikes": 5.0
+    }
+  ]
+}

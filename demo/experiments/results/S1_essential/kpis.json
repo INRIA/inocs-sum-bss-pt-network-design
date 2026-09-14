@@ -1,0 +1,404 @@
+{
+  "scenario": "S1_essential",
+  "days": {
+    "instance": {
+      "day": "instance",
+      "service": {
+        "demand_trips": 1453,
+        "served_trips": 463.8,
+        "served_ratio": 0.319,
+        "spatial_coverage_ratio": 0.878,
+        "availability_ratio": 0.363,
+        "unserved_no_station": 177,
+        "unserved_no_bike": 0.8,
+        "unserved_no_dock": 288.6,
+        "stations": 35,
+        "docks": 243,
+        "bikes": 194,
+        "trips_per_bike": 2.391,
+        "peak_empty_stations": 2,
+        "peak_full_stations": 19
+      },
+      "mobility": {
+        "ride_km": 318.45,
+        "ride_minutes": 1419.14,
+        "trips_shifted_from_car": 46.4,
+        "trips_shifted_from_pt": 208.7,
+        "trips_shifted_from_walk": 162.3,
+        "new_trips_induced": 46.4,
+        "car_km_avoided": 31.8,
+        "unserved_trips_falling_back_to_car": 247.3,
+        "bike_trips_per_1000_pt_boardings": 2.09,
+        "pt_daily_boardings_observed": 221490,
+        "share_bike_only": 0.819,
+        "share_bike_plus_pt": 0.181
+      },
+      "environment": {
+        "co2_avoided_kg_per_day": 10.17,
+        "co2_avoided_kg_per_year_extrapolated": 3714.0,
+        "equivalent_car_days": 0.8,
+        "equivalent_trees_for_a_year": 149.0
+      },
+      "economics": {
+        "capex_eur": 20000,
+        "capex_eur_per_day_amortized": 6.85,
+        "opex_eur_per_day": 97.0,
+        "rebalancing_cost_eur_per_day": 0.0,
+        "revenue_eur_per_day": 927.6,
+        "operating_result_eur_per_day": 823.75,
+        "cost_per_served_trip_eur": 0.224,
+        "revenue_cost_ratio": 8.932
+      },
+      "method": {
+        "mode": "instance",
+        "description": "the optimiser's own planning day: every unit of the solved instance's per-period OD demand replayed as one trip between cell centres; totals are the mean across seeds, hourly detail is the first seed",
+        "demand_source": "/demo/experiments/results/S1_essential/instance.json",
+        "demand_volume_trips": 1453,
+        "demand_od_rows": 973,
+        "demand_od_pairs": 703,
+        "period_to_hours": [
+          "period 0: 06-10 local",
+          "period 1: 10-16 local",
+          "period 2: 16-22 local"
+        ],
+        "period_hour_weighting": "observed monday hourly_share restricted to each period's hours and renormalised",
+        "ride_distance_source": "model_bike_arcs",
+        "rebalancing_source": "model_plan",
+        "station_choice": "model_assignment_then_nearest",
+        "allow_unrouted": false,
+        "seeds": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      },
+      "model": {
+        "n_selected_stations": 35,
+        "covered_od_ratio": 0.388,
+        "total_time_gain": 2555.957982684133,
+        "average_time_gain": 5.184498950677755,
+        "obj_val": 435.7,
+        "dispatch_count": 0
+      },
+      "model_view": {
+        "utilisation": 0.7976,
+        "borrowable_rate": 0.9919,
+        "returnable_rate": 0.5595,
+        "hours_observed": 24,
+        "unserved_no_arc": 522.8,
+        "unserved_outside_model": 60,
+        "covered_od_ratio": 0.3936,
+        "od_pairs_demanded": 703,
+        "od_pairs_served": 276.8,
+        "demand_by_period": [
+          246,
+          482,
+          725
+        ],
+        "served_by_period": [
+          77.8,
+          158.2,
+          227.8
+        ],
+        "followed_model_assignment": 300.4
+      },
+      "comparison": {
+        "covered_od_ratio": {
+          "model": 0.388,
+          "simulated": 0.3936
+        },
+        "served_flow": {
+          "model": 493.0,
+          "simulated": 463.8
+        },
+        "dispatch_count": {
+          "model": 0,
+          "simulated": 0
+        }
+      }
+    },
+    "monday": {
+      "day": "monday",
+      "service": {
+        "demand_trips": 11.51,
+        "served_trips": 8.09,
+        "served_ratio": 0.703,
+        "spatial_coverage_ratio": 0.917,
+        "availability_ratio": 0.766,
+        "unserved_no_station": 0.95,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2.47,
+        "stations": 35,
+        "docks": 243,
+        "bikes": 194,
+        "trips_per_bike": 0.042,
+        "peak_empty_stations": 0,
+        "peak_full_stations": 19
+      },
+      "mobility": {
+        "ride_km": 8.84,
+        "ride_minutes": 26.52,
+        "trips_shifted_from_car": 0.8,
+        "trips_shifted_from_pt": 3.6,
+        "trips_shifted_from_walk": 2.8,
+        "new_trips_induced": 0.8,
+        "car_km_avoided": 0.9,
+        "unserved_trips_falling_back_to_car": 0.9,
+        "bike_trips_per_1000_pt_boardings": 0.04,
+        "pt_daily_boardings_observed": 221490,
+        "share_bike_only": 0.819,
+        "share_bike_plus_pt": 0.181
+      },
+      "environment": {
+        "co2_avoided_kg_per_day": 0.28,
+        "co2_avoided_kg_per_year_extrapolated": 103.0,
+        "equivalent_car_days": 0.0,
+        "equivalent_trees_for_a_year": 4.0
+      },
+      "economics": {
+        "capex_eur": 20000,
+        "capex_eur_per_day_amortized": 6.85,
+        "opex_eur_per_day": 194.81,
+        "rebalancing_cost_eur_per_day": 97.81,
+        "revenue_eur_per_day": 16.18,
+        "operating_result_eur_per_day": -185.48,
+        "cost_per_served_trip_eur": 24.927,
+        "revenue_cost_ratio": 0.08
+      },
+      "method": {
+        "mode": "replay",
+        "description": "trace-driven simulation: observed trips replayed at their recorded local time and coordinates; totals are the mean over all replayed days, hourly detail is the median-demand day",
+        "demand_source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+        "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+        "n_days_replayed": 112,
+        "representative_date": "2024-08-23",
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      },
+      "model": {
+        "n_selected_stations": 35,
+        "covered_od_ratio": 0.388,
+        "total_time_gain": 2555.957982684133,
+        "average_time_gain": 5.184498950677755,
+        "obj_val": 435.7,
+        "dispatch_count": 0
+      },
+      "model_view": {
+        "utilisation": 0.7908,
+        "borrowable_rate": 1.0,
+        "returnable_rate": 0.469,
+        "hours_observed": 24,
+        "unserved_no_arc": 0,
+        "unserved_outside_model": 0
+      },
+      "comparison": {
+        "served_flow": {
+          "model": 493.0,
+          "simulated": 8.09
+        },
+        "dispatch_count": {
+          "model": 0,
+          "simulated": 1.05
+        }
+      }
+    },
+    "monday_x25": {
+      "day": "monday",
+      "service": {
+        "demand_trips": 288,
+        "served_trips": 205.8,
+        "served_ratio": 0.715,
+        "spatial_coverage_ratio": 0.922,
+        "availability_ratio": 0.775,
+        "unserved_no_station": 22.6,
+        "unserved_no_bike": 0.8,
+        "unserved_no_dock": 58.8,
+        "stations": 35,
+        "docks": 243,
+        "bikes": 194,
+        "trips_per_bike": 1.061,
+        "peak_empty_stations": 2,
+        "peak_full_stations": 19
+      },
+      "mobility": {
+        "ride_km": 246.1,
+        "ride_minutes": 738.3,
+        "trips_shifted_from_car": 20.6,
+        "trips_shifted_from_pt": 92.6,
+        "trips_shifted_from_walk": 72.0,
+        "new_trips_induced": 20.6,
+        "car_km_avoided": 24.6,
+        "unserved_trips_falling_back_to_car": 20.5,
+        "bike_trips_per_1000_pt_boardings": 0.93,
+        "pt_daily_boardings_observed": 221490,
+        "share_bike_only": 0.819,
+        "share_bike_plus_pt": 0.181
+      },
+      "environment": {
+        "co2_avoided_kg_per_day": 7.86,
+        "co2_avoided_kg_per_year_extrapolated": 2870.0,
+        "equivalent_car_days": 0.6,
+        "equivalent_trees_for_a_year": 115.0
+      },
+      "economics": {
+        "capex_eur": 20000,
+        "capex_eur_per_day_amortized": 6.85,
+        "opex_eur_per_day": 625.92,
+        "rebalancing_cost_eur_per_day": 528.92,
+        "revenue_eur_per_day": 411.6,
+        "operating_result_eur_per_day": -221.17,
+        "cost_per_served_trip_eur": 3.075,
+        "revenue_cost_ratio": 0.65
+      },
+      "method": {
+        "mode": "sample",
+        "description": "Monte Carlo resampling from observed empirical distributions (hourly profile x OD flow shares); totals are the mean across seeds, hourly detail is the first seed",
+        "demand_source": "/demo/experiments/data/geneva_1.5km-radius/od.csv",
+        "volume_base_measured_per_day": 11.51,
+        "scale": 25.0,
+        "volume_simulated": 288,
+        "volume_is_hypothesis": true,
+        "seeds": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      },
+      "model": {
+        "n_selected_stations": 35,
+        "covered_od_ratio": 0.388,
+        "total_time_gain": 2555.957982684133,
+        "average_time_gain": 5.184498950677755,
+        "obj_val": 435.7,
+        "dispatch_count": 0
+      },
+      "model_view": {
+        "utilisation": 0.7947,
+        "borrowable_rate": 0.9869,
+        "returnable_rate": 0.531,
+        "hours_observed": 24,
+        "unserved_no_arc": 0,
+        "unserved_outside_model": 0
+      },
+      "comparison": {
+        "served_flow": {
+          "model": 493.0,
+          "simulated": 205.8
+        },
+        "dispatch_count": {
+          "model": 0,
+          "simulated": 4.2
+        }
+      }
+    },
+    "sunday": {
+      "day": "sunday",
+      "service": {
+        "demand_trips": 9.44,
+        "served_trips": 6.44,
+        "served_ratio": 0.682,
+        "spatial_coverage_ratio": 0.924,
+        "availability_ratio": 0.739,
+        "unserved_no_station": 0.72,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2.28,
+        "stations": 35,
+        "docks": 243,
+        "bikes": 194,
+        "trips_per_bike": 0.033,
+        "peak_empty_stations": 0,
+        "peak_full_stations": 19
+      },
+      "mobility": {
+        "ride_km": 6.62,
+        "ride_minutes": 19.86,
+        "trips_shifted_from_car": 0.6,
+        "trips_shifted_from_pt": 2.9,
+        "trips_shifted_from_walk": 2.3,
+        "new_trips_induced": 0.6,
+        "car_km_avoided": 0.7,
+        "unserved_trips_falling_back_to_car": 0.7,
+        "bike_trips_per_1000_pt_boardings": 0.06,
+        "pt_daily_boardings_observed": 104072,
+        "share_bike_only": 0.819,
+        "share_bike_plus_pt": 0.181
+      },
+      "environment": {
+        "co2_avoided_kg_per_day": 0.21,
+        "co2_avoided_kg_per_year_extrapolated": 77.0,
+        "equivalent_car_days": 0.0,
+        "equivalent_trees_for_a_year": 3.0
+      },
+      "economics": {
+        "capex_eur": 20000,
+        "capex_eur_per_day_amortized": 6.85,
+        "opex_eur_per_day": 206.5,
+        "rebalancing_cost_eur_per_day": 109.5,
+        "revenue_eur_per_day": 12.88,
+        "operating_result_eur_per_day": -200.47,
+        "cost_per_served_trip_eur": 33.129,
+        "revenue_cost_ratio": 0.06
+      },
+      "method": {
+        "mode": "replay",
+        "description": "trace-driven simulation: observed trips replayed at their recorded local time and coordinates; totals are the mean over all replayed days, hourly detail is the median-demand day",
+        "demand_source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+        "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+        "n_days_replayed": 18,
+        "representative_date": "2024-08-11",
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      },
+      "model": {
+        "n_selected_stations": 35,
+        "covered_od_ratio": 0.388,
+        "total_time_gain": 2555.957982684133,
+        "average_time_gain": 5.184498950677755,
+        "obj_val": 435.7,
+        "dispatch_count": 0
+      },
+      "model_view": {
+        "utilisation": 0.7929,
+        "borrowable_rate": 1.0,
+        "returnable_rate": 0.469,
+        "hours_observed": 24,
+        "unserved_no_arc": 0,
+        "unserved_outside_model": 0
+      },
+      "comparison": {
+        "served_flow": {
+          "model": 493.0,
+          "simulated": 6.44
+        },
+        "dispatch_count": {
+          "model": 0,
+          "simulated": 1.39
+        }
+      }
+    }
+  }
+}

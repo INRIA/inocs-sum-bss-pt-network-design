@@ -1,0 +1,3485 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14342551,
+                        46.19500396
+                    ],
+                    [
+                        6.14304822,
+                        46.1980881
+                    ],
+                    [
+                        6.14385671,
+                        46.20099176
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15286681,
+                        46.2017192
+                    ],
+                    [
+                        6.15647804,
+                        46.20098554
+                    ],
+                    [
+                        6.15879569,
+                        46.20054409
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-12-B-j26-1",
+                "direction_id": 0,
+                "trip_id": "1000.TA.91-12-B-j26-1.13.H",
+                "headsign": "Th\u00f4nex, Moillesulaz",
+                "route_short_name": "12",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "F5A300",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    180,
+                    60,
+                    120,
+                    120,
+                    0
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14281466,
+                        46.19803836
+                    ],
+                    [
+                        6.14342551,
+                        46.19489825
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-12-B-j26-1",
+                "direction_id": 1,
+                "trip_id": "1042.TA.91-12-B-j26-1.15.R",
+                "headsign": "Lancy-Bachet, gare",
+                "route_short_name": "12",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "F5A300",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14153007,
+                        46.20761301
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-14-D-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.91-14-D-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "14",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.13949089,
+                        46.20717162
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-14-D-j25-1",
+                "direction_id": 1,
+                "trip_id": "10004.TA.91-14-D-j25-1.71.R",
+                "headsign": "Gen\u00e8ve, Palladium",
+                "route_short_name": "14",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14153007,
+                        46.20761301
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-14-D-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.91-14-D-j26-1.28.H",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "14",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    720
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.13949089,
+                        46.20717162
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-14-D-j26-1",
+                "direction_id": 1,
+                "trip_id": "1116.TA.91-14-D-j26-1.48.R",
+                "headsign": "Gen\u00e8ve, Palladium",
+                "route_short_name": "14",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14184448,
+                        46.20957747
+                    ],
+                    [
+                        6.14200618,
+                        46.20725244
+                    ],
+                    [
+                        6.14345246,
+                        46.20452941
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-18-j25-1",
+                "direction_id": 1,
+                "trip_id": "10000.TA.91-18-j25-1.116.R",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "18",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "B82F89",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14184448,
+                        46.20957747
+                    ],
+                    [
+                        6.14200618,
+                        46.20725244
+                    ],
+                    [
+                        6.14345246,
+                        46.20452941
+                    ],
+                    [
+                        6.14329975,
+                        46.2006871
+                    ],
+                    [
+                        6.14296737,
+                        46.19764663
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "91-18-j26-1",
+                "direction_id": 1,
+                "trip_id": "1001.TA.91-18-j26-1.42.R",
+                "headsign": "Grand-Lancy, Palettes",
+                "route_short_name": "18",
+                "route_long_name": "",
+                "route_type": 0,
+                "color": "B82F89",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-10-H-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-10-H-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "10",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "006E3D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14297636,
+                        46.20506408
+                    ],
+                    [
+                        6.1423655,
+                        46.20760058
+                    ],
+                    [
+                        6.14020955,
+                        46.20888743
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-10-H-j25-1",
+                "direction_id": 1,
+                "trip_id": "1000.TA.92-10-H-j25-1.18.R",
+                "headsign": "Gen\u00e8ve-A\u00e9roport, Terminal",
+                "route_short_name": "10",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "006E3D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    180,
+                    120,
+                    180
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-10-H-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-10-H-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "10",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "006E3D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    0,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15281291,
+                        46.2018622
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.14718047,
+                        46.20311189
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-10-H-j26-1",
+                "direction_id": 1,
+                "trip_id": "381.TA.92-10-H-j26-1.8.R",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "10",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "006E3D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14185346,
+                        46.20217307
+                    ],
+                    [
+                        6.14032633,
+                        46.20108502
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-19-C-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-19-C-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Jonction",
+                "route_short_name": "19",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "A05909",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    0,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14185346,
+                        46.20217307
+                    ],
+                    [
+                        6.14032633,
+                        46.20108502
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-19-C-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-19-C-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Jonction",
+                "route_short_name": "19",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "A05909",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.148501,
+                        46.21047887
+                    ],
+                    [
+                        6.14964186,
+                        46.21188998
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-1-S-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-1-S-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Jardin Botanique",
+                "route_short_name": "1",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14964186,
+                        46.21188998
+                    ],
+                    [
+                        6.148501,
+                        46.21047887
+                    ],
+                    [
+                        6.14718946,
+                        46.2090242
+                    ],
+                    [
+                        6.14243737,
+                        46.20973289
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-1-S-j25-1",
+                "direction_id": 1,
+                "trip_id": "1634.TA.92-1-S-j25-1.25.R",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "1",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15350461,
+                        46.2020052
+                    ],
+                    [
+                        6.15520243,
+                        46.20073062
+                    ],
+                    [
+                        6.15543599,
+                        46.19846117
+                    ],
+                    [
+                        6.15384597,
+                        46.19724247
+                    ],
+                    [
+                        6.15076475,
+                        46.19552629
+                    ],
+                    [
+                        6.14945321,
+                        46.19473658
+                    ],
+                    [
+                        6.14615639,
+                        46.19669529
+                    ],
+                    [
+                        6.14356026,
+                        46.19768394
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-1-S-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-1-S-j26-1.21.H",
+                "headsign": "Gen\u00e8ve, Plainpalais",
+                "route_short_name": "1",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    0,
+                    120,
+                    60,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14356026,
+                        46.19768394
+                    ],
+                    [
+                        6.14301229,
+                        46.19502262
+                    ],
+                    [
+                        6.1472164,
+                        46.19557603
+                    ],
+                    [
+                        6.14893219,
+                        46.19465574
+                    ],
+                    [
+                        6.15116001,
+                        46.19505993
+                    ],
+                    [
+                        6.15433106,
+                        46.19408366
+                    ],
+                    [
+                        6.15633431,
+                        46.1963222
+                    ],
+                    [
+                        6.15734042,
+                        46.19860418
+                    ],
+                    [
+                        6.15574142,
+                        46.20096689
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15350461,
+                        46.2020052
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-1-S-j26-1",
+                "direction_id": 1,
+                "trip_id": "337.TA.92-1-S-j26-1.29.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "1",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "5A1E82",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    180,
+                    60,
+                    120,
+                    60,
+                    60,
+                    60,
+                    120,
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15534616,
+                        46.19630355
+                    ],
+                    [
+                        6.15039644,
+                        46.1963906
+                    ],
+                    [
+                        6.14860879,
+                        46.19837412
+                    ],
+                    [
+                        6.1466864,
+                        46.20009021
+                    ],
+                    [
+                        6.14424298,
+                        46.20126533
+                    ],
+                    [
+                        6.14297636,
+                        46.20506408
+                    ],
+                    [
+                        6.1423655,
+                        46.20760058
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-20-B-j26-1",
+                "direction_id": 0,
+                "trip_id": "100.TA.92-20-B-j26-1.6.H",
+                "headsign": "Bellevue GE, Valavran",
+                "route_short_name": "20",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00A828",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    180,
+                    120,
+                    60,
+                    60,
+                    180,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.14219482,
+                        46.20744516
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14294042,
+                        46.20238446
+                    ],
+                    [
+                        6.1441801,
+                        46.20119693
+                    ],
+                    [
+                        6.14712657,
+                        46.19988503
+                    ],
+                    [
+                        6.1489232,
+                        46.1981565
+                    ],
+                    [
+                        6.15072882,
+                        46.19570661
+                    ],
+                    [
+                        6.15616363,
+                        46.19601752
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-20-B-j26-1",
+                "direction_id": 1,
+                "trip_id": "256.TA.92-20-B-j26-1.8.R",
+                "headsign": "Veyrier, Tournettes",
+                "route_short_name": "20",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00A828",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    0,
+                    60,
+                    60,
+                    60,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15730449,
+                        46.19852335
+                    ],
+                    [
+                        6.15641515,
+                        46.2010788
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.148501,
+                        46.21047887
+                    ],
+                    [
+                        6.14964186,
+                        46.21188998
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-25-D-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-25-D-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Jardin Botanique",
+                "route_short_name": "25",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "A05909",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60,
+                    180,
+                    180,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1583106,
+                        46.19838034
+                    ],
+                    [
+                        6.15574142,
+                        46.20096689
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ],
+                    [
+                        6.14665047,
+                        46.20760679
+                    ],
+                    [
+                        6.14363213,
+                        46.21039805
+                    ],
+                    [
+                        6.148501,
+                        46.21047887
+                    ],
+                    [
+                        6.14964186,
+                        46.21188998
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-25-D-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-25-D-j26-1.2.H",
+                "headsign": "Gen\u00e8ve, Jardin Botanique",
+                "route_short_name": "25",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "A05909",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60,
+                    180,
+                    180,
+                    120,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15206731,
+                        46.20165703
+                    ],
+                    [
+                        6.15578633,
+                        46.20235959
+                    ],
+                    [
+                        6.15520243,
+                        46.20073062
+                    ],
+                    [
+                        6.15725957,
+                        46.19846739
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-25-D-j26-1",
+                "direction_id": 1,
+                "trip_id": "322.TA.92-25-D-j26-1.11.R",
+                "headsign": "Th\u00f4nex, Vallard",
+                "route_short_name": "25",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "A05909",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    0,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1524446,
+                        46.20191816
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-29-B-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-29-B-j25-1.1.H",
+                "headsign": "Creux-de-Genthod, gare",
+                "route_short_name": "29",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    0
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1525524,
+                        46.2113243
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.15281291,
+                        46.2018622
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-29-B-j25-1",
+                "direction_id": 1,
+                "trip_id": "273.TA.92-29-B-j25-1.7.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "29",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    240,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14185346,
+                        46.20217307
+                    ],
+                    [
+                        6.14032633,
+                        46.20108502
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-2-Q-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-2-Q-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Jonction",
+                "route_short_name": "2",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "D2DB4A",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    0,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ],
+                    [
+                        6.15854416,
+                        46.20410664
+                    ],
+                    [
+                        6.16025096,
+                        46.20512625
+                    ],
+                    [
+                        6.1617242,
+                        46.20636964
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-2-Q-j25-1",
+                "direction_id": 1,
+                "trip_id": "1238.TA.92-2-Q-j25-1.18.R",
+                "headsign": "Gen\u00e8ve, Plage",
+                "route_short_name": "2",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "D2DB4A",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    60,
+                    120,
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14185346,
+                        46.20217307
+                    ],
+                    [
+                        6.14032633,
+                        46.20108502
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-2-Q-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-2-Q-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Jonction",
+                "route_short_name": "2",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "D2DB4A",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ],
+                    [
+                        6.15854416,
+                        46.20410664
+                    ],
+                    [
+                        6.16025096,
+                        46.20512625
+                    ],
+                    [
+                        6.1617242,
+                        46.20636964
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-2-Q-j26-1",
+                "direction_id": 1,
+                "trip_id": "448.TA.92-2-Q-j26-1.30.R",
+                "headsign": "Gen\u00e8ve, Plage",
+                "route_short_name": "2",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "D2DB4A",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    0,
+                    120,
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15281291,
+                        46.2018622
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.16211946,
+                        46.20170055
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-33-F-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-33-F-j25-1.1.H",
+                "headsign": "Puplinge, Marquis",
+                "route_short_name": "33",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00B0A4",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16187691,
+                        46.20167568
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15350461,
+                        46.2020052
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-33-F-j25-1",
+                "direction_id": 1,
+                "trip_id": "1000.TA.92-33-F-j25-1.20.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "33",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00B0A4",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15281291,
+                        46.2018622
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.16211946,
+                        46.20170055
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-33-F-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-33-F-j26-1.1.H",
+                "headsign": "Puplinge, Marquis",
+                "route_short_name": "33",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00B0A4",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16187691,
+                        46.20167568
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15350461,
+                        46.2020052
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-33-F-j26-1",
+                "direction_id": 1,
+                "trip_id": "155.TA.92-33-F-j26-1.5.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "33",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00B0A4",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    180,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14901304,
+                        46.19459978
+                    ],
+                    [
+                        6.15072882,
+                        46.19570661
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-3-P-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-3-P-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Cr\u00eats-de-Champel",
+                "route_short_name": "3",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "B82F89",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.139967,
+                        46.20129641
+                    ],
+                    [
+                        6.14187143,
+                        46.20234716
+                    ],
+                    [
+                        6.14294042,
+                        46.20238446
+                    ],
+                    [
+                        6.14464722,
+                        46.20096689
+                    ],
+                    [
+                        6.14688403,
+                        46.19989746
+                    ],
+                    [
+                        6.14869863,
+                        46.19818137
+                    ],
+                    [
+                        6.15116001,
+                        46.19505993
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-3-P-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-3-P-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Cr\u00eats-de-Champel",
+                "route_short_name": "3",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "B82F89",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    0,
+                    120,
+                    60,
+                    60,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15309139,
+                        46.19412097
+                    ],
+                    [
+                        6.15039644,
+                        46.1963906
+                    ],
+                    [
+                        6.14860879,
+                        46.19837412
+                    ],
+                    [
+                        6.1466864,
+                        46.20009021
+                    ],
+                    [
+                        6.14424298,
+                        46.20126533
+                    ],
+                    [
+                        6.14297636,
+                        46.20506408
+                    ],
+                    [
+                        6.1423655,
+                        46.20760058
+                    ],
+                    [
+                        6.14230262,
+                        46.20939719
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-3-P-j26-1",
+                "direction_id": 1,
+                "trip_id": "1006.TA.92-3-P-j26-1.20.R",
+                "headsign": "Grand-Saconnex, Gardiol",
+                "route_short_name": "3",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "B82F89",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    120,
+                    60,
+                    120,
+                    180,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14297636,
+                        46.20506408
+                    ],
+                    [
+                        6.1423655,
+                        46.20760058
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-5-P-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-5-P-j26-1.15.H",
+                "headsign": "Gen\u00e8ve-A\u00e9roport, Terminal",
+                "route_short_name": "5",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00ACE7",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.14219482,
+                        46.20744516
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.14294042,
+                        46.20238446
+                    ],
+                    [
+                        6.1441801,
+                        46.20119693
+                    ],
+                    [
+                        6.14712657,
+                        46.19988503
+                    ],
+                    [
+                        6.1489232,
+                        46.1981565
+                    ],
+                    [
+                        6.14901304,
+                        46.19459978
+                    ],
+                    [
+                        6.15072882,
+                        46.19570661
+                    ],
+                    [
+                        6.15616363,
+                        46.19601752
+                    ],
+                    [
+                        6.15730449,
+                        46.19852335
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-5-P-j26-1",
+                "direction_id": 1,
+                "trip_id": "334.TA.92-5-P-j26-1.17.R",
+                "headsign": "Th\u00f4nex, Vallard",
+                "route_short_name": "5",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00ACE7",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    0,
+                    60,
+                    60,
+                    60,
+                    180,
+                    0,
+                    120,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.14355128,
+                        46.20815387
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.14718047,
+                        46.20311189
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-6-N-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-6-N-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Molard",
+                "route_short_name": "6",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "008CBE",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.14355128,
+                        46.20815387
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.14718047,
+                        46.20311189
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-6-N-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-6-N-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Molard",
+                "route_short_name": "6",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "008CBE",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16189488,
+                        46.20668049
+                    ],
+                    [
+                        6.16028689,
+                        46.20523194
+                    ],
+                    [
+                        6.15801415,
+                        46.2038393
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.14243737,
+                        46.20973289
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-6-N-j26-1",
+                "direction_id": 1,
+                "trip_id": "360.TA.92-6-N-j26-1.9.R",
+                "headsign": "Vernier, village",
+                "route_short_name": "6",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "008CBE",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    0,
+                    60,
+                    60,
+                    120,
+                    180,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.13998497,
+                        46.20650642
+                    ],
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ],
+                    [
+                        6.15069289,
+                        46.19940005
+                    ],
+                    [
+                        6.14909388,
+                        46.1982622
+                    ],
+                    [
+                        6.15076475,
+                        46.19552629
+                    ],
+                    [
+                        6.14945321,
+                        46.19473658
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-7-M-j25-1",
+                "direction_id": 1,
+                "trip_id": "1000.TA.92-7-M-j25-1.29.R",
+                "headsign": "Gen\u00e8ve, Bout-du-Monde",
+                "route_short_name": "7",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00A828",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    180,
+                    60,
+                    120,
+                    120,
+                    60,
+                    120,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14901304,
+                        46.19459978
+                    ],
+                    [
+                        6.1489232,
+                        46.1981565
+                    ],
+                    [
+                        6.15114204,
+                        46.1996301
+                    ],
+                    [
+                        6.15281291,
+                        46.2018622
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.14718047,
+                        46.20311189
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-7-M-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-7-M-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "7",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00A828",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60,
+                    120,
+                    0,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.13953581,
+                        46.20686699
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-7-M-j26-1",
+                "direction_id": 1,
+                "trip_id": "387.TA.92-7-M-j26-1.10.R",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "7",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "00A828",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.13988615,
+                        46.20369009
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-80-D-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-80-D-j25-1.1.H",
+                "headsign": "Saint-Julien, gare",
+                "route_short_name": "80",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.13988615,
+                        46.20369009
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-80-D-j25-1",
+                "direction_id": 1,
+                "trip_id": "355.TA.92-80-D-j25-1.6.R",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "80",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14304822,
+                        46.20472836
+                    ],
+                    [
+                        6.13988615,
+                        46.20369009
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-80-D-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-80-D-j26-1.1.H",
+                "headsign": "Saint-Julien, gare",
+                "route_short_name": "80",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.13988615,
+                        46.20369009
+                    ],
+                    [
+                        6.14304822,
+                        46.20472836
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-80-D-j26-1",
+                "direction_id": 1,
+                "trip_id": "355.TA.92-80-D-j26-1.6.R",
+                "headsign": "Gen\u00e8ve, Bel-Air",
+                "route_short_name": "80",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    0
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15185171,
+                        46.20163216
+                    ],
+                    [
+                        6.15543599,
+                        46.19846117
+                    ],
+                    [
+                        6.15405258,
+                        46.19664554
+                    ],
+                    [
+                        6.15633431,
+                        46.19575636
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-8-I-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-8-I-j25-1.1.H",
+                "headsign": "Ch\u00eane-Bougeries, Conches place",
+                "route_short_name": "8",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "84471C",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15633431,
+                        46.1963222
+                    ],
+                    [
+                        6.15734042,
+                        46.19860418
+                    ],
+                    [
+                        6.15574142,
+                        46.20096689
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15185171,
+                        46.20163216
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-8-I-j25-1",
+                "direction_id": 1,
+                "trip_id": "1399.TA.92-8-I-j25-1.25.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "8",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "84471C",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15185171,
+                        46.20163216
+                    ],
+                    [
+                        6.15543599,
+                        46.19846117
+                    ],
+                    [
+                        6.15405258,
+                        46.19664554
+                    ],
+                    [
+                        6.15633431,
+                        46.19575636
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-8-I-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-8-I-j26-1.1.H",
+                "headsign": "Ch\u00eane-Bougeries, Conches place",
+                "route_short_name": "8",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "84471C",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15633431,
+                        46.1963222
+                    ],
+                    [
+                        6.15734042,
+                        46.19860418
+                    ],
+                    [
+                        6.15574142,
+                        46.20096689
+                    ],
+                    [
+                        6.15541802,
+                        46.20255855
+                    ],
+                    [
+                        6.15185171,
+                        46.20163216
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-8-I-j26-1",
+                "direction_id": 1,
+                "trip_id": "267.TA.92-8-I-j26-1.11.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "8",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "84471C",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14032633,
+                        46.20108502
+                    ],
+                    [
+                        6.13930225,
+                        46.19760932
+                    ],
+                    [
+                        6.14901304,
+                        46.19459978
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-91-A-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-91-A-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Beau-S\u00e9jour",
+                "route_short_name": "91",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "005F61",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    360
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14901304,
+                        46.19459978
+                    ],
+                    [
+                        6.13930225,
+                        46.19760932
+                    ],
+                    [
+                        6.13754155,
+                        46.19974824
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-91-A-j25-1",
+                "direction_id": 1,
+                "trip_id": "484.TA.92-91-A-j25-1.5.R",
+                "headsign": "Gen\u00e8ve, Pointe de la Jonction",
+                "route_short_name": "91",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "005F61",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    360,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14032633,
+                        46.20108502
+                    ],
+                    [
+                        6.13930225,
+                        46.19760932
+                    ],
+                    [
+                        6.14901304,
+                        46.19459978
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-91-A-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-91-A-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Beau-S\u00e9jour",
+                "route_short_name": "91",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "005F61",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    360
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14901304,
+                        46.19459978
+                    ],
+                    [
+                        6.13930225,
+                        46.19760932
+                    ],
+                    [
+                        6.13754155,
+                        46.19974824
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-91-A-j26-1",
+                "direction_id": 1,
+                "trip_id": "180.TA.92-91-A-j26-1.3.R",
+                "headsign": "Gen\u00e8ve, Pointe de la Jonction",
+                "route_short_name": "91",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "005F61",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    360,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ],
+                    [
+                        6.15094441,
+                        46.19992855
+                    ],
+                    [
+                        6.15277698,
+                        46.19841764
+                    ],
+                    [
+                        6.15171696,
+                        46.19765907
+                    ],
+                    [
+                        6.15039644,
+                        46.1963906
+                    ],
+                    [
+                        6.14749488,
+                        46.19842386
+                    ],
+                    [
+                        6.14835727,
+                        46.19958036
+                    ],
+                    [
+                        6.14852795,
+                        46.20013995
+                    ],
+                    [
+                        6.14819557,
+                        46.20083632
+                    ],
+                    [
+                        6.14781828,
+                        46.20146429
+                    ],
+                    [
+                        6.14656063,
+                        46.20105393
+                    ],
+                    [
+                        6.14399145,
+                        46.20152646
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-92-D-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-92-D-j25-1.1.H",
+                "headsign": "Gen\u00e8ve, Place de Neuve",
+                "route_short_name": "92",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "89CBBE",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    0,
+                    120,
+                    120,
+                    60,
+                    0,
+                    180,
+                    120,
+                    0,
+                    60,
+                    60,
+                    120,
+                    60,
+                    0
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14464722,
+                        46.20365901
+                    ],
+                    [
+                        6.14740505,
+                        46.20301863
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ],
+                    [
+                        6.15094441,
+                        46.19992855
+                    ],
+                    [
+                        6.15277698,
+                        46.19841764
+                    ],
+                    [
+                        6.15171696,
+                        46.19765907
+                    ],
+                    [
+                        6.15039644,
+                        46.1963906
+                    ],
+                    [
+                        6.14749488,
+                        46.19842386
+                    ],
+                    [
+                        6.14835727,
+                        46.19958036
+                    ],
+                    [
+                        6.14852795,
+                        46.20013995
+                    ],
+                    [
+                        6.14819557,
+                        46.20083632
+                    ],
+                    [
+                        6.14781828,
+                        46.20146429
+                    ],
+                    [
+                        6.14656063,
+                        46.20105393
+                    ],
+                    [
+                        6.14399145,
+                        46.20152646
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-92-D-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-92-D-j26-1.1.H",
+                "headsign": "Gen\u00e8ve, Place de Neuve",
+                "route_short_name": "92",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "89CBBE",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    0,
+                    120,
+                    120,
+                    60,
+                    0,
+                    180,
+                    60,
+                    60,
+                    60,
+                    60,
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16211946,
+                        46.20170055
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.15151934,
+                        46.20339788
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.14243737,
+                        46.20973289
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-9-L-j26-1",
+                "direction_id": 0,
+                "trip_id": "10.TA.92-9-L-j26-1.19.H",
+                "headsign": "Vernier, Lignon Tours",
+                "route_short_name": "9",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "E2001D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    180,
+                    60,
+                    180,
+                    180
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14243737,
+                        46.20973289
+                    ],
+                    [
+                        6.14355128,
+                        46.20815387
+                    ],
+                    [
+                        6.14699183,
+                        46.20734569
+                    ],
+                    [
+                        6.15281291,
+                        46.2018622
+                    ],
+                    [
+                        6.15601091,
+                        46.2022912
+                    ],
+                    [
+                        6.16211946,
+                        46.20170055
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-9-L-j26-1",
+                "direction_id": 1,
+                "trip_id": "334.TA.92-9-L-j26-1.27.R",
+                "headsign": "Th\u00f4nex, Belle-Terre Pl. Araire",
+                "route_short_name": "9",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "E2001D",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    180,
+                    60,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14882439,
+                        46.19502884
+                    ],
+                    [
+                        6.14615639,
+                        46.19669529
+                    ],
+                    [
+                        6.14356026,
+                        46.19768394
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-A6-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-A6-j25-1.1.H",
+                "headsign": "Grand-Saconnex, Fret",
+                "route_short_name": "A6",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "E2001E",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14882439,
+                        46.19502884
+                    ],
+                    [
+                        6.14615639,
+                        46.19669529
+                    ],
+                    [
+                        6.14356026,
+                        46.19768394
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-A6-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-A6-j26-1.1.H",
+                "headsign": "Grand-Saconnex, Fret",
+                "route_short_name": "A6",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "E2001E",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15350461,
+                        46.2020052
+                    ],
+                    [
+                        6.15690923,
+                        46.20175029
+                    ],
+                    [
+                        6.1623081,
+                        46.20168811
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-A-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-A-j25-1.1.H",
+                "headsign": "V\u00e9senaz, Capite",
+                "route_short_name": "A",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15350461,
+                        46.2020052
+                    ],
+                    [
+                        6.15690923,
+                        46.20175029
+                    ],
+                    [
+                        6.1623081,
+                        46.20168811
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-A-j26-1",
+                "direction_id": 0,
+                "trip_id": "102.TA.92-A-j26-1.5.H",
+                "headsign": "Gy, temple",
+                "route_short_name": "A",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.14363213,
+                        46.20815387
+                    ],
+                    [
+                        6.14735115,
+                        46.20703485
+                    ],
+                    [
+                        6.15094441,
+                        46.20337301
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E+-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-E+-j25-1.1.H",
+                "headsign": "Hermance, village",
+                "route_short_name": "E+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    180,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1524446,
+                        46.20191816
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ],
+                    [
+                        6.14665047,
+                        46.20760679
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E+-j25-1",
+                "direction_id": 1,
+                "trip_id": "10.TA.92-E+-j25-1.3.R",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "E+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    180,
+                    180
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.14363213,
+                        46.20815387
+                    ],
+                    [
+                        6.14735115,
+                        46.20703485
+                    ],
+                    [
+                        6.15206731,
+                        46.20165703
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E+-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-E+-j26-1.3.H",
+                "headsign": "Hermance, village",
+                "route_short_name": "E+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    300
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1524446,
+                        46.20191816
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ],
+                    [
+                        6.14665047,
+                        46.20760679
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E+-j26-1",
+                "direction_id": 1,
+                "trip_id": "6.TA.92-E+-j26-1.2.R",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "E+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    120,
+                    240,
+                    180
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1539358,
+                        46.20263937
+                    ],
+                    [
+                        6.15909213,
+                        46.20612097
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-E-j25-1.1.H",
+                "headsign": "Collonge-Bellerive, Bois-Caran",
+                "route_short_name": "E",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16186793,
+                        46.20663075
+                    ],
+                    [
+                        6.16034977,
+                        46.20533763
+                    ],
+                    [
+                        6.15748415,
+                        46.20352223
+                    ],
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1539358,
+                        46.20263937
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E-j25-1",
+                "direction_id": 1,
+                "trip_id": "1060.TA.92-E-j25-1.18.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "E",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1539358,
+                        46.20263937
+                    ],
+                    [
+                        6.15578633,
+                        46.20235959
+                    ],
+                    [
+                        6.15854416,
+                        46.20410664
+                    ],
+                    [
+                        6.16025096,
+                        46.20512625
+                    ],
+                    [
+                        6.1617242,
+                        46.20636964
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E-j26-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-E-j26-1.1.H",
+                "headsign": "Collonge-Bellerive, Bois-Caran",
+                "route_short_name": "E",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    0,
+                    120,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16186793,
+                        46.20663075
+                    ],
+                    [
+                        6.16034977,
+                        46.20533763
+                    ],
+                    [
+                        6.15748415,
+                        46.20352223
+                    ],
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1539358,
+                        46.20263937
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-E-j26-1",
+                "direction_id": 1,
+                "trip_id": "238.TA.92-E-j26-1.7.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "E",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "FF8000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    120,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.14363213,
+                        46.20815387
+                    ],
+                    [
+                        6.14735115,
+                        46.20703485
+                    ],
+                    [
+                        6.15094441,
+                        46.20337301
+                    ],
+                    [
+                        6.15272308,
+                        46.2016819
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G+-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-G+-j25-1.1.H",
+                "headsign": "Veigy, douane (F)",
+                "route_short_name": "G+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    180,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1524446,
+                        46.20191816
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ],
+                    [
+                        6.14665047,
+                        46.20760679
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G+-j25-1",
+                "direction_id": 1,
+                "trip_id": "21.TA.92-G+-j25-1.3.R",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "G+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    60,
+                    240,
+                    120
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1524446,
+                        46.20191816
+                    ],
+                    [
+                        6.15151035,
+                        46.20337301
+                    ],
+                    [
+                        6.14665047,
+                        46.20760679
+                    ],
+                    [
+                        6.14223974,
+                        46.2093599
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G+-j26-1",
+                "direction_id": 1,
+                "trip_id": "15.TA.92-G+-j26-1.2.R",
+                "headsign": "Gen\u00e8ve, gare Cornavin",
+                "route_short_name": "G+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    120,
+                    60,
+                    300,
+                    180
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.14223974,
+                        46.2093599
+                    ],
+                    [
+                        6.14363213,
+                        46.20815387
+                    ],
+                    [
+                        6.14735115,
+                        46.20703485
+                    ],
+                    [
+                        6.15206731,
+                        46.20165703
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G+-j26-1",
+                "direction_id": 0,
+                "trip_id": "2.TA.92-G+-j26-1.3.H",
+                "headsign": "Veigy, douane (F)",
+                "route_short_name": "G+",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "000000",
+                "text_color": "FFFFFF",
+                "edge_travel_time_seconds": [
+                    60,
+                    120,
+                    300
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1539358,
+                        46.20263937
+                    ],
+                    [
+                        6.15909213,
+                        46.20612097
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G-j25-1",
+                "direction_id": 0,
+                "trip_id": "1.TA.92-G-j25-1.1.H",
+                "headsign": "Veigy, douane (F)",
+                "route_short_name": "G",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16186793,
+                        46.20663075
+                    ],
+                    [
+                        6.16034977,
+                        46.20533763
+                    ],
+                    [
+                        6.15748415,
+                        46.20352223
+                    ],
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1539358,
+                        46.20263937
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G-j25-1",
+                "direction_id": 1,
+                "trip_id": "1000.TA.92-G-j25-1.32.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "G",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    60,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.1539358,
+                        46.20263937
+                    ],
+                    [
+                        6.15578633,
+                        46.20235959
+                    ],
+                    [
+                        6.15854416,
+                        46.20410664
+                    ],
+                    [
+                        6.16025096,
+                        46.20512625
+                    ],
+                    [
+                        6.1617242,
+                        46.20636964
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G-j26-1",
+                "direction_id": 0,
+                "trip_id": "102.TA.92-G-j26-1.4.H",
+                "headsign": "Veigy, douane (F)",
+                "route_short_name": "G",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    60,
+                    60,
+                    60
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        6.16186793,
+                        46.20663075
+                    ],
+                    [
+                        6.16034977,
+                        46.20533763
+                    ],
+                    [
+                        6.15748415,
+                        46.20352223
+                    ],
+                    [
+                        6.15578633,
+                        46.20179381
+                    ],
+                    [
+                        6.1539358,
+                        46.20263937
+                    ]
+                ]
+            },
+            "properties": {
+                "route_id": "92-G-j26-1",
+                "direction_id": 1,
+                "trip_id": "173.TA.92-G-j26-1.6.R",
+                "headsign": "Gen\u00e8ve, Rive",
+                "route_short_name": "G",
+                "route_long_name": "",
+                "route_type": 3,
+                "color": "F5B4D2",
+                "text_color": "000000",
+                "edge_travel_time_seconds": [
+                    60,
+                    180,
+                    60,
+                    180
+                ]
+            }
+        }
+    ]
+}

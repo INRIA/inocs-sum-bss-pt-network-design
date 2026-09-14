@@ -1,0 +1,322 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gare Cornavin",
+        "category": "transit_hub",
+        "icon": "train",
+        "note": "Geneva's main railway station and the hub where trains, trams and buses all meet.",
+        "source": "OSM node/4890696636 (railway=station, public_transport=station), https://www.openstreetmap.org/node/4890696636",
+        "name_fr": "Gare de Cornavin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1426218,
+          46.2102288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "University of Geneva - Uni Bastions",
+        "category": "university",
+        "icon": "graduation-cap",
+        "note": "Main historic building of the University of Geneva, founded in 1559.",
+        "source": "OSM way/122846183 (amenity=university), https://www.openstreetmap.org/way/122846183",
+        "name_fr": "Universite de Geneve - Uni Bastions"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1444214,
+          46.1989431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "HUG University Hospital",
+        "category": "hospital",
+        "icon": "hospital",
+        "note": "Geneva's main university hospital campus.",
+        "source": "OSM way/49711247 (amenity=hospital), https://www.openstreetmap.org/way/49711247 -- point placed on the northern part of the real HUG campus footprint that intersects the study-area grid (the campus footprint centroid itself falls ~2 m outside the grid boundary).",
+        "name_fr": "Hopitaux universitaires de Geneve (HUG)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.148954,
+          46.193146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Plaine de Plainpalais",
+        "category": "park",
+        "icon": "park",
+        "note": "Historic square and park, home to Geneva's flea market and travelling fairs.",
+        "source": "OSM way/792850727 (leisure=park), https://www.openstreetmap.org/way/792850727"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1406281,
+          46.1978868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "St. Pierre Cathedral",
+        "category": "landmark",
+        "icon": "landmark",
+        "note": "Gothic-Romanesque cathedral at the heart of the Old Town, where Calvin preached during the Reformation.",
+        "source": "OSM way/397737238 (amenity=place_of_worship), https://www.openstreetmap.org/way/397737238",
+        "name_fr": "Cathedrale Saint-Pierre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1484997,
+          46.2010858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mont-Blanc Rotonde (Jet d'Eau viewpoint)",
+        "category": "landmark",
+        "icon": "landmark",
+        "note": "Lakeside viewpoint by the Mont-Blanc bridge, the best vantage point for Geneva's Jet d'Eau fountain (the fountain itself sits just beyond the study area, out on the lake).",
+        "source": "OSM way/1479647094 (leisure=park, promenade), https://www.openstreetmap.org/way/1479647094",
+        "name_fr": "Rotonde du Mont-Blanc"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1504323,
+          46.2089913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "College Calvin",
+        "category": "school",
+        "icon": "school",
+        "note": "One of the oldest secondary schools in continuous operation in the world, founded in 1559.",
+        "source": "OSM way/83480792 (amenity=school), https://www.openstreetmap.org/way/83480792",
+        "name_fr": "College Calvin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1513878,
+          46.2008758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ecole des Eaux-Vives",
+        "category": "school",
+        "icon": "school",
+        "note": "Public primary school in the Eaux-Vives neighbourhood.",
+        "source": "OSM node/944657869 (amenity=school), https://www.openstreetmap.org/node/944657869"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1604579,
+          46.2045549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ecole Saint-Antoine",
+        "category": "school",
+        "icon": "school",
+        "note": "Public primary school just below the Old Town.",
+        "source": "OSM way/178563736 (amenity=school), https://www.openstreetmap.org/way/178563736"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1502498,
+          46.1999481
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "CMU (Centre Medical Universitaire)",
+        "category": "university",
+        "icon": "graduation-cap",
+        "note": "University of Geneva's Faculty of Medicine campus.",
+        "source": "OSM way/79568357 (amenity=university), https://www.openstreetmap.org/way/79568357",
+        "name_fr": "Centre Medical Universitaire"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1513488,
+          46.1942411
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Geneva Town Hall",
+        "category": "landmark",
+        "icon": "landmark",
+        "note": "Historic city hall in the Old Town, where the Red Cross movement was founded in 1863.",
+        "source": "OSM relation/1301860 (amenity=townhall), https://www.openstreetmap.org/relation/1301860",
+        "name_fr": "Hotel de Ville"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1466107,
+          46.2008352
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Palais Eynard",
+        "category": "office",
+        "icon": "briefcase",
+        "note": "Seat of the City of Geneva's executive administration (mairie).",
+        "source": "OSM way/79027872 (amenity=townhall), https://www.openstreetmap.org/way/79027872"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.147203,
+          46.1992725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chancellerie d'Etat",
+        "category": "office",
+        "icon": "briefcase",
+        "note": "Cantonal government offices, in the Old Town near the Cathedral.",
+        "source": "OSM node/13609007823 (office=government), https://www.openstreetmap.org/node/13609007823"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1467821,
+          46.2010333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Grand Theatre de Geneve",
+        "category": "culture",
+        "icon": "theater",
+        "note": "Geneva's opera house, the city's main venue for opera, ballet and classical concerts.",
+        "source": "OSM way/15256736 (amenity=theatre), https://www.openstreetmap.org/way/15256736"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1426279,
+          46.2017795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Museum of Art and History (MAH)",
+        "category": "culture",
+        "icon": "museum",
+        "note": "Geneva's largest museum, covering archaeology, fine arts and applied arts.",
+        "source": "OSM relation/1289171 (tourism=museum), https://www.openstreetmap.org/relation/1289171",
+        "name_fr": "Musee d'Art et d'Histoire"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.151634,
+          46.1992351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "International Museum of the Reformation",
+        "category": "culture",
+        "icon": "museum",
+        "note": "Museum on the history of the Protestant Reformation, next to the Cathedral.",
+        "source": "OSM way/79211035 (tourism=museum), https://www.openstreetmap.org/way/79211035",
+        "name_fr": "Musee international de la Reforme"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.148342,
+          46.2014804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Parc des Bastions",
+        "category": "park",
+        "icon": "park",
+        "note": "Landscaped park next to the university, home to the Reformation Wall.",
+        "source": "OSM way/5073078 (leisure=park), https://www.openstreetmap.org/way/5073078"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1453467,
+          46.1993968
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Jean-Jacques Rousseau Island",
+        "category": "landmark",
+        "icon": "landmark",
+        "note": "Small island in the Rhone with a monument to philosopher Jean-Jacques Rousseau, born in Geneva.",
+        "source": "OSM way/5170038 (leisure=park), https://www.openstreetmap.org/way/5170038",
+        "name_fr": "Ile Jean-Jacques-Rousseau"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1477434,
+          46.2059699
+        ]
+      }
+    }
+  ]
+}

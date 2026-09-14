@@ -1,0 +1,21 @@
+{
+  "id": "S3_ambitious",
+  "title": "Ambitious green transition",
+  "audience_pitch": "The city goes all in: bigger budget, double the operations money. Is it worth it?",
+  "narrative": "Nearly every zone gets a station and rebalancing keeps them stocked, so almost no rider is turned away -- even on the Sunday leisure pattern. But the KPIs show diminishing returns: each additional euro buys fewer new served trips than in S2, and the cost per served trip rises. The lesson for the audience: 'more' is not automatically 'better spent', and quantifying that trade-off is exactly what the optimisation model is for.",
+  "model_parameters": {
+    "total_budget": 140000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [0.169, 0.343, 0.488],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  },
+  "expected_story": {
+    "service": "highest coverage and availability, Monday and Sunday alike",
+    "environment": "largest CO2 gain",
+    "economics": "largest investment; highest cost per served trip -- diminishing returns made visible"
+  }
+}

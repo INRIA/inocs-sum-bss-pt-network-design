@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import Game from '../components/Game';
+import { loadGameData } from '../lib/data';
+
+// Build-time read of public/data (produced by scripts/prepare-data.mjs on predev/prebuild).
+// The whole payload is projected and slimmed here, so the client ships no geodesy and no raw
+// 10 MB inputs. Regenerating results/*.json and rebuilding updates the demo with no code change.
+const data = loadGameData();
+
+for (const w of data.warnings) console.warn(`[build] data warning: ${w}`);
+if (!data.scenarios.length) console.warn('[build] no scenario available — the game will render its unavailable state');
+
+// BASE_URL is "/inocs-sum-bss-pt-network-design" (no trailing slash) — normalise it once so every
+// asset URL resolves both locally and under the GitHub Pages project path.
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+const description =
+  'A decision game about where shared bikes should live in Geneva — INOCS (Inria), EU SUM project, Geneva living lab.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- viewport-fit=cover + 100dvh: the mobile sheet has to survive the URL-bar collapse (ux-plan-v2 section 6) -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Where should the bikes live? · SUM Geneva living lab</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
+    />
+    <meta property="og:title" content="Where should the bikes live?" />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <Game data={data} client:load />
+    <noscript>
+      <div style="max-width:640px;margin:0 auto;padding:24px 16px">
+        <p class="note">
+          This demo is an interactive decision game and needs JavaScript. The underlying data is
+          plain JSON and can be read directly under <span class="mono">{base}data/</span>.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>

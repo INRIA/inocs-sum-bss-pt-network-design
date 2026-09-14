@@ -1,0 +1,47 @@
+# Runtime dependencies of the network design model.
+#
+# Derived from the actual imports in this directory (see the note on each
+# entry for where it is used). Install with:
+#
+#     python -m pip install -r requirements.txt
+#
+# Requires Python >= 3.9 (PEP 585 builtin generics are used in annotations).
+
+# --- Optimisation -----------------------------------------------------------
+# The MIP is formulated and solved with Gurobi. The bundled pip licence is
+# limited to 2000 variables / 2000 constraints, which is enough for the small
+# 1 km-radius demo instance but NOT for larger areas -- those need a full
+# licence (academic licences are free: https://www.gurobi.com/academia/).
+gurobipy>=11.0
+
+# --- Geospatial -------------------------------------------------------------
+h3>=4.0                 # hex grid; the code uses the v4 API (latlng_to_cell, cell_to_boundary)
+shapely>=2.0            # geometry; uses the shapely 2.x STRtree index-returning query
+geopandas>=0.14
+pyproj>=3.4             # CRS handling in output_handler/visualize.py
+osmnx>=1.9              # OSM landuse filtering and street-network routing
+contextily>=1.5         # basemap tiles for the result maps
+
+# --- Graphs -----------------------------------------------------------------
+networkx>=3.0
+igraph>=0.11
+
+# --- Numerics / data --------------------------------------------------------
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3       # KDTree, used to merge nearby candidate stations
+
+# --- Plotting ---------------------------------------------------------------
+matplotlib>=3.7
+seaborn>=0.13
+
+# --- Misc -------------------------------------------------------------------
+tqdm>=4.66
+typing_extensions>=4.8
+
+# --- Optional: input data generation ----------------------------------------
+# The GeoJSON inputs under data/geojson/<version>/ are produced by the
+# companion SUM GTFS-to-GeoJSON package. Only needed to regenerate the inputs,
+# not to run the model against inputs that are already present.
+# sum-gtfs-geojson>=0.2.0

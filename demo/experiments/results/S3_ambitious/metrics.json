@@ -1,0 +1,48 @@
+{
+  "placeholder": false,
+  "provenance": "NetworkDesignRun(solve_mode='integrated', epsilon=0.04) on the frozen model in network-design-bss/src/ -- real optimiser output",
+  "scenario": "S3_ambitious",
+  "run": {
+    "ran_at": "2026-09-10T07:23:04+00:00",
+    "config_name": "Geneva_H3True_SEED20_DISmultinomial_P0.17-0.34-0.49_BUD140000_OP0.0500_SCALE1.00",
+    "solve_mode": "integrated",
+    "epsilon": 0.04,
+    "model_parameters": {
+      "total_budget": 140000,
+      "op_budget_ratio": 0.05,
+      "demand_periods": 3,
+      "period_weights": [
+        0.169,
+        0.343,
+        0.488
+      ],
+      "split_method": "multinomial",
+      "seed": 20,
+      "epsilon": 0.04,
+      "solve_mode": "integrated"
+    },
+    "gurobi_status": 2,
+    "gurobi_status_optimal": true,
+    "mip_gap": 0.0,
+    "n_variables": 53558,
+    "n_constraints": 36535,
+    "wall_clock_s": 16.5,
+    "src_commit": "d75a72f66ee6363938b76c0cf75cfa16b72f2b72",
+    "repo_commit": "77111e8e250ba8801d7a80d8b6a4d4c105104dee"
+  },
+  "n_candidates": 100,
+  "n_selected_stations": 90,
+  "n_reg_station": 53,
+  "n_trans_station": 37,
+  "avg_capacity_reg": 23.641509433962263,
+  "avg_capacity_trans": 20.243243243243242,
+  "fill_ratio_reg": 0.7271180170181277,
+  "fill_ratio_trans": 0.5563794887324297,
+  "covered_od_ratio": 0.936,
+  "total_time_gain": 7229.78935133569,
+  "average_time_gain": 5.595812191436293,
+  "flow_bike_only": 755.0,
+  "flow_bike_pt": 537.0,
+  "dispatch_count": 3.0,
+  "obj_val": 1135.742
+}

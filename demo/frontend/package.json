@@ -1,0 +1,30 @@
+{
+  "name": "sum-bike-network-game",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SUM / INOCS (Inria) Geneva living lab — bike-sharing network design decision game (static Astro site).",
+  "scripts": {
+    "predev": "node scripts/prepare-data.mjs",
+    "dev": "astro dev",
+    "prebuild": "node scripts/prepare-data.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "prepare-data": "node scripts/prepare-data.mjs",
+    "fetch-basemap": "node scripts/fetch-basemap.mjs",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.2.1",
+    "astro": "^5.5.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.14",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "tailwindcss": "^4.0.14",
+    "typescript": "^5.8.2"
+  }
+}

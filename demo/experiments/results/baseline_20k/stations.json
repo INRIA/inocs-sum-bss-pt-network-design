@@ -1,0 +1,226 @@
+[
+  {
+    "station": "baseline_BS-897a8dc120bffff",
+    "type": "baseline",
+    "lon": 6.142443498907109,
+    "lat": 46.20852679506198,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_14-0",
+    "type": "baseline",
+    "lon": 6.14153007,
+    "lat": 46.20761301,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dca1a3ffff",
+    "type": "baseline",
+    "lon": 6.1523080015167,
+    "lat": 46.21131722558726,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcac53ffff",
+    "type": "baseline",
+    "lon": 6.160516738526988,
+    "lat": 46.20370406841964,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_2-6",
+    "type": "baseline",
+    "lon": 6.16025096,
+    "lat": 46.20512625,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcaccfffff",
+    "type": "baseline",
+    "lon": 6.15811333421407,
+    "lat": 46.20225972351935,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_25-2",
+    "type": "baseline",
+    "lon": 6.15601091,
+    "lat": 46.2022912,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_G-2",
+    "type": "baseline",
+    "lon": 6.15748415,
+    "lat": 46.20352223,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc123bffff",
+    "type": "baseline",
+    "lon": 6.142942318053548,
+    "lat": 46.20255336075002,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc120fffff",
+    "type": "baseline",
+    "lon": 6.142692913026572,
+    "lat": 46.20554012404232,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcacd7ffff",
+    "type": "baseline",
+    "lon": 6.153056647895562,
+    "lat": 46.20235759828306,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_18-2",
+    "type": "baseline",
+    "lon": 6.14345246,
+    "lat": 46.20452941,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc1247ffff",
+    "type": "baseline",
+    "lon": 6.144847406353609,
+    "lat": 46.20997107336448,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc1223ffff",
+    "type": "baseline",
+    "lon": 6.143191713984848,
+    "lat": 46.19956650519702,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_12-1",
+    "type": "baseline",
+    "lon": 6.14304822,
+    "lat": 46.1980881,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc1273ffff",
+    "type": "baseline",
+    "lon": 6.145096858694698,
+    "lat": 46.20698448063075,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc127bffff",
+    "type": "baseline",
+    "lon": 6.1475006886689005,
+    "lat": 46.208428783083576,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_25-4",
+    "type": "baseline",
+    "lon": 6.14699183,
+    "lat": 46.20734569,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dca1b3ffff",
+    "type": "baseline",
+    "lon": 6.149654874156067,
+    "lat": 46.21285946756379,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_1-2",
+    "type": "baseline",
+    "lon": 6.14964186,
+    "lat": 46.21188998,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcac57ffff",
+    "type": "baseline",
+    "lon": 6.160766374592204,
+    "lat": 46.20071748402882,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcaccbffff",
+    "type": "baseline",
+    "lon": 6.157863727229427,
+    "lat": 46.20524629393072,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_2-5",
+    "type": "baseline",
+    "lon": 6.15854416,
+    "lat": 46.20410664,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc1233ffff",
+    "type": "baseline",
+    "lon": 6.140538218479875,
+    "lat": 46.201108871742555,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcac5bffff",
+    "type": "baseline",
+    "lon": 6.162920027123126,
+    "lat": 46.20514835919167,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dc1227ffff",
+    "type": "baseline",
+    "lon": 6.143441100817268,
+    "lat": 46.196579557395275,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_BS-897a8dcac93ffff",
+    "type": "baseline",
+    "lon": 6.148249105745643,
+    "lat": 46.1994686861078,
+    "capacity": 12,
+    "initial_bikes": 6
+  },
+  {
+    "station": "baseline_transfer_PT_20-2",
+    "type": "baseline",
+    "lon": 6.14860879,
+    "lat": 46.19837412,
+    "capacity": 12,
+    "initial_bikes": 6
+  }
+]

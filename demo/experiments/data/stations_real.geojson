@@ -1,0 +1,2797 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "description": "Today's bike-share network: real locations joined with real GBFS capacities. Visualization only -- no bike-stock data exists to simulate it.",
+    "sources": [
+      "/demo/experiments/data/geneva_1.5km-radius/bike_stations.geojson",
+      "/demo/experiments/data/geneva_1.5km-radius/donkey_station_information.json"
+    ],
+    "match_report": {
+      "by_name": 115,
+      "by_distance": 13,
+      "unmatched": 11
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Bains des P\u00e2quis",
+        "name": "Bains des P\u00e2quis",
+        "lat": 46.2112069,
+        "lon": 6.1526709,
+        "capacity": 33,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18394",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1526709,
+          46.2112069
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Gen\u00e8ve Cornavin",
+        "name": "Gen\u00e8ve Cornavin",
+        "lat": 46.2093526,
+        "lon": 6.1425051,
+        "capacity": 15,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18500",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1425051,
+          46.2093526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de la Conf\u00e9d\u00e9ration 2",
+        "name": "Rue de la Conf\u00e9d\u00e9ration 2",
+        "lat": 46.2038067,
+        "lon": 6.1433116,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18567",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1433116,
+          46.2038067
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pont Mont Blanc S",
+        "name": "Pont Mont Blanc S",
+        "lat": 46.2041793,
+        "lon": 6.149528,
+        "capacity": 10,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18552",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.149528,
+          46.2041793
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rh\u00f4ne Quai g\u00e9n\u00e9ral Guisan",
+        "name": "Rh\u00f4ne Quai g\u00e9n\u00e9ral Guisan",
+        "lat": 46.2046831,
+        "lon": 6.147013,
+        "capacity": 14,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18559",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.147013,
+          46.2046831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place St-Gervais",
+        "name": "Place St-Gervais",
+        "lat": 46.2057147,
+        "lon": 6.1427931,
+        "capacity": 20,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18422",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1427931,
+          46.2057147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de la Navigation",
+        "name": "Rue de la Navigation",
+        "lat": 46.2115266,
+        "lon": 6.1495787,
+        "capacity": 10,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18570",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1495787,
+          46.2115266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rive",
+        "name": "Rive",
+        "lat": 46.2014375,
+        "lon": 6.1530625,
+        "capacity": 20,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18406",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1530625,
+          46.2014375
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Leschot",
+        "name": "Leschot",
+        "lat": 46.1965365,
+        "lon": 6.1432303,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21474",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1432303,
+          46.1965365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue du Nant 12",
+        "name": "Rue du Nant 12",
+        "lat": 46.2023981,
+        "lon": 6.1607241,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18577",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1607241,
+          46.2023981
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "31 D\u00e9cembre 6",
+        "name": "31 D\u00e9cembre 6",
+        "lat": 46.2053158,
+        "lon": 6.1578497,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22211",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1578497,
+          46.2053158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rond-Point de Rive",
+        "name": "Rond-Point de Rive",
+        "lat": 46.2016212,
+        "lon": 6.1538102,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21485",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1538102,
+          46.2016212
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place de la Fusterie",
+        "name": "Place de la Fusterie",
+        "lat": 46.2041587,
+        "lon": 6.1460944,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18540",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1460944,
+          46.2041587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place du Cirque",
+        "name": "Place du Cirque",
+        "lat": 46.2011859,
+        "lon": 6.1398463,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22234",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1398463,
+          46.2011859
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Terrassi\u00e8res",
+        "name": "Terrassi\u00e8res",
+        "lat": 46.2012952,
+        "lon": 6.1558235,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18542",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1558235,
+          46.2012952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Chaponni\u00e8re",
+        "name": "Chaponni\u00e8re",
+        "lat": 46.2089975,
+        "lon": 6.1443209,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18839",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1443209,
+          46.2089975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place des Eaux-Vives",
+        "name": "Place des Eaux-Vives",
+        "lat": 46.2023076,
+        "lon": 6.1563643,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18543",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1563643,
+          46.2023076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pont de la Machine",
+        "name": "Pont de la Machine",
+        "lat": 46.2064075,
+        "lon": 6.1447417,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18551",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1447417,
+          46.2064075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Eaux-Vives 2000",
+        "name": "Eaux-Vives 2000",
+        "lat": 46.2004779,
+        "lon": 6.1594871,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22423",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1594871,
+          46.2004779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Fribourg 2",
+        "name": "Fribourg 2",
+        "lat": 46.2102549,
+        "lon": 6.1449087,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1449087,
+          46.2102549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Plantamour 22",
+        "name": "Plantamour 22",
+        "lat": 46.2104074,
+        "lon": 6.1498047,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21963",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1498047,
+          46.2104074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jardin des Alpes",
+        "name": "Jardin des Alpes",
+        "lat": 46.2080078,
+        "lon": 6.1488421,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21969",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1488421,
+          46.2080078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Plainpalais",
+        "name": "Plainpalais",
+        "lat": 46.1995996,
+        "lon": 6.141155,
+        "capacity": 20,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18611",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.141155,
+          46.1995996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue du Prince",
+        "name": "Rue du Prince",
+        "lat": 46.2031806,
+        "lon": 6.1514251,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18833",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1514251,
+          46.2031806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de Carouge 3",
+        "name": "Rue de Carouge 3",
+        "lat": 46.1972413,
+        "lon": 6.1431529,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1431529,
+          46.1972413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Philosophes",
+        "name": "Philosophes",
+        "lat": 46.1969609,
+        "lon": 6.1452873,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18532",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1452873,
+          46.1969609
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Uni Dufour",
+        "name": "Uni Dufour",
+        "lat": 46.1996601,
+        "lon": 6.1429661,
+        "capacity": 10,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21476",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1429661,
+          46.1996601
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue d'Italie",
+        "name": "Rue d'Italie",
+        "lat": 46.2027213,
+        "lon": 6.1525064,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1525064,
+          46.2027213
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "H\u00f4pital 3 (hub mob)",
+        "name": "H\u00f4pital 3 (hub mob)",
+        "lat": 46.1948567,
+        "lon": 6.1487596,
+        "capacity": 7,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21916",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1487596,
+          46.1948567
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Rois",
+        "name": "Rue des Rois",
+        "lat": 46.2031888,
+        "lon": 6.1377357,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18574",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1377357,
+          46.2031888
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "H\u00f4pital 2",
+        "name": "H\u00f4pital 2",
+        "lat": 46.1941134,
+        "lon": 6.1484971,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21468",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1484971,
+          46.1941134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Alpes",
+        "name": "Rue des Alpes",
+        "lat": 46.209689,
+        "lon": 6.1457237,
+        "capacity": 7,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21935",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1457237,
+          46.209689
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pont du Mont-Blanc",
+        "name": "Pont du Mont-Blanc",
+        "lat": 46.2069193,
+        "lon": 6.1473036,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18612",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1473036,
+          46.2069193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue du Rh\u00f4ne 54",
+        "name": "Rue du Rh\u00f4ne 54",
+        "lat": 46.2040222,
+        "lon": 6.1481548,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1481548,
+          46.2040222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de la Madeleine",
+        "name": "Rue de la Madeleine",
+        "lat": 46.2023685,
+        "lon": 6.1473478,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18569",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1473478,
+          46.2023685
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pictet de Rochemont 7",
+        "name": "Pictet de Rochemont 7",
+        "lat": 46.2023365,
+        "lon": 6.1576766,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18533",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1576766,
+          46.2023365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Bourg de Four",
+        "name": "Bourg de Four",
+        "lat": 46.2000917,
+        "lon": 6.1484456,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21479",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1484456,
+          46.2000917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Quai des Forces-Motrices",
+        "name": "Quai des Forces-Motrices",
+        "lat": 46.2041899,
+        "lon": 6.139265,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22361",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.139265,
+          46.2041899
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Robert-C\u00e9ard 10",
+        "name": "Robert-C\u00e9ard 10",
+        "lat": 46.2032448,
+        "lon": 6.1488988,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20714",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1488988,
+          46.2032448
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Beth-Yaacov",
+        "name": "Beth-Yaacov",
+        "lat": 46.2028401,
+        "lon": 6.1414002,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18473",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1414002,
+          46.2028401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Vollandes 16",
+        "name": "Vollandes 16",
+        "lat": 46.205223,
+        "lon": 6.1602549,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22208",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1602549,
+          46.205223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Cherbuliez",
+        "name": "Cherbuliez",
+        "lat": 46.2035996,
+        "lon": 6.1586265,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18487",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1586265,
+          46.2035996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place Camoletti",
+        "name": "Place Camoletti",
+        "lat": 46.2031314,
+        "lon": 6.1555808,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22214",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1555808,
+          46.2031314
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de Berne 36",
+        "name": "Rue de Berne 36",
+        "lat": 46.2111603,
+        "lon": 6.1466122,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22188",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1466122,
+          46.2111603
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pont des Bergues",
+        "name": "Pont des Bergues",
+        "lat": 46.2067751,
+        "lon": 6.1464734,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18613",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1464734,
+          46.2067751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Saint-Georges 60",
+        "name": "Saint-Georges 60",
+        "lat": 46.2013132,
+        "lon": 6.1372219,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18835",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1372219,
+          46.2013132
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Verdaine 6",
+        "name": "Verdaine 6",
+        "lat": 46.2016987,
+        "lon": 6.1506667,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22017",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1506667,
+          46.2016987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Av. De la Grenade 11",
+        "name": "Av. De la Grenade 11",
+        "lat": 46.2057451,
+        "lon": 6.1607702,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22207",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1607702,
+          46.2057451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place de Neuve",
+        "name": "Place de Neuve",
+        "lat": 46.2017625,
+        "lon": 6.1438301,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21477",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1438301,
+          46.2017625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Sablons",
+        "name": "Sablons",
+        "lat": 46.2008162,
+        "lon": 6.1376221,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1376221,
+          46.2008162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Bonivard",
+        "name": "Bonivard",
+        "lat": 46.2077679,
+        "lon": 6.1465002,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1465002,
+          46.2077679
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Montchoisy 33",
+        "name": "Montchoisy 33",
+        "lat": 46.2041465,
+        "lon": 6.1617559,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18586",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1617559,
+          46.2041465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Pierre-Fatio",
+        "name": "Pierre-Fatio",
+        "lat": 46.2029882,
+        "lon": 6.1541791,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22349",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1541791,
+          46.2029882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Saint-L\u00e9ger 14",
+        "name": "Saint-L\u00e9ger 14",
+        "lat": 46.1986323,
+        "lon": 6.147423,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20636",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.147423,
+          46.1986323
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rousseau 5",
+        "name": "Rousseau 5",
+        "lat": 46.2068767,
+        "lon": 6.1441195,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18838",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1441195,
+          46.2068767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Uni Bastions",
+        "name": "Uni Bastions",
+        "lat": 46.1987529,
+        "lon": 6.1441602,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21475",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1441602,
+          46.1987529
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Du-Roveray 9",
+        "name": "Rue Du-Roveray 9",
+        "lat": 46.2051736,
+        "lon": 6.1591623,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22210",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1591623,
+          46.2051736
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Berne 2",
+        "name": "Berne 2",
+        "lat": 46.2087736,
+        "lon": 6.1447897,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18839",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1447897,
+          46.2087736
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Basilique Notre Dame",
+        "name": "Basilique Notre Dame",
+        "lat": 46.2085539,
+        "lon": 6.1424073,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18471",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1424073,
+          46.2085539
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de l'Arquebuse",
+        "name": "Rue de l'Arquebuse",
+        "lat": 46.2016516,
+        "lon": 6.139445,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22362",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.139445,
+          46.2016516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Muzy 7",
+        "name": "Muzy 7",
+        "lat": 46.2039075,
+        "lon": 6.15607,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.15607,
+          46.2039075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "HEAD",
+        "name": "HEAD",
+        "lat": 46.2087165,
+        "lon": 6.1412041,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18511",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1412041,
+          46.2087165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Chemin Malombr\u00e9",
+        "name": "Chemin Malombr\u00e9",
+        "lat": 46.1949789,
+        "lon": 6.1516402,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18484",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1516402,
+          46.1949789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Place de Grenus",
+        "name": "Place de Grenus",
+        "lat": 46.2069752,
+        "lon": 6.1428894,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18538",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1428894,
+          46.2069752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Sillem",
+        "name": "Rue Sillem",
+        "lat": 46.2053963,
+        "lon": 6.1625304,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21931",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1625304,
+          46.2053963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Gare Cornavin gallerie",
+        "name": "Gare Cornavin gallerie",
+        "lat": 46.209146,
+        "lon": 6.1404056,
+        "capacity": 10,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18497",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1404056,
+          46.209146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "My Little Room",
+        "name": "My Little Room",
+        "lat": 46.2022268,
+        "lon": 6.1592887,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22311",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1592887,
+          46.2022268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Coulouvreni\u00e8re",
+        "name": "Coulouvreni\u00e8re",
+        "lat": 46.2038939,
+        "lon": 6.1380224,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22227",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1380224,
+          46.2038939
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jungle Pop",
+        "name": "Jungle Pop",
+        "lat": 46.2000422,
+        "lon": 6.1619803,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "27386",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1619803,
+          46.2000422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Montchoisy 8",
+        "name": "Montchoisy 8",
+        "lat": 46.2027891,
+        "lon": 6.1594761,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22313",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1594761,
+          46.2027891
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Merle-d'Aubign\u00e9 5",
+        "name": "Merle-d'Aubign\u00e9 5",
+        "lat": 46.2065734,
+        "lon": 6.1617932,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22206",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1617932,
+          46.2065734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Montchoisy 21",
+        "name": "Montchoisy 21",
+        "lat": 46.2036159,
+        "lon": 6.1608192,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22289",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1608192,
+          46.2036159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Thalberg 8",
+        "name": "Rue Thalberg 8",
+        "lat": 46.2096233,
+        "lon": 6.1467867,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1467867,
+          46.2096233
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Gare Routi\u00e8re",
+        "name": "Gare Routi\u00e8re",
+        "lat": 46.2084035,
+        "lon": 6.1463984,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18503",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1463984,
+          46.2084035
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Barton",
+        "name": "Rue Barton",
+        "lat": 46.2107688,
+        "lon": 6.1510593,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21962",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1510593,
+          46.2107688
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de L'Ecole-de-Chimie",
+        "name": "Rue de L'Ecole-de-Chimie",
+        "lat": 46.1965564,
+        "lon": 6.1466746,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21904",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1466746,
+          46.1965564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de Contamines",
+        "name": "Rue de Contamines",
+        "lat": 46.1955643,
+        "lon": 6.1555544,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22302",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1555544,
+          46.1955643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Henri-Blanvalet",
+        "name": "Rue Henri-Blanvalet",
+        "lat": 46.2032123,
+        "lon": 6.1587204,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22314",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1587204,
+          46.2032123
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "La Turbine",
+        "name": "La Turbine",
+        "lat": 46.2039152,
+        "lon": 6.1369485,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22363",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1369485,
+          46.2039152
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Terreaux-du-Temple",
+        "name": "Terreaux-du-Temple",
+        "lat": 46.2072477,
+        "lon": 6.1412344,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21993",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1412344,
+          46.2072477
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Le Shogun",
+        "name": "Le Shogun",
+        "lat": 46.204237,
+        "lon": 6.1589403,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22315",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1589403,
+          46.204237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Au Chien Bleu",
+        "name": "Au Chien Bleu",
+        "lat": 46.1966174,
+        "lon": 6.1442388,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22350",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1442388,
+          46.1966174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Necker",
+        "name": "Rue Necker",
+        "lat": 46.2076433,
+        "lon": 6.1409662,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21994",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1409662,
+          46.2076433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Fran\u00e7ois-Bartholoni",
+        "name": "Fran\u00e7ois-Bartholoni",
+        "lat": 46.200731,
+        "lon": 6.1429667,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21949",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1429667,
+          46.200731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Savoises 3",
+        "name": "Rue des Savoises 3",
+        "lat": 46.2007559,
+        "lon": 6.1396609,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22023",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1396609,
+          46.2007559
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Mus\u00e9e d'Art et Histoire",
+        "name": "Mus\u00e9e d'Art et Histoire",
+        "lat": 46.199425,
+        "lon": 6.1518549,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1518549,
+          46.199425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Malagnou",
+        "name": "Malagnou",
+        "lat": 46.1977199,
+        "lon": 6.1608216,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18522",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1608216,
+          46.1977199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Temple des P\u00e2quis",
+        "name": "Temple des P\u00e2quis",
+        "lat": 46.2116452,
+        "lon": 6.1472369,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18593",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1472369,
+          46.2116452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Grand th\u00e9\u00e0tre",
+        "name": "Grand th\u00e9\u00e0tre",
+        "lat": 46.2018665,
+        "lon": 6.143123,
+        "capacity": 9,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18509",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.143123,
+          46.2018665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de l'Ath\u00e9n\u00e9e",
+        "name": "Rue de l'Ath\u00e9n\u00e9e",
+        "lat": 46.195082,
+        "lon": 6.1540845,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22297",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1540845,
+          46.195082
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Gavroche",
+        "name": "Gavroche",
+        "lat": 46.2060901,
+        "lon": 6.1396961,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "24674",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1396961,
+          46.2060901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue du Nant 27",
+        "name": "Rue du Nant 27",
+        "lat": 46.2029819,
+        "lon": 6.1618123,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22288",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1618123,
+          46.2029819
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Boulevard du Th\u00e9\u00e2tre",
+        "name": "Boulevard du Th\u00e9\u00e2tre",
+        "lat": 46.2025527,
+        "lon": 6.1416152,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18770",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1416152,
+          46.2025527
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Chaponni\u00e8re 16",
+        "name": "Chaponni\u00e8re 16",
+        "lat": 46.209787,
+        "lon": 6.1451953,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21934",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1451953,
+          46.209787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "L'Aigle Noir",
+        "name": "L'Aigle Noir",
+        "lat": 46.210525,
+        "lon": 6.1470947,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22189",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1470947,
+          46.210525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Ferdinand-Hodler 17",
+        "name": "Ferdinand-Hodler 17",
+        "lat": 46.1990404,
+        "lon": 6.1555378,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1555378,
+          46.1990404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jules-Crosnier 2",
+        "name": "Jules-Crosnier 2",
+        "lat": 46.1966758,
+        "lon": 6.1531468,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20719",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1531468,
+          46.1966758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Savoises 17",
+        "name": "Rue des Savoises 17",
+        "lat": 46.2010616,
+        "lon": 6.1385006,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20626",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1385006,
+          46.2010616
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Le Socrate",
+        "name": "Le Socrate",
+        "lat": 46.1957388,
+        "lon": 6.1463225,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22329",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1463225,
+          46.1957388
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "P\u00e9colat 8",
+        "name": "P\u00e9colat 8",
+        "lat": 46.208767,
+        "lon": 6.14606,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18603",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.14606,
+          46.208767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Crespin",
+        "name": "Rue Crespin",
+        "lat": 46.1953656,
+        "lon": 6.1577756,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22305",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1577756,
+          46.1953656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Le Lyrique",
+        "name": "Le Lyrique",
+        "lat": 46.201362,
+        "lon": 6.1424538,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22360",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1424538,
+          46.201362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "El Pueblo",
+        "name": "El Pueblo",
+        "lat": 46.2072301,
+        "lon": 6.1448973,
+        "capacity": null,
+        "is_virtual_station": null,
+        "gbfs_station_id": null,
+        "match": "none"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1448973,
+          46.2072301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Franz-Liszt",
+        "name": "Franz-Liszt",
+        "lat": 46.1988497,
+        "lon": 6.1494832,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21910",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1494832,
+          46.1988497
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "La Felicita",
+        "name": "La Felicita",
+        "lat": 46.199845,
+        "lon": 6.1624014,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "24554",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1624014,
+          46.199845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de Zurich 5",
+        "name": "Rue de Zurich 5",
+        "lat": 46.2112231,
+        "lon": 6.148367,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21964",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.148367,
+          46.2112231
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Lazy Cat",
+        "name": "Lazy Cat",
+        "lat": 46.2027167,
+        "lon": 6.1612906,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22287",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1612906,
+          46.2027167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Vollandes 69",
+        "name": "Rue des Vollandes 69",
+        "lat": 46.2026661,
+        "lon": 6.1630545,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22285",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1630545,
+          46.2026661
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Malatrex",
+        "name": "Malatrex",
+        "lat": 46.2082382,
+        "lon": 6.1393971,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21995",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1393971,
+          46.2082382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Dufour 14",
+        "name": "Dufour 14",
+        "lat": 46.201206,
+        "lon": 6.1417383,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20624",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1417383,
+          46.201206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Necker 1",
+        "name": "Rue Necker 1",
+        "lat": 46.2068494,
+        "lon": 6.1401026,
+        "capacity": 8,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18598",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1401026,
+          46.2068494
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Carosello",
+        "name": "Carosello",
+        "lat": 46.2006217,
+        "lon": 6.141049,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22022",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.141049,
+          46.2006217
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Maunoir 42",
+        "name": "Rue Maunoir 42",
+        "lat": 46.2023361,
+        "lon": 6.1618559,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22286",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1618559,
+          46.2023361
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Bartholoni 2",
+        "name": "Bartholoni 2",
+        "lat": 46.2002036,
+        "lon": 6.1414694,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20720",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1414694,
+          46.2002036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Saint-Jean 67",
+        "name": "Saint-Jean 67",
+        "lat": 46.2064096,
+        "lon": 6.1380201,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21869",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1380201,
+          46.2064096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Monnier",
+        "name": "Rue Monnier",
+        "lat": 46.1949379,
+        "lon": 6.1528473,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22298",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1528473,
+          46.1949379
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Turrettini 1",
+        "name": "Turrettini 1",
+        "lat": 46.2054865,
+        "lon": 6.141601,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "20712",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.141601,
+          46.2054865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de l'Avenir 34",
+        "name": "Rue de l'Avenir 34",
+        "lat": 46.2046266,
+        "lon": 6.1622508,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22316",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1622508,
+          46.2046266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue L\u00e9on-Nicole",
+        "name": "Rue L\u00e9on-Nicole",
+        "lat": 46.2117783,
+        "lon": 6.1483385,
+        "capacity": 7,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21965",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1483385,
+          46.2117783
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Emile-Yung 1",
+        "name": "Emile-Yung 1",
+        "lat": 46.196348,
+        "lon": 6.1505205,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21915",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1505205,
+          46.196348
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue des Photographe 14",
+        "name": "Rue des Photographe 14",
+        "lat": 46.2026229,
+        "lon": 6.1602472,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22310",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1602472,
+          46.2026229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Mont-de-Sion",
+        "name": "Mont-de-Sion",
+        "lat": 46.1971196,
+        "lon": 6.1530576,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21913",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1530576,
+          46.1971196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Gaspard-Vallette",
+        "name": "Gaspard-Vallette",
+        "lat": 46.194587,
+        "lon": 6.1560258,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22304",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1560258,
+          46.194587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Galloix",
+        "name": "Rue Galloix",
+        "lat": 46.1974452,
+        "lon": 6.1462508,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21905",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1462508,
+          46.1974452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jean-S\u00e9nebier 20",
+        "name": "Jean-S\u00e9nebier 20",
+        "lat": 46.1967467,
+        "lon": 6.1486306,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21908",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1486306,
+          46.1967467
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Promenade du Pin",
+        "name": "Promenade du Pin",
+        "lat": 46.198398,
+        "lon": 6.1502622,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18555",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1502622,
+          46.198398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Caf\u00e9 des Vignes",
+        "name": "Caf\u00e9 des Vignes",
+        "lat": 46.1960152,
+        "lon": 6.1545398,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22301",
+        "match": "distance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1545398,
+          46.1960152
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Sismondi",
+        "name": "Rue Sismondi",
+        "lat": 46.2100823,
+        "lon": 6.1472328,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21966",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1472328,
+          46.2100823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "HUG Tour 8",
+        "name": "HUG Tour 8",
+        "lat": 46.1959623,
+        "lon": 6.1478557,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "28945",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1478557,
+          46.1959623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Malombr\u00e9 12",
+        "name": "Malombr\u00e9 12",
+        "lat": 46.1956787,
+        "lon": 6.152047,
+        "capacity": 2,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22299",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.152047,
+          46.1956787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "L\u00e9on-Gaud",
+        "name": "L\u00e9on-Gaud",
+        "lat": 46.195166,
+        "lon": 6.1560486,
+        "capacity": 1,
+        "is_virtual_station": true,
+        "gbfs_station_id": "22303",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1560486,
+          46.195166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue de Zurich 17",
+        "name": "Rue de Zurich 17",
+        "lat": 46.2114083,
+        "lon": 6.1477451,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21936",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1477451,
+          46.2114083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Cours des Bastions 10",
+        "name": "Cours des Bastions 10",
+        "lat": 46.1977578,
+        "lon": 6.1482805,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21909",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1482805,
+          46.1977578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Firmin-Massot",
+        "name": "Rue Firmin-Massot",
+        "lat": 46.1964928,
+        "lon": 6.1512387,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21914",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1512387,
+          46.1964928
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jean-S\u00e9nebier",
+        "name": "Jean-S\u00e9nebier",
+        "lat": 46.1979739,
+        "lon": 6.1471238,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21906",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1471238,
+          46.1979739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Saint-Victor",
+        "name": "Rue Saint-Victor",
+        "lat": 46.1978841,
+        "lon": 6.151061,
+        "capacity": 5,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21911",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.151061,
+          46.1978841
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue du Temple",
+        "name": "Rue du Temple",
+        "lat": 46.2061256,
+        "lon": 6.1411253,
+        "capacity": 6,
+        "is_virtual_station": true,
+        "gbfs_station_id": "18579",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1411253,
+          46.2061256
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Jean-S\u00e9nebier 14",
+        "name": "Jean-S\u00e9nebier 14",
+        "lat": 46.197339,
+        "lon": 6.1478058,
+        "capacity": 4,
+        "is_virtual_station": true,
+        "gbfs_station_id": "21907",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1478058,
+          46.197339
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "Rue Fran\u00e7ois D'Ivernois",
+        "name": "Rue Fran\u00e7ois D'Ivernois",
+        "lat": 46.1971742,
+        "lon": 6.1512172,
+        "capacity": 3,
+        "is_virtual_station": true,
+        "gbfs_station_id": "30490",
+        "match": "name"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1512172,
+          46.1971742
+        ]
+      }
+    }
+  ]
+}

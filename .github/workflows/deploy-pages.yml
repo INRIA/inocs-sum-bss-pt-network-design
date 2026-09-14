@@ -1,0 +1,71 @@
+name: Deploy demo to GitHub Pages
+
+# Publishes demo/frontend to https://inria.github.io/inocs-sum-bss-pt-network-design
+#
+# The site is rebuilt from the git-tracked experiment outputs on every push to main: the
+# `prebuild` hook runs demo/frontend/scripts/prepare-data.mjs, which reads
+# demo/experiments/{scenarios,results,data}. Regenerating results and pushing is therefore the
+# entire publish flow — no front-end change required.
+#
+# One-time repository setting: Settings -> Pages -> Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'demo/frontend/**'
+      - 'demo/experiments/scenarios/**'
+      - 'demo/experiments/results/**'
+      - 'demo/experiments/data/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deployment finish; queue at most one more.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo/frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: demo/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (prebuild regenerates public/data from demo/experiments)
+        run: npm run build
+        env:
+          SITE: https://inria.github.io
+          BASE: /${{ github.event.repository.name }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo/frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

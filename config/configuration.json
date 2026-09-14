@@ -1,0 +1,11 @@
+{
+    "budget_start": 4000,
+    "budget_end": 14000,
+    "budget_step": 2000,
+    "num_shortest_paths_start": 1,
+    "num_shortest_paths_end": 3,
+    "num_shortest_paths_step": 1,
+    "penalty_coefficient_start": 0,
+    "penalty_coefficient_end": 0.5,
+    "penalty_coefficient_step": 0.1
+}

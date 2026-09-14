@@ -1,0 +1,21 @@
+{
+  "id": "S1_essential",
+  "title": "Essential network",
+  "audience_pitch": "The city invests the minimum. Where do the few stations go, and who is left out?",
+  "narrative": "With a small budget the optimiser must triage: it concentrates stations where demand and public-transport connections pay off most, and whole neighbourhoods stay uncovered. The simulation shows riders finding no station nearby, and stations running empty at the morning peak.",
+  "model_parameters": {
+    "total_budget": 20000,
+    "op_budget_ratio": 0.025,
+    "demand_periods": 3,
+    "period_weights": [0.169, 0.343, 0.488],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  },
+  "expected_story": {
+    "service": "lowest coverage and served ratio of the three scenarios",
+    "environment": "smallest CO2 gain",
+    "economics": "smallest investment; best served-trips-per-euro -- the first euros are the most productive"
+  }
+}

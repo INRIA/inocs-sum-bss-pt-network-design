@@ -1,0 +1,1845 @@
+{
+  "day": "monday",
+  "n_stations": 35,
+  "total_capacity": 243,
+  "total_bikes_initial": 194,
+  "totals": {
+    "demand": 11.51,
+    "served": 8.09,
+    "unserved_no_station": 0.95,
+    "unserved_no_bike": 0,
+    "unserved_no_dock": 2.47,
+    "ride_km": 8.84,
+    "ride_minutes": 26.52
+  },
+  "hourly": [
+    {
+      "hour": 0,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 1,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 2,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 3,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 4,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 5,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 6,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 7,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 8,
+      "demand": 1,
+      "served": 1,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 1.89,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 9,
+      "demand": 1,
+      "served": 1,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 1.81,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 10,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 11,
+      "demand": 1,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 1,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 12,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 13,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 19
+    },
+    {
+      "hour": 14,
+      "demand": 1,
+      "served": 1,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 1.94,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 15,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 16,
+      "demand": 1,
+      "served": 0,
+      "unserved_no_station": 1,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 17,
+      "demand": 2,
+      "served": 2,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 2.19,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 18,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 19,
+      "demand": 1,
+      "served": 1,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 1.68,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 20,
+      "demand": 2,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 2,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 21,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 22,
+      "demand": 0,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 0,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    },
+    {
+      "hour": 23,
+      "demand": 1,
+      "served": 0,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 1,
+      "ride_km": 0.0,
+      "fill_ratio": 0.798,
+      "empty_stations": 0,
+      "full_stations": 18
+    }
+  ],
+  "model_view": {
+    "utilisation": 0.7908,
+    "borrowable_rate": 1.0,
+    "returnable_rate": 0.469,
+    "hours_observed": 24,
+    "unserved_no_arc": 0,
+    "unserved_outside_model": 0
+  },
+  "rebalancing": {
+    "operations": [
+      {
+        "bikes_moved": 0,
+        "bike_km": 0.0,
+        "truck_dispatches": 0,
+        "cost_eur": 0.0,
+        "hour": 4
+      },
+      {
+        "bikes_moved": 3,
+        "bike_km": 3.16,
+        "truck_dispatches": 1,
+        "cost_eur": 103.24,
+        "hour": 24
+      }
+    ],
+    "bikes_moved": 4.42,
+    "bike_km": 2.78,
+    "truck_dispatches": 1.05,
+    "cost_eur": 97.81
+  },
+  "stations": [
+    {
+      "station": "BS-897a8dca1a3ffff",
+      "lat": 46.21131722558726,
+      "lon": 6.1523080015167,
+      "capacity": 12,
+      "initial_bikes": 12,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 12
+    },
+    {
+      "station": "BS-897a8dcacd7ffff",
+      "lat": 46.20235759828306,
+      "lon": 6.153056647895562,
+      "capacity": 11,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dc123bffff",
+      "lat": 46.20255336075002,
+      "lon": 6.142942318053548,
+      "capacity": 10,
+      "initial_bikes": 10,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 10
+    },
+    {
+      "station": "BS-897a8dc1273ffff",
+      "lat": 46.20698448063075,
+      "lon": 6.145096858694698,
+      "capacity": 10,
+      "initial_bikes": 9,
+      "departures": 1,
+      "arrivals": 1,
+      "final_bikes": 9
+    },
+    {
+      "station": "BS-897a8dc127bffff",
+      "lat": 46.208428783083576,
+      "lon": 6.1475006886689005,
+      "capacity": 10,
+      "initial_bikes": 3,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 3
+    },
+    {
+      "station": "transfer_PT_25-3",
+      "lat": 46.20339788,
+      "lon": 6.15151934,
+      "capacity": 10,
+      "initial_bikes": 10,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 10
+    },
+    {
+      "station": "BS-897a8dc120bffff",
+      "lat": 46.20852679506198,
+      "lon": 6.142443498907109,
+      "capacity": 9,
+      "initial_bikes": 9,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 9
+    },
+    {
+      "station": "BS-897a8dc126fffff",
+      "lat": 46.20389988223916,
+      "lon": 6.1504034332047555,
+      "capacity": 9,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 1,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dc1277ffff",
+      "lat": 46.20399779562068,
+      "lon": 6.145346301939326,
+      "capacity": 9,
+      "initial_bikes": 9,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 9
+    },
+    {
+      "station": "BS-897a8dc1247ffff",
+      "lat": 46.20997107336448,
+      "lon": 6.144847406353609,
+      "capacity": 9,
+      "initial_bikes": 9,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 9
+    },
+    {
+      "station": "BS-897a8dc1223ffff",
+      "lat": 46.19956650519702,
+      "lon": 6.143191713984848,
+      "capacity": 9,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 1,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dc120fffff",
+      "lat": 46.20554012404232,
+      "lon": 6.142692913026572,
+      "capacity": 8,
+      "initial_bikes": 8,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 8
+    },
+    {
+      "station": "BS-897a8dcaccfffff",
+      "lat": 46.20225972351935,
+      "lon": 6.15811333421407,
+      "capacity": 8,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dcaccbffff",
+      "lat": 46.20524629393072,
+      "lon": 6.157863727229427,
+      "capacity": 7,
+      "initial_bikes": 7,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 7
+    },
+    {
+      "station": "BS-897a8dc12abffff",
+      "lat": 46.20265124845381,
+      "lon": 6.137884674627347,
+      "capacity": 7,
+      "initial_bikes": 7,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 7
+    },
+    {
+      "station": "BS-897a8dcac53ffff",
+      "lat": 46.20370406841964,
+      "lon": 6.160516738526988,
+      "capacity": 7,
+      "initial_bikes": 7,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 7
+    },
+    {
+      "station": "transfer_PT_25-2",
+      "lat": 46.2022912,
+      "lon": 6.15601091,
+      "capacity": 7,
+      "initial_bikes": 7,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 7
+    },
+    {
+      "station": "BS-897a8dcac57ffff",
+      "lat": 46.20071748402882,
+      "lon": 6.160766374592204,
+      "capacity": 6,
+      "initial_bikes": 6,
+      "departures": 1,
+      "arrivals": 1,
+      "final_bikes": 6
+    },
+    {
+      "station": "BS-897a8dcacc3ffff",
+      "lat": 46.20380197317223,
+      "lon": 6.155460245416849,
+      "capacity": 5,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dcac93ffff",
+      "lat": 46.1994686861078,
+      "lon": 6.148249105745643,
+      "capacity": 5,
+      "initial_bikes": 2,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 2
+    },
+    {
+      "station": "BS-897a8dc1267ffff",
+      "lat": 46.20245547735985,
+      "lon": 6.147999642492493,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dcac5bffff",
+      "lat": 46.20514835919167,
+      "lon": 6.162920027123126,
+      "capacity": 5,
+      "initial_bikes": 1,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 1
+    },
+    {
+      "station": "BS-897a8dcacc7ffff",
+      "lat": 46.20081532448962,
+      "lon": 6.155709814189103,
+      "capacity": 5,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dcac9bffff",
+      "lat": 46.20091316926199,
+      "lon": 6.150652934670258,
+      "capacity": 5,
+      "initial_bikes": 4,
+      "departures": 1,
+      "arrivals": 0,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dc1233ffff",
+      "lat": 46.201108871742555,
+      "lon": 6.140538218479875,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dca1b7ffff",
+      "lat": 46.20987303140201,
+      "lon": 6.1499044029444665,
+      "capacity": 5,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dca127ffff",
+      "lat": 46.20669056055972,
+      "lon": 6.160267093328597,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dcac43ffff",
+      "lat": 46.20216185306845,
+      "lon": 6.163169701399435,
+      "capacity": 5,
+      "initial_bikes": 1,
+      "departures": 0,
+      "arrivals": 1,
+      "final_bikes": 1
+    },
+    {
+      "station": "BS-897a8dc124fffff",
+      "lat": 46.21141529753134,
+      "lon": 6.147251198104818,
+      "capacity": 5,
+      "initial_bikes": 4,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 4
+    },
+    {
+      "station": "BS-897a8dc122fffff",
+      "lat": 46.1980241488193,
+      "lon": 6.145845161126405,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "BS-897a8dc1227ffff",
+      "lat": 46.196579557395275,
+      "lon": 6.143441100817268,
+      "capacity": 5,
+      "initial_bikes": 2,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 2
+    },
+    {
+      "station": "transfer_PT_12-5",
+      "lat": 46.2017192,
+      "lon": 6.15286681,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 0,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "transfer_PT_1-2",
+      "lat": 46.21188998,
+      "lon": 6.14964186,
+      "capacity": 5,
+      "initial_bikes": 2,
+      "departures": 1,
+      "arrivals": 0,
+      "final_bikes": 2
+    },
+    {
+      "station": "transfer_PT_25-4",
+      "lat": 46.20734569,
+      "lon": 6.14699183,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 1,
+      "arrivals": 0,
+      "final_bikes": 5
+    },
+    {
+      "station": "transfer_PT_6-1",
+      "lat": 46.20815387,
+      "lon": 6.14355128,
+      "capacity": 5,
+      "initial_bikes": 5,
+      "departures": 1,
+      "arrivals": 1,
+      "final_bikes": 5
+    }
+  ],
+  "date": "2024-08-23",
+  "method": {
+    "mode": "replay",
+    "description": "trace-driven simulation: observed trips replayed at their recorded local time and coordinates; totals are the mean over all replayed days, hourly detail is the median-demand day",
+    "demand_source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+    "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+    "n_days_replayed": 112,
+    "representative_date": "2024-08-23",
+    "behavior_parameters": {
+      "walk_catchment_m": 300,
+      "station_retry_count": 2,
+      "ride_detour_factor": 1.3,
+      "ride_speed_kmh": 20
+    }
+  },
+  "replay_ensemble": {
+    "n_days": 112,
+    "totals_mean": {
+      "demand": 11.51,
+      "served": 8.09,
+      "unserved_no_station": 0.95,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 2.47,
+      "ride_km": 8.84,
+      "ride_minutes": 26.52
+    },
+    "totals_std": {
+      "demand": 8.62,
+      "served": 6.37,
+      "unserved_no_station": 1.17,
+      "unserved_no_bike": 0.0,
+      "unserved_no_dock": 2.39,
+      "ride_km": 7.29,
+      "ride_minutes": 21.86
+    },
+    "per_day_totals": [
+      {
+        "date": "2024-06-06",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.37,
+        "ride_minutes": 4.1
+      },
+      {
+        "date": "2024-06-13",
+        "demand": 3,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 2.07,
+        "ride_minutes": 6.2
+      },
+      {
+        "date": "2024-06-14",
+        "demand": 1,
+        "served": 0,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      },
+      {
+        "date": "2024-06-21",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 2.23,
+        "ride_minutes": 6.7
+      },
+      {
+        "date": "2024-07-01",
+        "demand": 12,
+        "served": 8,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 6.62,
+        "ride_minutes": 19.9
+      },
+      {
+        "date": "2024-07-02",
+        "demand": 27,
+        "served": 22,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 20.86,
+        "ride_minutes": 62.6
+      },
+      {
+        "date": "2024-07-03",
+        "demand": 17,
+        "served": 12,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 13.38,
+        "ride_minutes": 40.1
+      },
+      {
+        "date": "2024-07-04",
+        "demand": 16,
+        "served": 12,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 11.51,
+        "ride_minutes": 34.5
+      },
+      {
+        "date": "2024-07-05",
+        "demand": 19,
+        "served": 14,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 15.36,
+        "ride_minutes": 46.1
+      },
+      {
+        "date": "2024-07-08",
+        "demand": 20,
+        "served": 15,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 14.02,
+        "ride_minutes": 42.0
+      },
+      {
+        "date": "2024-07-09",
+        "demand": 30,
+        "served": 23,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 6,
+        "ride_km": 29.11,
+        "ride_minutes": 87.3
+      },
+      {
+        "date": "2024-07-10",
+        "demand": 18,
+        "served": 12,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 12.83,
+        "ride_minutes": 38.5
+      },
+      {
+        "date": "2024-07-11",
+        "demand": 22,
+        "served": 17,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 18.83,
+        "ride_minutes": 56.5
+      },
+      {
+        "date": "2024-07-12",
+        "demand": 11,
+        "served": 9,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 10.29,
+        "ride_minutes": 30.9
+      },
+      {
+        "date": "2024-07-15",
+        "demand": 19,
+        "served": 11,
+        "unserved_no_station": 4,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 12.94,
+        "ride_minutes": 38.8
+      },
+      {
+        "date": "2024-07-16",
+        "demand": 14,
+        "served": 9,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 11.32,
+        "ride_minutes": 34.0
+      },
+      {
+        "date": "2024-07-17",
+        "demand": 21,
+        "served": 17,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 18.44,
+        "ride_minutes": 55.3
+      },
+      {
+        "date": "2024-07-18",
+        "demand": 27,
+        "served": 19,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 6,
+        "ride_km": 22.49,
+        "ride_minutes": 67.5
+      },
+      {
+        "date": "2024-07-19",
+        "demand": 20,
+        "served": 18,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 16.95,
+        "ride_minutes": 50.9
+      },
+      {
+        "date": "2024-07-22",
+        "demand": 16,
+        "served": 11,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 9.11,
+        "ride_minutes": 27.3
+      },
+      {
+        "date": "2024-07-23",
+        "demand": 12,
+        "served": 5,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 7.69,
+        "ride_minutes": 23.1
+      },
+      {
+        "date": "2024-07-24",
+        "demand": 23,
+        "served": 15,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 7,
+        "ride_km": 15.52,
+        "ride_minutes": 46.6
+      },
+      {
+        "date": "2024-07-25",
+        "demand": 23,
+        "served": 10,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 11,
+        "ride_km": 12.77,
+        "ride_minutes": 38.3
+      },
+      {
+        "date": "2024-07-26",
+        "demand": 19,
+        "served": 13,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 13.67,
+        "ride_minutes": 41.0
+      },
+      {
+        "date": "2024-07-29",
+        "demand": 26,
+        "served": 20,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 19.85,
+        "ride_minutes": 59.5
+      },
+      {
+        "date": "2024-07-30",
+        "demand": 23,
+        "served": 13,
+        "unserved_no_station": 4,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 6,
+        "ride_km": 15.53,
+        "ride_minutes": 46.6
+      },
+      {
+        "date": "2024-07-31",
+        "demand": 11,
+        "served": 8,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 7.28,
+        "ride_minutes": 21.8
+      },
+      {
+        "date": "2024-08-01",
+        "demand": 19,
+        "served": 14,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 15.3,
+        "ride_minutes": 45.9
+      },
+      {
+        "date": "2024-08-02",
+        "demand": 26,
+        "served": 18,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 6,
+        "ride_km": 16.41,
+        "ride_minutes": 49.2
+      },
+      {
+        "date": "2024-08-05",
+        "demand": 29,
+        "served": 19,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 9,
+        "ride_km": 23.84,
+        "ride_minutes": 71.5
+      },
+      {
+        "date": "2024-08-06",
+        "demand": 13,
+        "served": 10,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 12.66,
+        "ride_minutes": 38.0
+      },
+      {
+        "date": "2024-08-07",
+        "demand": 26,
+        "served": 21,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 26.46,
+        "ride_minutes": 79.4
+      },
+      {
+        "date": "2024-08-08",
+        "demand": 29,
+        "served": 17,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 9,
+        "ride_km": 21.33,
+        "ride_minutes": 64.0
+      },
+      {
+        "date": "2024-08-09",
+        "demand": 20,
+        "served": 15,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 17.43,
+        "ride_minutes": 52.3
+      },
+      {
+        "date": "2024-08-12",
+        "demand": 23,
+        "served": 16,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 18.42,
+        "ride_minutes": 55.3
+      },
+      {
+        "date": "2024-08-13",
+        "demand": 24,
+        "served": 18,
+        "unserved_no_station": 4,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 23.35,
+        "ride_minutes": 70.0
+      },
+      {
+        "date": "2024-08-14",
+        "demand": 26,
+        "served": 19,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 7,
+        "ride_km": 23.13,
+        "ride_minutes": 69.4
+      },
+      {
+        "date": "2024-08-15",
+        "demand": 14,
+        "served": 13,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 15.56,
+        "ride_minutes": 46.7
+      },
+      {
+        "date": "2024-08-16",
+        "demand": 15,
+        "served": 12,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 9.83,
+        "ride_minutes": 29.5
+      },
+      {
+        "date": "2024-08-19",
+        "demand": 19,
+        "served": 18,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 14.2,
+        "ride_minutes": 42.6
+      },
+      {
+        "date": "2024-08-20",
+        "demand": 27,
+        "served": 20,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 22.48,
+        "ride_minutes": 67.4
+      },
+      {
+        "date": "2024-08-21",
+        "demand": 22,
+        "served": 21,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 21.51,
+        "ride_minutes": 64.5
+      },
+      {
+        "date": "2024-08-22",
+        "demand": 11,
+        "served": 6,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 9.61,
+        "ride_minutes": 28.8
+      },
+      {
+        "date": "2024-08-23",
+        "demand": 11,
+        "served": 6,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 9.51,
+        "ride_minutes": 28.5
+      },
+      {
+        "date": "2024-08-26",
+        "demand": 12,
+        "served": 9,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 7.47,
+        "ride_minutes": 22.4
+      },
+      {
+        "date": "2024-08-27",
+        "demand": 15,
+        "served": 9,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 9.96,
+        "ride_minutes": 29.9
+      },
+      {
+        "date": "2024-08-28",
+        "demand": 18,
+        "served": 15,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 13.97,
+        "ride_minutes": 41.9
+      },
+      {
+        "date": "2024-08-29",
+        "demand": 18,
+        "served": 8,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 7,
+        "ride_km": 5.84,
+        "ride_minutes": 17.5
+      },
+      {
+        "date": "2024-08-30",
+        "demand": 22,
+        "served": 13,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 8,
+        "ride_km": 14.65,
+        "ride_minutes": 44.0
+      },
+      {
+        "date": "2024-09-02",
+        "demand": 21,
+        "served": 13,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 15.25,
+        "ride_minutes": 45.7
+      },
+      {
+        "date": "2024-09-03",
+        "demand": 14,
+        "served": 11,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 11.28,
+        "ride_minutes": 33.8
+      },
+      {
+        "date": "2024-09-04",
+        "demand": 11,
+        "served": 5,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 3.43,
+        "ride_minutes": 10.3
+      },
+      {
+        "date": "2024-09-05",
+        "demand": 3,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 1.33,
+        "ride_minutes": 4.0
+      },
+      {
+        "date": "2024-09-06",
+        "demand": 13,
+        "served": 7,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 5,
+        "ride_km": 8.2,
+        "ride_minutes": 24.6
+      },
+      {
+        "date": "2024-09-09",
+        "demand": 4,
+        "served": 4,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 8.0,
+        "ride_minutes": 24.0
+      },
+      {
+        "date": "2024-09-10",
+        "demand": 19,
+        "served": 11,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 6,
+        "ride_km": 11.48,
+        "ride_minutes": 34.4
+      },
+      {
+        "date": "2024-09-11",
+        "demand": 7,
+        "served": 6,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 4.5,
+        "ride_minutes": 13.5
+      },
+      {
+        "date": "2024-09-12",
+        "demand": 10,
+        "served": 10,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 13.15,
+        "ride_minutes": 39.5
+      },
+      {
+        "date": "2024-09-13",
+        "demand": 11,
+        "served": 7,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 5.57,
+        "ride_minutes": 16.7
+      },
+      {
+        "date": "2024-09-16",
+        "demand": 13,
+        "served": 10,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 10.39,
+        "ride_minutes": 31.2
+      },
+      {
+        "date": "2024-09-17",
+        "demand": 17,
+        "served": 13,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 19.83,
+        "ride_minutes": 59.5
+      },
+      {
+        "date": "2024-09-18",
+        "demand": 17,
+        "served": 11,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 15.31,
+        "ride_minutes": 45.9
+      },
+      {
+        "date": "2024-09-19",
+        "demand": 17,
+        "served": 12,
+        "unserved_no_station": 3,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 12.29,
+        "ride_minutes": 36.9
+      },
+      {
+        "date": "2024-09-20",
+        "demand": 13,
+        "served": 9,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 8.14,
+        "ride_minutes": 24.4
+      },
+      {
+        "date": "2024-09-23",
+        "demand": 9,
+        "served": 6,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 6.43,
+        "ride_minutes": 19.3
+      },
+      {
+        "date": "2024-09-24",
+        "demand": 7,
+        "served": 5,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 8.52,
+        "ride_minutes": 25.6
+      },
+      {
+        "date": "2024-09-25",
+        "demand": 14,
+        "served": 11,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 11.49,
+        "ride_minutes": 34.5
+      },
+      {
+        "date": "2024-09-26",
+        "demand": 3,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 3.33,
+        "ride_minutes": 10.0
+      },
+      {
+        "date": "2024-09-27",
+        "demand": 17,
+        "served": 8,
+        "unserved_no_station": 5,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 4,
+        "ride_km": 9.94,
+        "ride_minutes": 29.8
+      },
+      {
+        "date": "2024-09-30",
+        "demand": 14,
+        "served": 9,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 11.21,
+        "ride_minutes": 33.6
+      },
+      {
+        "date": "2024-10-01",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.89,
+        "ride_minutes": 5.7
+      },
+      {
+        "date": "2024-10-02",
+        "demand": 8,
+        "served": 4,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 5.33,
+        "ride_minutes": 16.0
+      },
+      {
+        "date": "2024-10-03",
+        "demand": 7,
+        "served": 5,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 6.33,
+        "ride_minutes": 19.0
+      },
+      {
+        "date": "2024-10-04",
+        "demand": 6,
+        "served": 5,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 4.77,
+        "ride_minutes": 14.3
+      },
+      {
+        "date": "2024-10-07",
+        "demand": 2,
+        "served": 0,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      },
+      {
+        "date": "2024-10-09",
+        "demand": 4,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 1.48,
+        "ride_minutes": 4.4
+      },
+      {
+        "date": "2024-10-10",
+        "demand": 8,
+        "served": 6,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 7.86,
+        "ride_minutes": 23.6
+      },
+      {
+        "date": "2024-10-11",
+        "demand": 6,
+        "served": 4,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 3.4,
+        "ride_minutes": 10.2
+      },
+      {
+        "date": "2024-10-14",
+        "demand": 2,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.96,
+        "ride_minutes": 5.9
+      },
+      {
+        "date": "2024-10-15",
+        "demand": 6,
+        "served": 4,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 5.78,
+        "ride_minutes": 17.3
+      },
+      {
+        "date": "2024-10-16",
+        "demand": 3,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 3.56,
+        "ride_minutes": 10.7
+      },
+      {
+        "date": "2024-10-17",
+        "demand": 4,
+        "served": 4,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 2.9,
+        "ride_minutes": 8.7
+      },
+      {
+        "date": "2024-10-18",
+        "demand": 9,
+        "served": 8,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 4.83,
+        "ride_minutes": 14.5
+      },
+      {
+        "date": "2024-10-21",
+        "demand": 5,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 3,
+        "ride_km": 0.16,
+        "ride_minutes": 0.5
+      },
+      {
+        "date": "2024-10-22",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 0.32,
+        "ride_minutes": 1.0
+      },
+      {
+        "date": "2024-10-23",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 1.73,
+        "ride_minutes": 5.2
+      },
+      {
+        "date": "2024-10-24",
+        "demand": 3,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 2.95,
+        "ride_minutes": 8.9
+      },
+      {
+        "date": "2024-10-25",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 0.71,
+        "ride_minutes": 2.1
+      },
+      {
+        "date": "2024-10-28",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.04,
+        "ride_minutes": 3.1
+      },
+      {
+        "date": "2024-10-29",
+        "demand": 4,
+        "served": 2,
+        "unserved_no_station": 2,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 2.27,
+        "ride_minutes": 6.8
+      },
+      {
+        "date": "2024-10-30",
+        "demand": 1,
+        "served": 0,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      },
+      {
+        "date": "2024-10-31",
+        "demand": 5,
+        "served": 4,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 4.47,
+        "ride_minutes": 13.4
+      },
+      {
+        "date": "2024-11-01",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 0.2,
+        "ride_minutes": 0.6
+      },
+      {
+        "date": "2024-11-04",
+        "demand": 2,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.27,
+        "ride_minutes": 3.8
+      },
+      {
+        "date": "2024-11-05",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.03,
+        "ride_minutes": 3.1
+      },
+      {
+        "date": "2024-11-06",
+        "demand": 2,
+        "served": 0,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      },
+      {
+        "date": "2024-11-07",
+        "demand": 2,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.14,
+        "ride_minutes": 3.4
+      },
+      {
+        "date": "2024-11-08",
+        "demand": 7,
+        "served": 7,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 5.81,
+        "ride_minutes": 17.4
+      },
+      {
+        "date": "2024-11-11",
+        "demand": 2,
+        "served": 0,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      },
+      {
+        "date": "2024-11-14",
+        "demand": 3,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 2.17,
+        "ride_minutes": 6.5
+      },
+      {
+        "date": "2024-11-15",
+        "demand": 5,
+        "served": 5,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 5.94,
+        "ride_minutes": 17.8
+      },
+      {
+        "date": "2024-11-18",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 0.43,
+        "ride_minutes": 1.3
+      },
+      {
+        "date": "2024-11-19",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.39,
+        "ride_minutes": 4.2
+      },
+      {
+        "date": "2024-11-20",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 0.71,
+        "ride_minutes": 2.1
+      },
+      {
+        "date": "2024-11-22",
+        "demand": 2,
+        "served": 1,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.19,
+        "ride_minutes": 3.6
+      },
+      {
+        "date": "2024-11-25",
+        "demand": 5,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 2,
+        "ride_km": 2.57,
+        "ride_minutes": 7.7
+      },
+      {
+        "date": "2024-11-26",
+        "demand": 4,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 3.48,
+        "ride_minutes": 10.5
+      },
+      {
+        "date": "2024-11-27",
+        "demand": 4,
+        "served": 2,
+        "unserved_no_station": 1,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 1.49,
+        "ride_minutes": 4.5
+      },
+      {
+        "date": "2024-11-28",
+        "demand": 1,
+        "served": 1,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.15,
+        "ride_minutes": 3.5
+      },
+      {
+        "date": "2024-11-29",
+        "demand": 3,
+        "served": 2,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 0.77,
+        "ride_minutes": 2.3
+      },
+      {
+        "date": "2024-12-02",
+        "demand": 3,
+        "served": 3,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 0,
+        "ride_km": 1.69,
+        "ride_minutes": 5.1
+      },
+      {
+        "date": "2024-12-04",
+        "demand": 1,
+        "served": 0,
+        "unserved_no_station": 0,
+        "unserved_no_bike": 0,
+        "unserved_no_dock": 1,
+        "ride_km": 0.0,
+        "ride_minutes": 0.0
+      }
+    ]
+  }
+}

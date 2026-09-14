@@ -1,0 +1,24 @@
+{
+  "source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+  "n_trips": 1658,
+  "date_range": [
+    "2024-06-06",
+    "2024-12-04"
+  ],
+  "days_observed": {
+    "saturday": 21,
+    "weekday": 112,
+    "sunday": 18
+  },
+  "trips_per_day": {
+    "monday": 11.51,
+    "saturday": 9.48,
+    "sunday": 9.44
+  },
+  "distance_km": {
+    "median": 0.84,
+    "mean": 0.84
+  },
+  "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+  "note": "Measured volumes from the operator sample. These are the simulator's base volumes; larger volumes are explicit demand-growth hypotheses passed as --scale."
+}
