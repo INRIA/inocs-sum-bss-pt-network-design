@@ -1,0 +1,28 @@
+{
+  "id": "budget_060k",
+  "schema": "scenario-v3",
+  "family": "budget",
+  "role": "card",
+  "card": "essential",
+  "title": "Essential plan",
+  "axis_label": "60 000 €",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table 2 budget 60 kEUR (lower end); Fig. 9, 12a, 14",
+  "audience_pitch": "The city invests the minimum of the paper's range -- who is left out?",
+  "narrative": "Sixty thousand euros is the smallest budget the study examines. The optimiser has to triage: it buys the stations and docks that carry the most demand and puts them where cycling and public transport reinforce each other, leaving the thinner corridors uncovered. Read this plan for what a minimal investment cannot reach -- which neighbourhoods stay outside the network, and how much of the potential demand goes unserved.",
+  "model_parameters": {
+    "total_budget": 60000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  }
+}

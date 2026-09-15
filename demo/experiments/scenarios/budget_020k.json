@@ -1,0 +1,25 @@
+{
+  "id": "budget_020k",
+  "schema": "scenario-v3",
+  "family": "budget",
+  "role": "compare",
+  "title": "Starter budget",
+  "axis_label": "20 000 €",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": true,
+  "paper_reference": "Below Table 2's budget range; added to locate the PT-integration threshold of Fig. 14",
+  "model_parameters": {
+    "total_budget": 20000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  }
+}

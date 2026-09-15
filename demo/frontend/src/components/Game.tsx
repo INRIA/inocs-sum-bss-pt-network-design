@@ -1,29 +1,29 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Panel, { type PanelState } from './Panel';
-import ScreenA from './ScreenA';
-import ScreenB from './ScreenB';
-import ScreenC from './ScreenC';
-import ScreenD from './ScreenD';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Tabs from './Tabs';
+import Step1 from './Step1';
+import Step2 from './Step2';
+import Step3 from './Step3';
+import Step4 from './Step4';
+import Step5 from './Step5';
 import MapPanel from './MapPanel';
 import Sheet, { type SheetKind } from './Sheet';
 import type { MapKind } from './CityMap';
 import { makeT } from '../lib/i18n';
-import { scenName } from '../lib/scen';
+import { cardsOf } from '../lib/families';
 import { isMobile, useBottomSheet } from '../lib/useBottomSheet';
-import { fmtEur, fmtInt } from '../lib/format';
 import type { GameData, Lang, LayerKey, Layers, Weekday } from '../lib/types';
 
 /**
- * The whole game is one island holding one GameState (ux-plan section 5, layout per v2).
+ * The whole demo is one island holding one state (plan.md section 7).
  *
- * Desktop: a fixed viewport that never scrolls — the left column is a step accordion, the right
- * column is ONE map instance mounted here and never unmounted, so its pan/zoom camera and layer
- * state survive every step change. Below 980px the same markup becomes a full-bleed map with the
- * accordion as a draggable bottom sheet.
+ * Desktop: a fixed viewport that never scrolls — the five steps are header tabs, the left column
+ * holds only the current step, and the right column is ONE map instance mounted here and never
+ * unmounted, so its pan/zoom camera and layer state survive every step change. Below 980px the
+ * same markup becomes a full-bleed map with the step content as a draggable bottom sheet.
  *
- * Language switching re-renders in place: it never resets screen, scenario, day, hour or layers.
+ * Language switching re-renders in place: it never resets step, plan, day, hour, layers or period.
  */
-const ALL_ON: Layers = {
+const DEFAULT_LAYERS: Layers = {
   stops: true,
   tram: true,
   bus: true,
@@ -32,21 +32,27 @@ const ALL_ON: Layers = {
   bike: true,
   transfer: true,
   regular: true,
+  // the model's two per-period read-outs: docks on by default, bikes in stock off (plan.md section 7)
+  capacity: true,
+  inventory: false,
 };
 
 export default function Game({ data }: { data: GameData }) {
   const [lang, setLang] = useState<Lang>('en');
-  const [screen, setScreen] = useState(0);
+  const [step, setStep] = useState(0);
   const [visited, setVisited] = useState<number[]>([0]);
   const [weekday, setWeekday] = useState<Weekday>('mon');
   const [hour, setHour] = useState(8);
-  const [layers, setLayers] = useState<Layers>(ALL_ON);
+  const [layers, setLayers] = useState<Layers>(DEFAULT_LAYERS);
   const [scenario, setScenario] = useState<string | null>(null);
   const [chosen, setChosen] = useState<string | null>(null);
-  const [simDay, setSimDay] = useState<string>(data.scenarios[0]?.dayIds[0] ?? 'monday');
+  const [period, setPeriod] = useState(0);
   const [dropKey, setDropKey] = useState(0);
   const [sheet, setSheet] = useState<SheetKind>(null);
   const [playing, setPlaying] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
+  const [howOpen, setHowOpen] = useState(false);
+  const [openQs, setOpenQs] = useState<number[]>([]);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const sheetRef = useRef<HTMLElement | null>(null);
@@ -90,36 +96,37 @@ export default function Game({ data }: { data: GameData }) {
   const go = useCallback(
     (n: number) => {
       stopPlay();
-      setScreen(n);
+      setStep(n);
       setVisited((v) => (v.includes(n) ? v : [...v, n]));
-      // results are reading material, the other steps keep the map in view
-      if (isMobile()) snapTo(n === 3 ? 'full' : 'half');
+      // results and comparisons are reading material, the other steps keep the map in view
+      if (isMobile()) snapTo(n >= 3 ? 'full' : 'half');
     },
     [stopPlay, snapTo]
   );
 
-  /** Step C: selecting a plan IS building it (v2 section 3) — no separate confirmation. */
+  /** Step 3: selecting a plan IS building it (v2 section 3) — no separate confirmation. */
   const build = useCallback(
     (id: string) => {
-      const sc = data.scenarios.find((s) => s.id === id);
-      if (!sc) return;
+      if (!data.scenarios.some((s) => s.id === id)) return;
       setScenario(id);
-      // land on the day the player already has intuition for (ux-plan section 5.3)
-      const wanted = weekday === 'sun' ? 'sunday' : 'monday';
-      setSimDay(sc.dayIds.includes(wanted) ? wanted : sc.dayIds[0]);
       setChosen(id);
+      setPeriod(0);
       setDropKey((k) => k + 1);
       go(3);
     },
-    [data.scenarios, weekday, go]
+    [data.scenarios, go]
   );
 
   const switchScenario = useCallback((id: string) => {
     setScenario(id);
-    setDropKey((k) => k + 1); // stations replay their drop-in; day and reading position are untouched
+    setDropKey((k) => k + 1); // stations replay their drop-in; reading position is untouched
   }, []);
 
   const toggleLayer = useCallback((k: LayerKey) => setLayers((l) => ({ ...l, [k]: !l[k] })), []);
+
+  const toggleQ = useCallback((n: number) => {
+    setOpenQs((q) => (q.includes(n) ? q.filter((x) => x !== n) : [...q, n]));
+  }, []);
 
   // presentation clicker: -> advances, <- goes back, space plays the day, Esc closes a modal
   useEffect(() => {
@@ -130,43 +137,21 @@ export default function Game({ data }: { data: GameData }) {
       }
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
-      if (e.key === 'ArrowRight') {
-        if (screen === 0) go(1);
-        else if (screen === 1) go(2);
-        else if (screen === 2 && scenario) build(scenario);
-        else if (screen === 2 && visited.includes(3)) go(3);
-      }
-      if (e.key === 'ArrowLeft' && screen > 0) go(screen - 1);
-      if (e.key === ' ' && (screen === 1 || screen === 2)) {
+      if (e.key === 'ArrowRight' && step < 4) go(step + 1);
+      if (e.key === 'ArrowLeft' && step > 0) go(step - 1);
+      if (e.key === ' ' && step === 1) {
         e.preventDefault();
         togglePlay();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [screen, scenario, visited, go, build, togglePlay]);
+  }, [step, go, togglePlay]);
 
-  const shown = data.scenarios.find((s) => s.id === (scenario ?? chosen)) ?? data.scenarios[0];
-  const kind: MapKind = screen === 0 ? 'city' : screen === 3 ? 'network' : 'live';
-
-  const stateOf = (i: number): PanelState => (screen === i ? 'open' : visited.includes(i) ? 'summary' : 'locked');
-  const tryGo = (i: number) => {
-    if (i !== screen && visited.includes(i)) go(i);
-  };
-
-  // one-line conclusions carried by the collapsed rows (v2 section 3) — numbers stay data-bound
-  const summaries = [
-    screen !== 0 && visited.includes(0) ? t('sum.a') : '',
-    screen > 1
-      ? t(weekday === 'mon' ? 'sum.b.mon' : 'sum.b.sun', {
-          n: fmtInt(data.city.ptBoardings[weekday === 'mon' ? 'monday' : 'sunday'] ?? 0),
-        })
-      : '',
-    screen > 2 && chosen && shown ? t('sum.c', { n: scenName(shown, t), b: fmtEur(shown.params.budget) }) : '',
-    '',
-  ];
-
-  const steps = ['step.a', 'step.b', 'step.c', 'step.d'];
+  const solvedCards = cardsOf(data.scenarios).filter((s) => s.hasResults);
+  const shown =
+    data.scenarios.find((s) => s.id === (scenario ?? chosen)) ?? solvedCards[0] ?? data.scenarios.find((s) => s.hasResults);
+  const kind: MapKind = step === 0 ? 'city' : step >= 3 && shown?.hasResults ? 'network' : 'live';
 
   return (
     <div className="app">
@@ -178,6 +163,15 @@ export default function Game({ data }: { data: GameData }) {
             </span>
           </span>
           <span className="team">INOCS · Inria</span>
+          <button
+            className="switch"
+            aria-pressed={advanced}
+            title={t('adv.hint')}
+            onClick={() => setAdvanced((a) => !a)}
+          >
+            <span className="tog" />
+            <span>{t('adv.label')}</span>
+          </button>
           <span className="lang" role="group" aria-label={t('lang.aria')}>
             <button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
               EN
@@ -187,74 +181,61 @@ export default function Game({ data }: { data: GameData }) {
             </button>
           </span>
         </div>
-        <nav className="stepper" aria-label={t('nav.aria')}>
-          {steps.map((key, i) => (
-            <Fragment key={key}>
-              {i > 0 && <span className={`tie${screen > i - 1 ? ' done' : ''}`} />}
-              <button
-                className={`stop${i === screen ? ' cur' : visited.includes(i) ? ' done' : ''}`}
-                disabled={!visited.includes(i)}
-                onClick={() => tryGo(i)}
-              >
-                <span className="dot" />
-                <span className="lbl">{t(key)}</span>
-              </button>
-            </Fragment>
-          ))}
-        </nav>
       </header>
+      <Tabs step={step} visited={visited} onGo={go} t={t} />
 
       <main className="cols">
         <section className="leftcol" ref={sheetRef}>
           <div className="sheethandle" ref={handleRef}>
             <span />
           </div>
-
-          <Panel letter="A" title={t('p.a')} summary={summaries[0]} state={stateOf(0)} bodyClass="a" onOpen={() => tryGo(0)}>
-            <ScreenA data={data} t={t} onNext={() => go(1)} />
-          </Panel>
-
-          <Panel letter="B" title={t('p.b')} summary={summaries[1]} state={stateOf(1)} bodyClass="b" onOpen={() => tryGo(1)}>
-            <ScreenB
-              data={data}
-              t={t}
-              lang={lang}
-              weekday={weekday}
-              hour={hour}
-              playing={playing}
-              onWeekday={setWeekday}
-              onHour={setHour}
-              onTogglePlay={togglePlay}
-              onNext={() => go(2)}
-            />
-          </Panel>
-
-          <Panel letter="C" title={t('p.c')} summary={summaries[2]} state={stateOf(2)} bodyClass="c" onOpen={() => tryGo(2)}>
-            <ScreenC
-              data={data}
-              t={t}
-              lang={lang}
-              weekday={weekday}
-              selected={scenario}
-              onBuild={build}
-              onSheet={setSheet}
-            />
-          </Panel>
-
-          <Panel letter="D" title={t('p.d')} summary={summaries[3]} state={stateOf(3)} bodyClass="d" onOpen={() => tryGo(3)}>
-            <ScreenD
-              data={data}
-              t={t}
-              lang={lang}
-              scenario={scenario ?? chosen}
-              chosen={chosen}
-              simDay={simDay}
-              onScenario={switchScenario}
-              onSimDay={setSimDay}
-              onSheet={setSheet}
-              onBack={() => go(2)}
-            />
-          </Panel>
+          <article className={`stepcard s${step + 1}`}>
+            {step === 0 && <Step1 data={data} t={t} onNext={() => go(1)} />}
+            {step === 1 && (
+              <Step2
+                data={data}
+                t={t}
+                lang={lang}
+                weekday={weekday}
+                hour={hour}
+                playing={playing}
+                onWeekday={setWeekday}
+                onHour={setHour}
+                onTogglePlay={togglePlay}
+                onNext={() => go(2)}
+              />
+            )}
+            {step === 2 && (
+              <Step3 data={data} t={t} lang={lang} selected={chosen} onBuild={build} onSheet={setSheet} />
+            )}
+            {step === 3 && (
+              <Step4
+                data={data}
+                t={t}
+                lang={lang}
+                scenario={shown}
+                chosen={chosen}
+                advanced={advanced}
+                howOpen={howOpen}
+                onHowToggle={() => setHowOpen((o) => !o)}
+                onScenario={switchScenario}
+                onSheet={setSheet}
+                onNext={() => go(4)}
+                onBack={() => go(2)}
+              />
+            )}
+            {step === 4 && (
+              <Step5
+                data={data}
+                t={t}
+                lang={lang}
+                advanced={advanced}
+                open={openQs}
+                onToggle={toggleQ}
+                onRestart={() => go(0)}
+              />
+            )}
+          </article>
         </section>
 
         <aside className="rightcol">
@@ -268,9 +249,9 @@ export default function Game({ data }: { data: GameData }) {
             layers={layers}
             onToggleLayer={toggleLayer}
             scenario={shown}
-            day={simDay}
+            period={period}
+            onPeriod={setPeriod}
             dropKey={dropKey}
-            onSheet={setSheet}
           />
           <div className="credit">
             <span dangerouslySetInnerHTML={{ __html: t('credit') }} /> · <span className="mono">←→</span>{' '}
@@ -279,15 +260,7 @@ export default function Game({ data }: { data: GameData }) {
         </aside>
       </main>
 
-      <Sheet
-        sheet={sheet}
-        onClose={() => setSheet(null)}
-        data={data}
-        scenarioId={scenario ?? chosen}
-        day={simDay}
-        t={t}
-        lang={lang}
-      />
+      <Sheet sheet={sheet} onClose={() => setSheet(null)} data={data} current={shown} t={t} lang={lang} />
     </div>
   );
 }

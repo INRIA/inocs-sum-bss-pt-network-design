@@ -1,0 +1,25 @@
+{
+  "id": "eps_001",
+  "schema": "scenario-v3",
+  "family": "epsilon",
+  "role": "compare",
+  "title": "Minimal dispatch penalty",
+  "axis_label": "ε = 0.01",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table 3 aggregates epsilon 0.01; Fig. 6 -- the paper's tractability valley, this run may hit the model's 3600 s time limit",
+  "model_parameters": {
+    "total_budget": 80000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.01,
+    "solve_mode": "integrated"
+  }
+}

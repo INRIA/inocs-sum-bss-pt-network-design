@@ -219,169 +219,147 @@ button {
   background: var(--green);
   color: #23310a;
 }
-.stepper {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  justify-content: center;
-  min-width: 0;
-}
-.stop {
+.switch {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: rgba(255, 255, 255, 0.62);
-  padding: 4px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.stop .dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  border: 2.5px solid rgba(255, 255, 255, 0.45);
-  background: transparent;
-  flex: none;
-  transition: all 0.25s;
-}
-.stop .lbl {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.03em;
-}
-.stop.done {
-  color: #fff;
-}
-.stop.done .dot {
-  border-color: #fff;
-  background: #fff;
-}
-.stop.cur {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.13);
-}
-.stop.cur .dot {
-  border-color: var(--green);
-  background: var(--green);
-  box-shadow: 0 0 0 3px rgba(152, 195, 58, 0.3);
-}
-.stop[disabled] {
-  cursor: default;
-}
-.tie {
-  width: clamp(10px, 2vw, 30px);
-  height: 2.5px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.28);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #cfddee;
+  white-space: nowrap;
   flex: none;
 }
-.tie.done {
-  background: #fff;
+.switch .tog {
+  width: 32px;
+  height: 18px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.28);
+  position: relative;
+  transition: background 0.15s;
+  flex: none;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .stop.cur .dot {
-    animation: pulse 2.2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    50% {
-      box-shadow: 0 0 0 6px rgba(152, 195, 58, 0.14);
-    }
-  }
+.switch .tog::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+.switch[aria-pressed='true'] {
+  color: #fff;
+}
+.switch[aria-pressed='true'] .tog {
+  background: var(--green);
+}
+.switch[aria-pressed='true'] .tog::after {
+  left: 16px;
 }
 
-/* ---------- left accordion ---------- */
-.panel {
+/* ---------- header tabs: the five steps (plan.md section 7) ---------- */
+.tabs {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px 18px 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'n t' 's s';
+  column-gap: 8px;
+  align-items: center;
+  text-align: left;
+  padding: 7px 10px 8px;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 3px solid transparent;
+  color: var(--ink-2);
+  min-width: 0;
+}
+.tab:hover {
+  background: var(--tint-2);
+}
+.tab .n {
+  grid-area: n;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--tint);
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  font: 600 11px 'Spline Sans Mono', monospace;
+  flex: none;
+}
+.tab .t {
+  grid-area: t;
+  font: 700 13.5px 'Bricolage Grotesque', 'Public Sans', sans-serif;
+  line-height: 1.15;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab .s {
+  grid-area: s;
+  display: none;
+  font-size: 11.5px;
+  color: var(--green-ink);
+  margin-top: 5px;
+  line-height: 1.3;
+}
+.tab.done .n {
+  background: var(--green);
+  color: #22300a;
+}
+.tab.cur {
+  background: var(--green-tint);
+  border-bottom-color: var(--green-ink);
+}
+.tab.cur .n {
+  background: var(--green-ink);
+  color: #fff;
+}
+.tab.cur .t {
+  color: var(--green-ink);
+}
+.tab.cur .s {
+  display: block;
+}
+
+/* ---------- left column: only the current step (plan.md section 7) ---------- */
+.stepcard {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r);
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-}
-.panel.open {
   flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 16px 14px;
 }
-.phead {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  text-align: left;
-  width: 100%;
-  flex: none;
-}
-.panel.summary .phead {
-  cursor: pointer;
-}
-.panel.summary .phead:hover {
-  background: var(--tint-2);
-}
-.panel.locked {
-  opacity: 0.5;
-}
-.panel.locked .phead {
-  cursor: default;
-}
-.pdot {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 12px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  background: var(--tint);
-  color: var(--ink-2);
-  border: 2px solid var(--line);
-}
-.panel.open .pdot {
-  background: var(--green);
-  border-color: var(--green);
-  color: #22300a;
-}
-.panel.summary .pdot {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
-}
-.plbl {
-  font-weight: 700;
-  font-size: 13.5px;
-  color: var(--ink);
-  white-space: nowrap;
-}
-.psum {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--ink-2);
-  text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.panel.summary .psum {
-  color: var(--green-ink);
-  font-weight: 600;
-}
-.pbody {
+.sheethandle {
   display: none;
+  justify-content: center;
+  padding: 9px 0 5px;
+  cursor: grab;
+  touch-action: none;
+  flex: none;
 }
-.panel.open .phead {
-  border-bottom: 1px solid var(--line-2);
-}
-.panel.open .pbody {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: auto; /* safety valve only — v2 section 9.1 */
-  padding: 4px 16px 13px;
+.sheethandle span {
+  width: 42px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--line);
 }
 
 /* ---------- shared type & controls ---------- */
@@ -466,22 +444,9 @@ h2 {
   color: var(--ink-2);
   margin: 8px 0 10px;
 }
-.pbody > .cta {
+.stepcard > .cta {
   margin-top: auto;
 }
-.chip {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: var(--blue-tint);
-  color: var(--blue);
-  border: 1px dashed var(--blue);
-  border-radius: 99px;
-  padding: 1.5px 7px;
-  white-space: nowrap;
-}
-/* dashed = provisional. green-dashed = preliminary result; blue-dashed = labelled hypothesis */
 .provlink {
   display: inline-flex;
   align-items: center;
@@ -506,12 +471,10 @@ h2 {
 /* ---------- A: dilemmas ---------- */
 .qgrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 12px;
-  flex: 1;
-  min-height: 0;
-  align-content: stretch;
+  flex: none;
 }
 .q {
   padding: 11px 14px;
@@ -740,14 +703,7 @@ input[type='range'] {
   color: #22300a;
 }
 
-/* ---------- D: results ---------- */
-.drow1 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-  flex-wrap: wrap;
-}
+/* ---------- steps 4 and 5: tiles, charts, advanced tables ---------- */
 .pillrow {
   display: flex;
   gap: 6px;
@@ -838,189 +794,224 @@ input[type='range'] {
   background: var(--blue);
   color: #fff;
 }
-.seg button[aria-pressed='true'] .chip {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.7);
+
+/* step 1 / step 5 question cards */
+.q .ans {
+  margin-top: 8px;
+  font: 500 11px 'Spline Sans Mono', monospace;
+  color: var(--green-ink);
 }
-/* Step D's day switch: four days in a 2x2 block instead of one long row, so it stays narrow
-   next to the plan pills. Label over chip keeps each cell as wide as its longest word. */
-.seg.daygrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px;
-}
-.seg.daygrid button {
-  flex-direction: column;
-  gap: 1px;
-  padding: 4px 9px;
-  font-size: 11px;
-}
-.seg.daygrid .chip {
-  font-size: 8.5px;
-  padding: 0.5px 5px;
-}
-/* Sibling of .hyp: same one-line explanation slot, but this day is modelled, not hypothetical,
-   so it gets the neutral solid border rather than the blue dashed hypothesis frame. */
-.daynote {
-  background: var(--tint);
+.qcard {
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 7px 11px;
-  font-size: 11.5px;
-  margin-top: 8px;
-  color: var(--ink-2);
-  line-height: 1.4;
-}
-.daynote b {
-  color: var(--ink);
-}
-.hyp {
-  background: var(--blue-tint);
-  border: 1px dashed var(--blue);
-  border-radius: 10px;
-  padding: 7px 11px;
-  font-size: 11.5px;
-  margin-top: 8px;
-  color: var(--ink);
-  line-height: 1.4;
-}
-.hyp b {
-  color: var(--blue);
-}
-.dsplit {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 9px;
-  margin-top: 8px;
-  flex: 1;
-  min-height: 0;
-}
-.dleft,
-.dright {
+  border-radius: 12px;
+  padding: 11px 14px;
+  background: var(--tint-2);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-height: 0;
+  gap: 6px;
+  min-width: 0;
 }
-.dright .chartcard {
+.qcard.open {
+  border-color: var(--blue);
+  background: var(--blue-tint);
+}
+.qcard .no {
+  font: 600 10px 'Spline Sans Mono', monospace;
+  letter-spacing: 0.1em;
+  color: var(--blue);
+}
+.qcard h3 {
+  font-size: 14.5px;
+}
+.qcard .concl {
+  font-size: 12.5px;
+  color: var(--ink);
   flex: 1;
+  margin: 0;
 }
-.dualhero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.hero {
-  text-align: center;
-  padding: 8px 12px;
-}
-.hero .lab {
-  font-size: 10px;
+.qcard .proof {
+  align-self: flex-start;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 99px;
+  padding: 4px 10px;
+}
+.qcard.open .proof {
+  background: var(--blue);
+  color: #fff;
+}
+.qcard .pb,
+.pend {
+  font: 500 10px 'Spline Sans Mono', monospace;
+  color: var(--red-ink);
+  border: 1px dashed var(--red-ink);
+  border-radius: 99px;
+  padding: 1px 7px;
+  align-self: flex-start;
+}
+.pend {
+  display: inline-block;
+  margin-top: 6px;
+}
+
+/* step 2: the model's three periods */
+.modelbox {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--tint-2);
+  padding: 10px 13px;
+  margin-top: 10px;
+}
+.periods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 6px;
+  margin: 8px 0;
+}
+.per {
+  border-radius: 9px;
+  padding: 7px 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.per b {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--blue);
+}
+.per span {
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+/* step 3 extras */
+.legacychip {
+  font: 500 9.5px 'Spline Sans Mono', monospace;
+  border: 1px dashed var(--ink-2);
+  border-radius: 99px;
+  padding: 1px 7px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  margin-left: 6px;
+}
+.pickpending {
+  margin-top: auto;
+  text-align: center;
+  border: 1px dashed var(--red-ink);
+  color: var(--red-ink);
+  border-radius: 9px;
+  padding: 8px;
+  font: 500 12px 'Spline Sans Mono', monospace;
+}
+
+/* step 4 tiles */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.tile {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  min-width: 0;
+}
+.tile .lab {
+  font: 600 10px 'Spline Sans Mono', monospace;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-2);
 }
-.hero .big {
+.tile .big {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(22px, 3vh + 5px, 38px);
-  font-weight: 800;
+  font-size: clamp(20px, 2.6vh + 6px, 30px);
   line-height: 1.05;
-  letter-spacing: -0.015em;
-  margin-top: 2px;
+  font-weight: 800;
+  color: var(--blue);
+  margin: 5px 0 4px;
   font-variant-numeric: tabular-nums;
 }
-.hero .sub {
+.tile .big small {
+  font: 600 13px 'Spline Sans Mono', monospace;
   color: var(--ink-2);
-  font-size: 10.5px;
-  margin-top: 3px;
+  margin-left: 4px;
+}
+.tile .sub {
+  font-size: 11px;
+  color: var(--ink-2);
   line-height: 1.35;
 }
-.hero.served .big {
-  color: var(--green-ink);
-}
-.hero.money {
-  border: 1.5px solid var(--red);
-}
-.hero.money .big {
-  color: var(--red);
-}
-.cov {
-  height: 7px;
-  border-radius: 99px;
-  background: var(--red-tint);
-  overflow: hidden;
-  margin: 6px 0 4px;
-}
-.cov span {
+.tile .how {
   display: block;
-  height: 100%;
-  background: var(--green);
+  margin-top: 6px;
+  font-size: 10.5px;
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: left;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+.two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+.ghostbtn.small {
+  padding: 6px 11px;
+  font-size: 12px;
   border-radius: 99px;
 }
-.kgrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  flex: 1;
-  min-height: 0;
-  align-content: stretch;
+.ghostbtn.on {
+  border-color: var(--blue);
 }
-.kpi {
-  padding: 8px 10px 6px;
-  overflow: auto; /* last-resort safety valve; the sizes below keep 1366x768 scroll-free */
+.howbox {
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 13px;
+  background: var(--tint-2);
 }
-.kpi h3 {
-  font-size: 9.5px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--blue);
-  font-weight: 700;
-  margin: -8px -10px 5px;
-  padding: 4px 10px;
-  border-radius: 10px 10px 0 0;
-}
-.kv {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 11px;
-  padding: 1.5px 0;
+.howbox ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12.5px;
   color: var(--ink-2);
 }
-.kv b {
-  font-family: 'Spline Sans Mono', monospace;
-  font-weight: 600;
+.howbox li {
+  margin-bottom: 5px;
+  list-style: disc;
+}
+.howbox li b {
   color: var(--ink);
-  font-size: 11px;
-  text-align: right;
-  white-space: nowrap;
-}
-.kv b.neg {
-  color: var(--red-ink);
-}
-.kv b.pos {
-  color: var(--green-ink);
-}
-.kv b.warn2 {
-  color: var(--blue);
 }
 .chartcard {
   padding: 9px 12px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 .chartcard h3 {
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--blue);
 }
 .chartcard .sub {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--ink-2);
   line-height: 1.3;
+  margin-bottom: 2px;
 }
 .legend {
   display: flex;
@@ -1042,51 +1033,182 @@ input[type='range'] {
   border-radius: 3px;
   flex: none;
 }
-.chartcard svg {
-  flex: 1;
-  min-height: 0;
+.chartcard svg,
+.qblock svg,
+.two svg {
   width: 100%;
+  height: auto;
 }
-.readout {
-  font-size: 10.5px;
-  color: var(--ink-2);
-  min-height: 14px;
-  margin-top: 2px;
-  font-family: 'Spline Sans Mono', monospace;
+.reading {
+  font-size: 12.5px;
+  margin-top: 6px;
+  padding: 7px 10px;
+  border-left: 3px solid var(--green);
+  background: var(--green-tint);
+  border-radius: 0 8px 8px 0;
 }
 svg .grid {
+  stroke: var(--line-2);
+  stroke-width: 0.8;
+}
+svg .axis {
   stroke: var(--line);
-  stroke-width: 0.7;
+  stroke-width: 1;
 }
 svg .axlbl {
-  font: 500 9px 'Public Sans', sans-serif;
+  font: 500 9px 'Spline Sans Mono', monospace;
   fill: var(--ink-2);
 }
-.rangenote {
-  margin: 8px 0 0;
-  font-size: 10.5px;
-  color: var(--ink-2);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--red);
-  border-radius: 0 10px 10px 0;
-  padding: 5px 10px;
-  line-height: 1.35;
+svg .dl {
+  font: 500 9.5px 'Spline Sans Mono', monospace;
+  fill: var(--ink);
 }
-.rangenote b {
-  color: var(--red-ink);
+.kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  padding: 1.5px 0;
+  color: var(--ink-2);
+}
+.kv b {
   font-family: 'Spline Sans Mono', monospace;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 11px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* the advanced block (header switch) */
+.advbox {
+  margin-top: 10px;
+  border: 1px dashed var(--green-ink);
+  border-radius: 12px;
+  padding: 10px 13px;
+  background: var(--green-tint);
+}
+.advbox h3 {
+  font-size: 13px;
+  color: var(--green-ink);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.advbox h3 .tag {
+  font: 500 10px 'Spline Sans Mono', monospace;
+  border: 1px solid var(--green-ink);
+  border-radius: 99px;
+  padding: 1px 7px;
+}
+.advbox .note {
+  margin: 4px 0 0;
+}
+.tw {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+.tw table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.tw th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.tw td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--line-2);
+  white-space: nowrap;
+}
+.tw td.n,
+.tw th.n {
+  text-align: right;
+  font-family: 'Spline Sans Mono', monospace;
+}
+.tw tr.pend td {
+  color: var(--ink-2);
+  font-style: italic;
+  border: 0;
+}
+.tw tr.pend td:first-child {
+  font-style: normal;
+}
+table.tech tr.grp th {
+  background: var(--green-tint);
+  color: var(--green-ink);
+  font-size: 11.5px;
+  padding: 7px 8px;
+}
+table.tech .ref {
+  display: block;
+  font: 500 10px 'Spline Sans Mono', monospace;
+  color: var(--ink-2);
+  margin-top: 2px;
+  font-weight: 400;
+}
+table.tech thead th {
+  background: var(--surface);
+}
+
+/* step 5 proof blocks */
+.qblock {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 14px;
+  background: var(--surface);
+  margin-top: 10px;
+}
+.qblock h3 {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.qbhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.qbhead .ghostbtn {
+  margin: 0;
+}
+.proofblock {
+  border-left: 4px solid var(--blue);
+}
+.qblock .paper {
+  font: 500 10.5px 'Spline Sans Mono', monospace;
+  color: var(--green-ink);
+  margin-bottom: 8px;
+}
+.qblock .answer {
+  font-size: 13px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--blue);
+  background: var(--blue-tint);
+  border-radius: 0 8px 8px 0;
 }
 .dfoot {
   display: flex;
   align-items: stretch;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 .dfoot .cta {
   margin: 0;
   flex: 1;
-  padding: 8px 14px;
+  padding: 9px 14px;
 }
 /* the net panel's four stats, folded into the D sheet on mobile only (v2 section 6, note 1) —
    on desktop they live under the map and must never be duplicated here (v2 section 4.3) */
@@ -1147,20 +1269,6 @@ svg .axlbl {
   margin: 4px 0 0;
   max-width: 210px;
   font-size: 10px;
-}
-.sheethandle {
-  display: none;
-  justify-content: center;
-  padding: 9px 0 5px;
-  cursor: grab;
-  touch-action: none;
-  flex: none;
-}
-.sheethandle span {
-  width: 42px;
-  height: 5px;
-  border-radius: 99px;
-  background: var(--line);
 }
 .mapwrap {
   flex: 1;
@@ -1292,6 +1400,26 @@ svg .axlbl {
 .legit[aria-pressed='false'] {
   opacity: 0.35;
 }
+/* the period control: one button per inventory snapshot the model wrote (plan.md section 7) */
+.perctl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 12px;
+  border-top: 1px solid var(--line-2);
+  font-size: 12px;
+  flex: none;
+}
+.perctl .seg button {
+  padding: 4px 9px;
+  font-size: 11.5px;
+}
+.perctl .note {
+  margin: 0;
+  flex: 1;
+  min-width: 160px;
+}
 .netpanel {
   border-top: 1px solid var(--line);
   padding: 8px 12px;
@@ -1361,59 +1489,6 @@ svg .axlbl {
   color: var(--ink-2);
   margin: 8px 0;
 }
-.cmp {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12.5px;
-  margin-top: 8px;
-}
-.cmp th,
-.cmp td {
-  padding: 7px 6px;
-  text-align: right;
-  border-bottom: 1px solid var(--line-2);
-}
-.cmp th:first-child,
-.cmp td:first-child {
-  text-align: left;
-  font-weight: 500;
-  color: var(--ink-2);
-}
-.cmp thead th {
-  font-size: 11px;
-  color: var(--ink-2);
-}
-.cmp thead th.cur {
-  color: #fff;
-  background: var(--blue);
-  border-radius: 6px 6px 0 0;
-}
-.cmp td {
-  font-family: 'Spline Sans Mono', monospace;
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.cmp td:first-child {
-  font-family: 'Public Sans', system-ui, sans-serif;
-}
-.cmp td.cur {
-  background: var(--blue-tint);
-  font-weight: 600;
-  color: var(--blue);
-}
-/* ux-plan section 13.4 — the x25 rows carry the hypothesis grammar themselves, not just the caption */
-.cmp tr.hyprow td:first-child {
-  border-left: 2px dashed var(--blue);
-  padding-left: 6px;
-}
-.cmp tr.hyprow td:first-child::after {
-  content: ' ×25';
-  font-family: 'Spline Sans Mono', monospace;
-  font-size: 9px;
-  color: var(--blue);
-}
-
 /* ---------- modal (v2 section 5) ---------- */
 .sheetbg {
   position: fixed;
@@ -1501,7 +1576,7 @@ svg .axlbl {
       transform: scale(1);
     }
   }
-  .panel.open .pbody {
+  .stepcard {
     animation: fadein 0.3s ease;
   }
   @keyframes fadein {
@@ -1520,44 +1595,33 @@ svg .axlbl {
    v2 section 9.1: nothing may scroll on desktop. Step D carries the most content, so below
    ~820px of viewport height everything in it tightens one notch instead of clipping. */
 @media (min-width: 981px) and (max-height: 820px) {
-  .phead {
-    padding: 6px 14px;
+  .tabs {
+    padding-top: 5px;
   }
-  .drow1 {
-    margin-top: 4px;
+  .tab {
+    padding: 5px 9px 6px;
   }
-  .dleft,
-  .dualhero,
-  .kgrid {
+  .tab .s {
+    margin-top: 3px;
+  }
+  .stepcard {
+    padding: 4px 14px 12px;
+  }
+  .tiles {
     gap: 6px;
   }
-  .hero {
-    padding: 6px 10px;
+  .tile {
+    padding: 8px 10px;
   }
-  .hero .big {
+  .tile .big {
     font-size: 24px;
+    margin: 3px 0 2px;
   }
-  .hero .sub {
+  .tile .sub {
     font-size: 10px;
-    margin-top: 2px;
   }
-  .kpi {
-    padding: 6px 8px 3px;
-  }
-  .kpi h3 {
-    font-size: 9px;
-    margin: -6px -8px 4px;
-    padding: 2px 8px;
-  }
-  .kv {
-    font-size: 10px;
-    padding: 0;
-  }
-  .kv b {
-    font-size: 9.5px;
-  }
-  .rangenote {
-    padding: 4px 9px;
+  .row {
+    margin-top: 7px;
   }
   .dfoot .cta,
   .dfoot .ghostbtn {
@@ -1593,6 +1657,7 @@ svg .axlbl {
   }
   .maplegend,
   .netpanel,
+  .perctl,
   .credit,
   .team {
     display: none;
@@ -1603,11 +1668,24 @@ svg .axlbl {
   .mapzoom {
     top: 12px;
   }
-  .stepper .lbl {
-    display: none;
+  .tabs {
+    gap: 3px;
+    padding: 6px 8px 0;
   }
-  .stepper {
-    gap: 4px;
+  .tab {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'n' 't' 's';
+    justify-items: center;
+    text-align: center;
+    padding: 5px 3px 7px;
+  }
+  .tab .t {
+    font-size: 11px;
+    white-space: normal;
+  }
+  .tab .s {
+    font-size: 10px;
+    margin-top: 3px;
   }
   .leftcol {
     position: absolute;
@@ -1637,18 +1715,12 @@ svg .axlbl {
   .sheethandle {
     display: flex;
   }
-  .panel {
+  .stepcard {
     border: none;
     box-shadow: none;
     border-radius: 0;
     background: none;
-  }
-  .panel.summary,
-  .panel.locked {
-    display: none;
-  }
-  .psum {
-    display: none;
+    padding: 0 14px 14px;
   }
   .qgrid {
     grid-template-columns: 1fr;
@@ -1670,12 +1742,11 @@ svg .axlbl {
     scroll-snap-align: center;
     overflow: visible;
   }
-  .dsplit {
-    grid-template-columns: 1fr;
-    flex: none;
+  .tiles {
+    grid-template-columns: 1fr 1fr;
   }
-  .dright .chartcard svg {
-    min-height: 120px;
+  .two {
+    grid-template-columns: 1fr;
   }
   .dfoot {
     flex-wrap: wrap;
@@ -1683,19 +1754,15 @@ svg .axlbl {
   .dfoot .cta {
     flex-basis: 100%;
   }
-  /* step B: the exploration deck rides at the top of the sheet, usable even at peek */
-  .pbody.b .deck {
+  /* step 2: the exploration deck rides at the top of the sheet, usable even at peek */
+  .stepcard.s2 .deck {
     order: -1;
     margin-top: 4px;
   }
-  .pbody.b .eyebrow,
-  .pbody.b h2 {
-    display: none;
-  }
-  .pbody > .cta {
+  .stepcard > .cta {
     margin-top: 14px;
   }
-  /* the net panel's four stats ride at the top of the D sheet instead (v2 section 6, note 1) */
+  /* the net panel's four stats ride at the top of the step-4 sheet instead (v2 section 6, note 1) */
   .netfacts.dnet {
     display: flex;
     order: -1;

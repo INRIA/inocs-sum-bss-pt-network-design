@@ -5,14 +5,14 @@ import NetFacts from './NetFacts';
 import type { GameData, Lang, LayerKey, Layers, ScenarioData, Weekday } from '../lib/types';
 import type { T } from '../lib/i18n';
 import { usePanZoom } from '../lib/usePanZoom';
-import { fmtEur } from '../lib/format';
-import type { SheetKind } from './Sheet';
+import { fmtEur, hlabel } from '../lib/format';
+import { scenName } from '../lib/scen';
 
 /**
  * The right column (ux-plan-v2 sections 4 and 6): ONE map instance for the whole game, framed by
- * two legend bars whose every item is a layer toggle, with the "what you built" net panel under it
- * on step D. Below 980px the card goes full-bleed, the bars hide and the same toggles move into
- * the "Layers" popover behind the chip.
+ * two legend bars whose every item is a layer toggle, with the period control and the "what you
+ * built" net panel under it once a plan is built. Below 980px the card goes full-bleed, the bars
+ * hide and the same toggles move into the "Layers" popover behind the chip.
  *
  * This component is mounted once at Game level and never unmounted, which is what makes the
  * pan/zoom camera and the layer state survive every step change.
@@ -27,9 +27,9 @@ export default function MapPanel({
   layers,
   onToggleLayer,
   scenario,
-  day,
+  period,
+  onPeriod,
   dropKey,
-  onSheet,
 }: {
   data: GameData;
   kind: MapKind;
@@ -40,9 +40,9 @@ export default function MapPanel({
   layers: Layers;
   onToggleLayer: (k: LayerKey) => void;
   scenario: ScenarioData | undefined;
-  day: string;
+  period: number;
+  onPeriod: (p: number) => void;
   dropKey: number;
-  onSheet: (s: SheetKind) => void;
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const { viewBox, unitPx, zoomStep, reset } = usePanZoom(svgRef);
@@ -52,6 +52,11 @@ export default function MapPanel({
     <LayerToggles group={group} kind={kind} map={data.map} t={t} layers={layers} onToggle={onToggleLayer} />
   );
 
+  const showNet = kind === 'network' && scenario?.stations.length;
+  // one control per inventory snapshot the model wrote (period boundaries: 06h / 10h / 16h / 22h)
+  const snapshots = scenario?.stations[0]?.inventory.length ?? 0;
+  const hours = scenario?.periodHours ?? [];
+
   return (
     <div className="mapcard">
       <div className="maplegend maptop">
@@ -59,7 +64,7 @@ export default function MapPanel({
         {toggles('pt')}
         {kind === 'city' && (
           <span className="legcap">
-            {t('a.mapcap')} · {t('a.mapcap2', { zones: data.city.gridCells, stops: data.city.ptStops })}
+            {t('map.cap')} · {t('map.cap2', { zones: data.city.gridCells, stops: data.city.ptStops })}
           </span>
         )}
       </div>
@@ -75,6 +80,7 @@ export default function MapPanel({
           hour={hour}
           layers={layers}
           stations={scenario?.stations}
+          period={period}
           dropKey={dropKey}
           svgRef={svgRef}
           viewBox={viewBox}
@@ -93,6 +99,20 @@ export default function MapPanel({
             {t('leg.bike.h')}
           </b>
           {toggles('bike')}
+          {showNet && snapshots > 1 && (
+            <>
+              <b className="leghead" style={{ marginTop: 6 }}>
+                {t('map.period')}
+              </b>
+              <div className="seg">
+                {Array.from({ length: snapshots }, (_, i) => (
+                  <button key={i} aria-pressed={period === i} onClick={() => onPeriod(i)}>
+                    {hours[i] != null ? hlabel(hours[i]) : `P${i + 1}`}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
           <p className="note">{t('map.attrib')}</p>
         </div>
       )}
@@ -114,25 +134,39 @@ export default function MapPanel({
         {toggles('bike')}
       </div>
 
-      {kind === 'network' && scenario && (
-        <div className="netpanel">
-          <NetFacts sc={scenario} day={day} t={t} />
-          <div className="dockrow">
-            {/* a results folder that does not report capex_spent_eur states the budget alone,
-                rather than claiming "0 € spent" */}
-            <span className="note">
-              {scenario.capexSpent > 0
-                ? t('d.capexspent', { a: fmtEur(scenario.capexSpent), b: fmtEur(scenario.capexBudget) })
-                : `${t('c.p.capex')}: ${fmtEur(scenario.capexBudget)}`}
-            </span>
-            {/* rendered only while the results carry the placeholder flag — disappears with zero code change */}
-            {scenario.placeholder && (
-              <button className="provlink" onClick={() => onSheet({ kind: 'prov' })}>
-                {t('d.prov')}
-              </button>
-            )}
+      {showNet && scenario && (
+        <>
+          {snapshots > 1 && (
+            <div className="perctl">
+              <span className="leghead">{t('map.period')}</span>
+              <span className="seg" role="group" aria-label={t('map.period')}>
+                {Array.from({ length: snapshots }, (_, i) => (
+                  <button key={i} aria-pressed={period === i} onClick={() => onPeriod(i)}>
+                    {hours[i] != null ? hlabel(hours[i]) : `P${i + 1}`}
+                  </button>
+                ))}
+              </span>
+              <span className="note">
+                {layers.inventory
+                  ? t('map.period.stock', { h: hours[period] != null ? hlabel(hours[period]) : `P${period + 1}` })
+                  : t('map.period.cap')}
+              </span>
+            </div>
+          )}
+          <div className="netpanel">
+            <NetFacts sc={scenario} t={t} />
+            <div className="dockrow">
+              <span className="note">
+                {t('map.capex', {
+                  name: scenName(scenario, t),
+                  spent: fmtEur(scenario.paper?.capexUsedEur ?? scenario.capexBudget),
+                  budget: fmtEur(scenario.capexBudget),
+                })}
+              </span>
+              {scenario.ranAt && <span className="note mono">{scenario.ranAt.slice(0, 10)}</span>}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

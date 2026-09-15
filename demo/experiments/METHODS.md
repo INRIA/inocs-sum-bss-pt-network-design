@@ -45,154 +45,135 @@ nearest-coordinate fallback within 50 m: 128/139 obtain their real capacity
 (115 by name, 13 by proximity); 11 stations — likely discontinued — remain
 without one.
 
-## 3. Simulation
+## 3. Simulation — the stress test
 
-Both modes share one engine (`simulate.py`): a rider starts at a
-coordinate, walks to the nearest design station within the 300 m catchment
-(trying up to 2), takes a bike if available, rides (haversine distance ×
-1.3 detour factor, 20 km/h), and docks near the destination under the same
-rule. Failures are counted by cause: *no station nearby* (coverage), *no
-bike*, *no dock* (capacity/rebalancing). A truck round restores initial
-stocks at 04h and after the last trip, costed at the frozen model's own
-rates (fixed 40 € per dispatch + 20 €/bike-km, truck capacity 10).
+Demo v3 (2026-09-15) realigns the demonstration with the submitted paper: the paper never
+simulates individual trips, and neither does the demonstration's primary evaluation any more
+(§5). `simulate.py` is kept for exactly one purpose — a **stress test**, replaying the trips
+Geneva actually recorded against a solved design, as a demo-side robustness check clearly
+labelled as such, not part of the paper's own evaluation.
 
-### 3.1 Trace-driven replay (`--mode replay`) — the proof mode
+### 3.1 Trace-driven replay (`--mode replay`) — the only live mode
 
-The observed trips themselves are replayed: each trip at its recorded local
-hour, from its recorded origin coordinate to its recorded destination
-coordinate. Every observed calendar day of the requested type is replayed
-separately (112 weekdays for "monday", 18 Sundays), and the reported totals
-are the **mean over those days**, with the day-to-day standard deviation in
-the `replay_ensemble` block; the hourly detail kept in the file is the
-median-demand day. There is no random number generation and no synthetic
-demand in this mode. Trace-driven simulation is the standard evaluation
-method for network changes in bike-share operations research.
+One engine: a rider starts at a coordinate, walks to the nearest design station within the
+300 m catchment (trying up to 2), takes a bike if available, rides (haversine distance × 1.3
+detour factor, 20 km/h), and docks near the destination under the same rule. Failures are
+counted by cause: *no station nearby* (coverage), *no bike*, *no dock*
+(capacity/rebalancing). A truck round restores initial stocks at 04h and after the last trip,
+costed at the frozen model's own rates (fixed 40 € per dispatch + 20 €/bike-km, truck capacity
+10).
 
-### 3.2 Empirical resampling (`--mode sample`) — the what-if mode
+The observed trips themselves are replayed: each trip at its recorded local hour, from its
+recorded origin coordinate to its recorded destination coordinate. Every observed calendar day
+of the requested type is replayed separately (112 weekdays for "monday", 18 Sundays), and the
+reported totals are the **mean over those days**, with the day-to-day standard deviation in the
+`replay_ensemble` block; the hourly detail kept in the file is the median-demand day. There is
+no random number generation and no synthetic demand in this mode. Trace-driven simulation is the
+standard evaluation method for network changes in bike-share operations research — but the
+volume it replays (11.5 trips/day weekday, 9.4 Sunday) is ~125× smaller than the paper's
+potential-demand day (1,453 trips) the designs are sized for, which is why it is a stress test
+and not the headline evaluation.
 
-Demand is drawn from the observed empirical distributions: trip hour from
-the day type's hourly profile (`profiles.py`), origin–destination pair from
-the `od.csv` flow shares, placed at cell centres. The daily volume is
-*measured base × `--scale`*: scale 1 reproduces the observed volume; larger
-scales are labelled demand-growth hypotheses (the demo presents ×1, ×10,
-×25). With `--seeds K`, K independent seeded runs are performed and the
-totals reported are their mean, with per-seed values and standard deviation
-in the `seed_ensemble` block. Sampling is seeded and therefore exactly
-reproducible.
+### 3.2 Self-description
 
-### 3.3 Instance replay (`--mode instance`) — the model's day
+Every simulation output carries a `method` block recording mode, demand source, volumes, seeds,
+timezone assumption and the behavioural parameters used, so a result file is interpretable on
+its own.
 
-Demand is the **solved instance's own OD table** (`instance.json`, `od_demand`: 1,453
-trips over 703 pairs, 3 periods) rather than the observed or resampled trips of §3.1/
-§3.2 — it is the day S1–S3 were actually sized for
-(`.specs/demo-pipeline/findings.md` #1), the model's `metrics.json` being the only
-other view of it. Each period's flow is placed at the origin/destination cell centres
-and spread over that period's hours (06–10 / 10–16 / 16–22) by the observed hourly
-profile *within* the period — an assumed placement, not a model rule (the model has no
-hour semantics, only three abstract periods; see the assumption register). `--seeds K`
-runs a seeded ensemble as in sample mode.
+### 3.3 Deprecated modes (kept, not called, removed after the paper-grid runs are validated)
 
-Two model exports, when present, replace the generic behavioural rules of §3 with the
-model's own:
-
-- **Station choice and rebalancing** (`model_plan.json`, written by the design layer
-  after a Gurobi run with the Phase B export code): a trip uses the stations the
-  solver actually assigned its OD pair to, rather than nearest-station choice; a
-  truck round at the start of each period (hours 6/10/16) applies the model's own
-  `r`/`n` moves, rather than a greedy restore-to-initial.
-- **Ride distance/time** (`results/shared/bike_arcs.json`, the model's OSM-routed
-  arcs): a trip between two stations linked by an arc uses that arc's distance and
-  time; a trip between stations with no arc is `unserved_no_arc` — the model's own
-  1 km ride-catchment limit (`RIDE_CATCHMENT_RADIUS`) — unless `--allow-unrouted` is
-  passed, in which case it falls back to the haversine rule below.
-
-Without a given export, instance mode falls back to the §3 rules it replaces:
-nearest-station choice, the greedy restore-to-initial round, and haversine × 1.3.
-Every `sim_instance.json` records which rules were actually in force, in its `method`
-block (`rebalancing_source`, `ride_distance_source`, `station_choice`), so a result
-file is self-describing regardless of which exports existed when it was produced.
-
-Output additionally carries a `model_view` block computed the way the model's own
-`output_handler/metrics_evaluator.py` defines its metrics — average utilisation,
-borrowable/returnable rates, a count-based `covered_od_ratio` — plus served/demand by
-period, so it is comparable to `metrics.json` term for term (§6, `evaluate.py`'s
-`comparison` block).
-
-### 3.4 Self-description
-
-Every simulation output carries a `method` block recording mode, demand
-source, volumes, scale, seeds, timezone assumption and the behavioural
-parameters used, so a result file is interpretable on its own.
+`--mode sample` (empirical resampling at a `--scale` growth hypothesis) and `--mode instance`
+(replaying the solved instance's own OD table with nearest-station/greedy-rebalancing fallback
+rules) are superseded by reading the model's own solved plan directly
+(`model_plan.json`, §5) rather than re-simulating it — a re-simulation that, for `instance` mode,
+could not route bike+PT paths and undercounted served demand relative to the model's own count.
+The code, `--mode sample|instance` CLI options and their golden tests remain in the tree,
+marked `DEPRECATED (demo v3, 2026-09-15)`, until the paper-grid runs are run and validated.
 
 ## 4. Assumption register
 
+What is still used, now that evaluation reads the model's own solution (§5) rather than a
+simulation:
+
 | Quantity | Value | Status |
 | --- | --- | --- |
-| Daily demand volumes | 11.5 / 9.4 per day | **Measured** (calibration.json) |
-| Hourly profiles, OD shares | from observed trips | **Measured** |
+| Daily demand volumes (stress test) | 11.5 / 9.4 per day | **Measured** (calibration.json) |
+| Hourly profiles, OD shares (stress test) | from observed trips | **Measured** |
 | PT volumes and peaks | from ridership.geojson | **Measured** |
 | Station capacities (today's network) | GBFS feed | **Measured** (128/139) |
 | Timezone of trip timestamps | UTC | **Assumed, cross-validated** (§2) |
-| Growth scales ×10, ×25 | — | **Hypothesis, labelled** |
-| Walk catchment 300 m, 2 retries, detour ×1.3, 20 km/h | — | **Assumed** (behavioural model; the model's own `DETOUR_RATIO = 0.2` is a k-shortest-path enumeration tolerance, not a distance multiplier, so no model value exists for this coefficient) |
-| Period hour bounds (06–10 / 10–16 / 16–22 local) | — | **Assumed** (demo decision; the model defines no hours, only three abstract periods with a weight vector) |
-| Mode substitution (car 10 % / PT 45 % / walk 35 % / induced 10 %) | — | **Assumed** (mid-range of European bike-share surveys) |
-| Emission factors (car 192, PT 55, bike fleet 12 g/pkm) | — | **Assumed** (mobitool-style Swiss lifecycle values) |
-| Fare 2 €, maintenance 0.5 €/bike/day, amortisation 8 y | — | **Assumed** |
+| Walk catchment 300 m, 2 retries, detour ×1.3, 20 km/h (stress test only) | — | **Assumed** (behavioural model; the model's own `DETOUR_RATIO = 0.2` is a k-shortest-path enumeration tolerance, not a distance multiplier, so no model value exists for this coefficient) |
+| Period hour bounds (06–10 / 10–16 / 16–22 local) | — | **Assumed** (demo decision, used for the map's period control and the stress test; the model defines no hours, only three abstract periods with a weight vector) |
 | Unit costs (station 100 €, dock 20 €, bike 60 €, rebalancing rates) | — | **Model's own** (`src/util/cost.py`) |
-| S1–S3 optimiser designs & model metrics | `results/S*/` | **Solver output** (§6) |
-| Period→hour mapping in instance mode | observed hourly profile within the period | **Assumed** (demo decision) |
-| Ride arcs (instance mode) | the model's own OSM arcs when exported, haversine × 1.3 otherwise | **Model's own** / **Assumed fallback** |
+| Paper-grid optimiser designs & full evaluator row | `results/<id>/` | **Solver output** (§6) |
+
+Deprecated (kept in `kpi_config.json`, marked `"_deprecated": true`, until the paper-grid runs
+are validated — no longer read by `evaluate.py`'s live code paths):
+
+| Quantity | Value | Status |
+| --- | --- | --- |
+| Growth scales ×10, ×25 | — | **Hypothesis, labelled** — deprecated, no growth-scale story in v3 |
+| Mode substitution (car 10 % / PT 45 % / walk 35 % / induced 10 %) | — | **Assumed** (mid-range of European bike-share surveys) — deprecated |
+| Emission factors (car 192, PT 55, bike fleet 12 g/pkm) | — | **Assumed** (mobitool-style Swiss lifecycle values) — deprecated |
+| Fare 2 €, maintenance 0.5 €/bike/day, amortisation 8 y | — | **Assumed** — deprecated |
+| Period→hour mapping in the deprecated instance mode | observed hourly profile within the period | **Assumed** (demo decision) — deprecated with instance mode |
+| Ride arcs in the deprecated instance mode | the model's own OSM arcs when exported, haversine × 1.3 otherwise | **Model's own** / **Assumed fallback** — deprecated with instance mode |
 
 ## 5. Evaluation
 
-`evaluate.py` turns a simulated day into four KPI families (service,
-mobility, environment, economics); every coefficient comes from
-`kpi_config.json` and appears in the register above. Real PT volumes
-provide a context KPI (bike trips per 1,000 PT boardings). Where a
-`metrics.json` from the optimiser sits next to the simulation, its metrics
-are merged in — and if it is a placeholder, `kpis.json` says so at the top
-level (`placeholder_model_results: true`).
+`evaluate.py` writes `kpis.json` (`"schema": "kpis-v3"`) with three blocks, none of which reads
+a coefficient from the deprecated part of `kpi_config.json`:
+
+- **`paper`** — the paper's own metrics, computed from the model's solved plan
+  (`model_plan.json`) and its full evaluator row (`metrics.json`): served demand total and by
+  period, direct-cycling vs PT-assisted split, travel-time savings, the layout built (stations,
+  docks, bikes, regular vs transfer), rebalancing (dispatches, bikes moved, cost), covered OD
+  ratio, compactness (nearest-neighbour and mean pairwise distance). This is what the
+  demonstration headlines.
+- **`technical`** — the full `ExperimentRow` the frozen model's evaluator computes
+  (`output_handler/metrics_evaluator.py` → `experiment.py`), plus the solver's own statistics
+  (`n_variables`, `n_constraints`, `gurobi_status`, `mip_gap`, `wall_clock_s`, `ran_at`). Shown
+  under the front end's advanced toggle.
+- **`stress_test`** — the §3 replay (`sim_monday.json` / `sim_sunday.json`, when present): served
+  %, unserved by cause, peak empty/full stations, explicitly labelled as a demo-side check on
+  Geneva's recorded trips, not part of the paper's evaluation.
+
+Real PT volumes still provide one context figure (bike trips per 1,000 PT boardings) shown
+alongside, not inside, these three blocks.
 
 ## 6. Optimiser results
 
-`results/S1|S2|S3/` hold **real solver output**. Run on 2026-09-08 with an academic Gurobi licence; all three solved to optimality (status 2, MIP gap ~0). The instance is
-53 558 variables / 36 535 constraints, well past the size-limited licence
-bundled with `gurobipy`. Each `stations.json` and `metrics.json` records,
-under `run`, the scenario parameters, the solver status, the MIP gap, the wall
-clock, and the `src_commit`/`repo_commit` that produced it, so a design can be
+`results/<scenario>/` hold **real solver output**: `stations.json` (the design), `metrics.json`
+(the model's **full** evaluator row — `NetworkDesignRun.experiment_row`, not only the 15
+headline keys), `instance.json` (the instance solved, slimmed) and `model_plan.json` (the
+solver's full per-period decision — inventories, rebalancing, path assignments). The instance is
+53,558 variables / 36,535 constraints, well past the size-limited licence bundled with
+`gurobipy`. Each file records, under `run`, the scenario parameters, the solver status, the MIP
+gap, the wall clock, and the `src_commit`/`repo_commit` that produced it, so a design can be
 audited without re-running it.
 
-The runs are driven by `run_model.py`, which applies a scenario's parameters
-by replacing `generate_h3_instances()` in `sys.modules` for the duration of
-one run — the frozen model source is never edited.
-
-The earlier greedy placeholders (`mock_results.py`, stamped
-`"placeholder": true`, removed 2026-09-09, see git history) are superseded and
-no longer written.
+The runs are driven by `run_model.py`, which applies a scenario's parameters by replacing
+`generate_h3_instances()` in `sys.modules` for the duration of one run — the frozen model source
+is never edited. The 18-scenario paper grid (`run_model.PAPER_GRID`) is the demonstration's
+current scenario set; the legacy `S1_essential`/`S2_balanced`/`S3_ambitious` (real solver output
+from 2026-09-10, at the demo's earlier 20k/80k/140k € budgets and observed-weekday weights
+rather than the paper's own bimodal baseline) stay until the grid is run and validated.
 
 ## 7. Known limitations
 
-- The behavioural model is deliberately simple: no within-hour queueing, no
-  rider rerouting beyond 2 stations, no bike+PT trip chaining (the
-  multimodal split is taken from the model's own metrics when available).
-- Replay evaluates designs against *recorded* demand: it cannot express
-  demand induced by a better network; the growth scenarios approximate
-  that, as labelled hypotheses.
-- The optimiser's designs separate clearly at the observed volume
-  (served 0.705 / 0.874 / 0.966 for S1 / S2 / S3), unlike the earlier
-  placeholders which all served ~100 %. The binding failure is docking, not
-  bike availability: at 20 k€ the model builds 35 stations of ~7 docks and
-  riders cannot return a bike. This makes the naive `baseline.py` design
-  *outperform* S1 on served trips at equal budget when tested at the observed
-  volume — but that volume is ~125× smaller than the 1,453-trip day the
-  designs were actually sized for (`.specs/demo-pipeline/findings.md` #1), so
-  the comparison at that scale mostly measures over-provisioning for a demand
-  that was never going to arrive. §3.3's `instance` mode replays the model's
-  own day instead; read the human-vs-optimiser comparison there before
-  concluding the two score genuinely different objectives (see README, known
-  gaps).
+- The stress test's behavioural model is deliberately simple: no within-hour queueing, no rider
+  rerouting beyond 2 stations, no bike+PT trip chaining — which is exactly why it is a secondary
+  check and not the primary evaluation: the primary evaluation (§5, `paper`) reads served demand,
+  the multimodal split and travel-time savings directly from what the model itself decided.
+- The stress test replays *recorded* demand, ~125× smaller than the potential-demand day
+  (1,453 trips) the designs are sized for: it cannot express demand induced by a better network,
+  and a low served % there says more about the recorded volume than about the design. Read it as
+  a robustness check, not a service-rate headline.
 - PT daily averages divide yearly sums by 52 (holidays uncorrected).
-- Today's real network is **not simulated**: its per-station bike stocks
-  over time are not in any available source (would require GBFS
-  `station_status` history). Visualization only, by decision.
+- Today's real network is **not simulated**: its per-station bike stocks over time are not in
+  any available source (would require GBFS `station_status` history). Visualization only, by
+  decision.
+- Dispatch cost is computed twice from the same rebalancing decisions — once inside the frozen
+  evaluator's `experiment_row` (`technical.dispatch_cost`) and again by
+  `pipeline/model_plan.py` (`paper.dispatch_cost_eur`) — expected to agree; to be confirmed once
+  the paper-grid runs exist.

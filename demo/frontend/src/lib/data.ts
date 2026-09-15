@@ -5,17 +5,18 @@
  * experiment outputs, and projects everything into the fixed 360x300 map frame so the client
  * receives a small, ready-to-render payload and does no geodesy.
  *
- * Contract rules honoured here (structure-plan section 4):
+ * Contract rules honoured here (structure-plan section 4, demo-v3 implementation.md sections
+ * 0.2 / 0.4 / 0.5):
  *  - keys are read, values are never hardcoded;
  *  - unknown extra keys are ignored;
- *  - a scenario that prepare-data could not validate simply is not in the manifest -> the game
- *    renders without it instead of crashing.
+ *  - a scenario with no results yet stays in the list with `hasResults: false`, so the compare
+ *    step can draw it as a pending run instead of pretending it does not exist.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { boundsOfGeoJSON, makeProjection, pathOf, badgeSpot, inFrame, type Project } from './geo';
-import type { GameData, GlyphKey, MapData, PoiMarker, ScenarioData, StationMarker } from './types';
+import type { GameData, GlyphKey, MapData, PaperKpis, PoiMarker, ScenarioData, StationMarker, StressDay } from './types';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -34,6 +35,9 @@ const DATA = projectPath('public/data');
 const BASEMAP = projectPath('src/data/basemap.geojson');
 
 const read = (p: string) => JSON.parse(readFileSync(p, 'utf8'));
+const num = (v: unknown, fallback = 0): number => (Number.isFinite(Number(v)) ? Number(v) : fallback);
+const numOrNull = (v: unknown): number | null => (v == null || !Number.isFinite(Number(v)) ? null : Number(v));
+const arr = (v: unknown): number[] => (Array.isArray(v) ? v.map((x) => num(x)) : []);
 
 /**
  * The six validated landmarks (ux-plan section 7). `pois.geojson` carries 18 curated POIs; the map
@@ -126,88 +130,140 @@ function buildMap(project: Project): MapData {
   return { water, streetsMajor: major.join(''), streetsMinor: minor.join(''), grid: gridPath, ptLines, bikeDots, pois, stops };
 }
 
-function hourlySeries(sim: any) {
-  const h = Array.isArray(sim.hourly) ? sim.hourly : [];
-  const at = (i: number, k: string) => Number(h[i]?.[k] ?? 0);
+/** kpis.json -> `paper`, renamed to camelCase. Nothing is recomputed here. */
+function buildPaper(p: any): PaperKpis {
   return {
-    demand: Array.from({ length: 24 }, (_, i) => at(i, 'demand')),
-    served: Array.from({ length: 24 }, (_, i) => at(i, 'served')),
-    empty: Array.from({ length: 24 }, (_, i) => at(i, 'empty_stations')),
-    full: Array.from({ length: 24 }, (_, i) => at(i, 'full_stations')),
+    demandTotal: num(p.demand_total),
+    servedTotal: num(p.served_total),
+    servedRatio: num(p.served_ratio),
+    demandByPeriod: arr(p.demand_by_period),
+    servedByPeriod: arr(p.served_by_period),
+    bikeOnlyByPeriod: arr(p.bike_only_by_period),
+    bikePtByPeriod: arr(p.bike_pt_by_period),
+    flowBikeOnly: num(p.flow_bike_only),
+    flowBikePt: num(p.flow_bike_pt),
+    ptAssistedShare: num(p.pt_assisted_share),
+    avgTimeGainMin: num(p.avg_time_gain_min),
+    avgTravelTimeMin: num(p.avg_travel_time_min),
+    timeSavingRatio: num(p.time_saving_ratio),
+    stations: num(p.stations),
+    nReg: num(p.n_reg),
+    nTrans: num(p.n_trans),
+    docks: num(p.docks),
+    bikes: num(p.bikes),
+    capexUsedEur: num(p.capex_used_eur),
+    budgetEur: num(p.budget_eur),
+    opBudgetEur: num(p.op_budget_eur),
+    dispatches: num(p.dispatches),
+    bikesRebalanced: num(p.bikes_rebalanced),
+    dispatchCostEur: num(p.dispatch_cost_eur),
+    investmentPerServedTripEur: num(p.investment_per_served_trip_eur),
+    coveredOdRatio: num(p.covered_od_ratio),
+    odPairsTotal: num(p.od_pairs_total),
+    odPairsCovered: num(p.od_pairs_covered),
+    nearestNeighborM: numOrNull(p.nearest_neighbor_m),
+    meanPairwiseM: numOrNull(p.mean_pairwise_m),
   };
 }
 
-/** monday -> sim_monday.json, monday_x25 -> sim_monday_x25.json, instance -> sim_instance.json */
-const simFileFor = (day: string) => `sim_${day}.json`;
-
-function buildScenario(entry: any, project: Project): ScenarioData | null {
-  const scenario = read(join(DATA, 'scenarios', `${entry.id}.json`));
-  const stationsFile = read(join(DATA, 'results', entry.id, 'stations.json'));
-  const kpis = read(join(DATA, 'results', entry.id, 'kpis.json'));
-
-  const stations: StationMarker[] = (stationsFile.stations ?? []).map((s: any) => {
-    const [x, y] = project(s.lon, s.lat);
-    return { x, y, transfer: s.type === 'TransferStation', capacity: Number(s.capacity), bikes: Number(s.initial_bikes) };
-  });
-
-  const days: ScenarioData['days'] = {};
-  const dayIds: string[] = [];
-  for (const day of Object.keys(kpis.days ?? {})) {
-    const simPath = join(DATA, 'results', entry.id, simFileFor(day));
-    if (!existsSync(simPath)) continue;
-    const sim = read(simPath);
-    days[day] = {
-      kpi: kpis.days[day],
-      hourly: hourlySeries(sim),
-      rebalancing: {
-        bikes_moved: Number(sim.rebalancing?.bikes_moved ?? 0),
-        truck_dispatches: Number(sim.rebalancing?.truck_dispatches ?? 0),
-        cost_eur: Number(sim.rebalancing?.cost_eur ?? 0),
-      },
-      method: sim.method ?? kpis.days[day]?.method ?? {},
+function buildStress(st: any): StressDay[] {
+  return Object.keys(st ?? {}).map((day) => {
+    const d = st[day] ?? {};
+    return {
+      day,
+      demand: num(d.demand),
+      served: num(d.served),
+      servedRatio: num(d.served_ratio),
+      noStation: num(d.unserved_no_station),
+      noBike: num(d.unserved_no_bike),
+      noDock: num(d.unserved_no_dock),
+      peakEmpty: num(d.peak_empty_stations),
+      peakFull: num(d.peak_full_stations),
+      nDaysReplayed: num(d.n_days_replayed),
+      representativeDate: String(d.representative_date ?? ''),
     };
-    dayIds.push(day);
-  }
-  if (!dayIds.length) return null;
-  // Present the days in the order the game talks about them: the two observed days, then the
-  // optimiser's own planning day, then the hypothesis last.
-  const order = ['monday', 'sunday', 'instance', 'monday_x25'];
-  dayIds.sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99));
+  });
+}
 
+function buildScenario(entry: any, project: Project, periodBounds: number[][]): ScenarioData {
+  const scenario = read(join(DATA, 'scenarios', `${entry.id}.json`));
   const mp = scenario.model_parameters ?? {};
+  const hasResults = entry.has_results === true;
+
+  let paper: PaperKpis | null = null;
+  let technical: Record<string, number | string | null> = {};
+  let stressTest: StressDay[] = [];
+  let stations: StationMarker[] = [];
+  let periods = num(mp.demand_periods);
+  let capexBudget = num(mp.total_budget);
+  let provenance = '';
+  let ranAt = '';
+
+  if (hasResults) {
+    const kpis = read(join(DATA, 'results', entry.id, 'kpis.json'));
+    paper = buildPaper(kpis.paper ?? {});
+    technical = { ...(kpis.technical ?? {}) };
+    stressTest = buildStress(kpis.stress_test);
+
+    const meta = read(join(DATA, 'results', entry.id, 'stations.json'));
+    capexBudget = num(meta.capex_budget_eur, capexBudget);
+    provenance = String(meta.provenance ?? '');
+    ranAt = String(meta.run?.ran_at ?? technical.ran_at ?? '');
+    // `run` carries the solver statistics the evaluator row does not: keep them in `technical`
+    // so the advanced table reads one flat record (implementation.md section 0.4).
+    for (const k of ['n_variables', 'n_constraints', 'gurobi_status', 'mip_gap', 'wall_clock_s'] as const) {
+      if (technical[k] == null && meta.run?.[k] != null) technical[k] = meta.run[k];
+    }
+    if (technical.ran_at == null && ranAt) technical.ran_at = ranAt;
+
+    const plan = read(join(DATA, 'results', entry.id, 'plan_slim.json'));
+    periods = num(plan.periods, periods);
+    stations = (plan.stations ?? []).map((s: any) => {
+      const [x, y] = project(num(s.lon), num(s.lat));
+      return { x, y, transfer: s.type === 'TransferStation', capacity: num(s.capacity), inventory: arr(s.inventory) };
+    });
+  }
+
+  // Inventory snapshots sit on the period boundaries: [start of p1, start of p2, ..., end of pT].
+  const periodHours = periodBounds.length
+    ? [...periodBounds.map((b) => num(b[0])), num(periodBounds[periodBounds.length - 1]?.[1])]
+    : [];
+
   return {
     id: entry.id,
-    short: entry.id.split('_')[0].toUpperCase().slice(0, 3),
+    family: String(entry.family ?? scenario.family ?? ''),
+    role: String(entry.role ?? scenario.role ?? 'compare'),
+    card: entry.card ?? scenario.card ?? null,
+    legacy: entry.legacy === true,
+    hasResults,
+    axisLabel: String(entry.axis_label ?? scenario.axis_label ?? ''),
+    temporalProfile: String(entry.temporal_profile ?? scenario.temporal_profile ?? ''),
+    outsidePaperRange: entry.outside_paper_range === true,
+    paperReference: String(entry.paper_reference ?? scenario.paper_reference ?? ''),
+    params: {
+      budget: num(mp.total_budget),
+      opsRatio: num(mp.op_budget_ratio),
+      epsilon: num(mp.epsilon),
+      solveMode: String(mp.solve_mode ?? ''),
+      demandPeriods: num(mp.demand_periods),
+      periodWeights: arr(mp.period_weights),
+      splitMethod: String(mp.split_method ?? ''),
+      seed: num(mp.seed),
+    },
     fallback: {
       name: scenario.title ?? entry.id,
       pitch: scenario.audience_pitch ?? '',
       narrative: scenario.narrative ?? '',
-      expect: {
-        service: scenario.expected_story?.service ?? '',
-        environment: scenario.expected_story?.environment ?? '',
-        economics: scenario.expected_story?.economics ?? '',
-      },
     },
-    // ux-plan section 13.9: driven by the data, defaulting to the published Geneva reference.
-    highlight: scenario.highlight === true || entry.id === 'S2_balanced',
-    params: {
-      budget: Number(mp.total_budget ?? 0),
-      opsRatio: Number(mp.op_budget_ratio ?? 0),
-      epsilon: Number(mp.epsilon ?? 0),
-      solveMode: String(mp.solve_mode ?? ''),
-      demandPeriods: Number(mp.demand_periods ?? 0),
-      periodWeights: Array.isArray(mp.period_weights) ? mp.period_weights : [],
-      splitMethod: String(mp.split_method ?? ''),
-    },
-    capexBudget: Number(stationsFile.capex_budget_eur ?? mp.total_budget ?? 0),
-    capexSpent: Number(stationsFile.capex_spent_eur ?? 0),
-    placeholder: stationsFile.placeholder === true || kpis.placeholder_model_results === true,
-    provenance: String(stationsFile.provenance ?? ''),
-    placeholderNote: String(kpis.placeholder_note ?? ''),
+    paper,
+    technical,
+    stressTest,
     stations,
-    transferCount: stations.filter((s) => s.transfer).length,
-    days,
-    dayIds,
+    periods,
+    periodHours,
+    capexBudget,
+    provenance,
+    ranAt,
   };
 }
 
@@ -220,15 +276,10 @@ export function loadGameData(): GameData {
   const grid = read(join(DATA, 'city/grid.geojson'));
   const project = makeProjection(boundsOfGeoJSON(grid));
 
-  const scenarios = manifest.scenarios
-    .map((entry: any) => buildScenario(entry, project))
-    .filter((s: ScenarioData | null): s is ScenarioData => s !== null);
+  const profiles = existsSync(join(DATA, 'city/profiles.json')) ? read(join(DATA, 'city/profiles.json')) : {};
+  const periodBounds: number[][] = Array.isArray(profiles.period_bounds_local) ? profiles.period_bounds_local : [];
 
-  // Operating-result range across every scenario x every day (never hardcoded, ux-plan section 4).
-  const results = scenarios.flatMap((s: ScenarioData) =>
-    Object.values(s.days).map((d) => Number(d.kpi?.economics?.operating_result_eur_per_day ?? 0))
-  );
-  const opRange = { min: results.length ? Math.min(...results) : 0, max: results.length ? Math.max(...results) : 0 };
+  const scenarios: ScenarioData[] = manifest.scenarios.map((entry: any) => buildScenario(entry, project, periodBounds));
 
   const summary = read(join(DATA, 'city/pt_summary.json'));
 
@@ -243,8 +294,10 @@ export function loadGameData(): GameData {
       bikeTrips: manifest.city.bike_trips.features,
       medianTripKm: manifest.city.bike_trips.median_km,
       ptBoardings: summary.daily_boardings_avg ?? {},
+      periodWeights: profiles.period_weights ?? {},
+      periodBounds,
+      tripsPerDayObserved: profiles.trips_per_day_observed ?? {},
     },
-    opRange,
     warnings: manifest.warnings ?? [],
   };
   return cached;

@@ -39,12 +39,26 @@ rebalancing) rather than failing.
 Coordinate convention: the JSON carries ``lon``/``lat`` fields explicitly;
 this module hands out ``(lat, lon)`` tuples, the demo's order everywhere
 (``pipeline.geometry.haversine_km``).
+
+DEPRECATED (demo v3, 2026-09-15): replaced by reading ``model_plan.json``
+directly (``evaluate.paper_kpis``), which is the model's own answer rather
+than the input to a re-simulation of it; removed once the paper-grid runs
+are validated. The whole module goes with the simulator's ``instance`` mode
+and ``baseline.py``: importing it warns, and nothing outside those two
+deprecated paths imports it any more.
 """
 
 import json
+import warnings
 from pathlib import Path
 
 from .. import RESULTS_DIR
+
+warnings.warn(
+    "DEPRECATED (demo v3, 2026-09-15): demo.experiments.pipeline.instance is "
+    "replaced by reading model_plan.json directly (evaluate.paper_kpis); "
+    "removed once the paper-grid runs are validated.",
+    DeprecationWarning, stacklevel=2)
 
 #: The scenario whose committed instance stands in when a design has none of
 #: its own. All three optimiser scenarios solve the *same* instance -- same

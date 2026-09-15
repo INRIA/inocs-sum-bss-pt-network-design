@@ -1,60 +1,130 @@
-# Running a scenario against the frozen model
+# Scenario definitions
 
-Each `S*.json` here is one prebuilt scenario: the `model_parameters` block holds every
-value the frozen model needs, and nothing outside that block varies between the three.
+Each `<id>.json` here is one prebuilt scenario for the frozen model: a `model_parameters` block
+the model actually runs on, plus the copy and provenance the front end and the notebooks read
+(`"schema": "scenario-v3"`).
 
-## The supported way: `run_model.py`
+## Generated, not hand-written
+
+The 18 scenarios of the paper's sensitivity grid (budget, operational ratio, ε, temporal
+profile — see [`README.md`](../README.md) for the four questions they answer) are **generated**
+from one definition, `run_model.PAPER_GRID`, by `run_model.write_scenarios()`:
 
 ```bash
-python -m demo.experiments.run_model S1_essential S2_balanced S3_ambitious
+python -m demo.experiments.run_model --write-scenarios              # keeps existing files
+python -m demo.experiments.run_model --write-scenarios --overwrite   # regenerate from PAPER_GRID
 ```
 
-or, one scenario at a time with the simulation and the KPIs around it,
-[`notebooks/demo_scenarios.ipynb`](../../../notebooks/demo_scenarios.ipynb).
+Existing files are kept unless `--overwrite` is passed, so copy edited in place survives a
+regeneration. Hand-editing a generated file afterwards is fine for copy (`title`,
+`axis_label`, `audience_pitch`, `narrative`) but not for `model_parameters` — an `--overwrite`
+regeneration discards it. To change a run's parameters, edit its entry in `PAPER_GRID`
+(`run_model.py`) and regenerate.
 
-The whole scenario surface of the model is one function,
-`generate_h3_instances()` in `network-design-bss/src/instance_builder.py`, which takes no
-arguments and builds its `ScenarioConfig` inline. Rather than editing it,
-[`run_model.py`](../run_model.py) **replaces it in `sys.modules` for the duration of one
-run** with a function that builds the same `ScenarioConfig` from a scenario JSON.
-`NetworkDesignRun.build_instance()` does `from instance_builder import
-generate_h3_instances` at call time, so it picks up the replacement.
+## Running a scenario against the model
 
-The file on disk is never touched: `git diff` stays empty, there is nothing to remember
-to revert, and each result file records the parameters that produced it under
-`run.model_parameters` — so a design can be audited without re-reading this page.
+```bash
+python -m demo.experiments.run_model budget_080k rhythm_uniform
+```
 
-Each run writes `stations.json` and `metrics.json` into
-`demo/experiments/results/<scenario_id>/`, overwriting the earlier greedy
-placeholders (`mock_results.py`, removed 2026-09-09, see git history)
-file-for-file. It also writes `instance.json` (the instance the model solved,
-slimmed) and, from the live solved model object, `model_plan.json` (the
-solver's full per-period decision: station inventories, rebalancing moves
-and dispatches, per-OD path assignments) into the same directory, plus
-`demo/experiments/results/shared/bike_arcs.json` (the model's OSM-routed
-ride arcs between candidate stations — one file, shared by all three
-scenarios since their candidate geography is identical).
+or, one scenario at a time with the evaluation around it,
+[`notebooks/demo_scenarios.ipynb`](../../../notebooks/demo_scenarios.ipynb) — the supported way
+to run the grid. **Nobody but the user runs the experiments**: a Gurobi licence larger than the
+size-limited one bundled with `gurobipy` is required (the instance is ~53k variables / ~36.5k
+constraints; academic licences are free).
 
-Requirements: a Gurobi licence larger than the size-limited one bundled with `gurobipy`
-(the instance is well past 2 000 variables / 2 000 constraints; academic licences are
-free). A cold run spends ~50 min in shortest-path enumeration, but that stage is cached
-and **does not depend on any scenario parameter** — so run S1/S2/S3 back to back and only
-the first pays it; the rest take minutes.
+The whole scenario surface of the model is one function, `generate_h3_instances()` in
+`network-design-bss/src/instance_builder.py`, which takes no arguments and builds its
+`ScenarioConfig` inline. Rather than editing it, [`run_model.py`](../run_model.py) **replaces it
+in `sys.modules` for the duration of one run** with a function that builds the same
+`ScenarioConfig` from a scenario JSON. `NetworkDesignRun.build_instance()` does
+`from instance_builder import generate_h3_instances` at call time, so it picks up the
+replacement. The file on disk is never touched: `git diff` stays empty, and each result file
+records the parameters that produced it under `run.model_parameters`, so a design can be
+audited without re-reading this page.
 
-## The manual alternative
+Each run writes `stations.json`, `metrics.json` (the model's **full** evaluator row —
+`NetworkDesignRun.experiment_row`, not just the 15 headline keys), `instance.json` (the instance
+solved, slimmed) and `model_plan.json` (the solver's full per-period decision: station
+inventories, rebalancing moves and dispatches, per-OD path assignments) into
+`demo/experiments/results/<scenario_id>/`, plus `demo/experiments/results/shared/bike_arcs.json`
+(the model's OSM-routed ride arcs between candidate stations — one file, since the candidate
+geography is identical across the whole grid).
 
-Equivalent, and what the layer did before `run_model.py` existed: edit
-`generate_h3_instances()` in place, run, save, revert. Recorded here because it shows
-exactly which values a scenario sets, and because it is the fallback if the module swap
-ever stops matching the frozen code.
+A cold run spends ~50 min in shortest-path enumeration, but that stage is cached and **does not
+depend on any scenario parameter** — so running the grid back to back pays it once; the rest
+take minutes. Solve itself is ~15 s per scenario. `eps_001` (ε = 0.01) may hit the model's 3600 s
+time limit — the paper's own "valley" (Fig. 6) — the notebook flags this and lets it be skipped.
 
-### The one edit
+## Scenario JSON fields
 
-Every scenario parameter lands in `network-design-bss/src/instance_builder.py`,
-`generate_h3_instances()` — the budget flows from there into the solver via
-`src/input_handler/instance_attribute_extracter.py`, so nothing else needs touching.
-Replace the body with the values from the scenario's `model_parameters`, e.g. for
-`S2_balanced`:
+```json
+{
+  "id": "budget_080k",
+  "schema": "scenario-v3",
+  "family": "baseline",
+  "role": "card",
+  "card": "reference",
+  "title": "Reference plan",
+  "axis_label": "80 000 €",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table D.8 baseline; Table 2",
+  "audience_pitch": "...",
+  "narrative": "...",
+  "model_parameters": {
+    "total_budget": 80000, "op_budget_ratio": 0.05, "demand_periods": 3,
+    "period_weights": [0.4, 0.2, 0.4], "split_method": "multinomial", "seed": 20,
+    "epsilon": 0.04, "solve_mode": "integrated"
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `id` | matches the filename stem |
+| `schema` | `"scenario-v3"` |
+| `family` | `baseline` \| `budget` \| `ops_ratio` \| `epsilon` \| `rhythm` — the sensitivity axis this run belongs to. `baseline` belongs to every family at once, at its own axis value: the front end adds it to each family's chart. |
+| `role` | `card` (carries front-end copy, shown on "choose a plan") or `compare` (a grid point only, shown in the Compare charts) |
+| `card` | cards only: `essential` \| `reference` \| `ambitious` |
+| `title`, `axis_label` | front-end copy: the plan's name and the value shown on its axis |
+| `temporal_profile` | `bimodal` \| `uniform` \| `sharp` \| `geneva_weekday` — which period-weight vector `model_parameters.period_weights` was built from (`bimodal` = the paper's baseline 0.40/0.20/0.40; `geneva_weekday` = the observed Geneva weekday split, measured by `profiles.py`) |
+| `outside_paper_range` | true for the two budget points (20k, 40k) added below the paper's own Table 2 range (60–120k) to locate the PT-integration threshold |
+| `paper_reference` | which section / table / figure of the paper this run maps to |
+| `audience_pitch`, `narrative` | cards only: fallback copy for the front end until translated keys exist in `demo/frontend/src/i18n/*.json` |
+| `legacy` | legacy `S1_essential`/`S2_balanced`/`S3_ambitious` only: `true` |
+| `model_parameters` | `total_budget`, `op_budget_ratio`, `demand_periods`, `period_weights` (must sum to 1, one per period), `split_method`, `seed`, `epsilon`, `solve_mode` — everything the frozen model needs |
+
+Common to every grid run: `demand_periods 3`, `seed 20`, `split_method "multinomial"`,
+`solve_mode "integrated"`; the baseline's own values (`epsilon 0.04`, `op_budget_ratio 0.05`,
+`total_budget 80000`, the bimodal profile) unless the run's own axis is what varies.
+
+## Adding a run
+
+To add a point to the paper grid: add an entry to `run_model.PAPER_GRID` (`run_model.py`) with a
+unique `id`, its `family`/`role`, the `model_parameters` it overrides from the baseline, and
+(for a card) `audience_pitch`/`narrative`; regenerate with `--write-scenarios --overwrite`; run
+it with Gurobi; re-run `evaluate.py` to get its `kpis.json`.
+`demo/experiments/tests/test_golden_pipeline.py::ScenarioValidationTests` checks the whole
+committed grid against `PAPER_GRID` (18 runs, exactly one `baseline`) and every scenario's
+contract (required keys, period weights summing to 1, unique ids), so a malformed or
+out-of-sync addition fails loudly there.
+
+## Legacy scenarios
+
+`S1_essential.json`, `S2_balanced.json`, `S3_ambitious.json` (20k / 80k / 140k €, observed
+Geneva weekday weights, operational ratio 2.5 % / 2.5 % / 5 % — not the paper's bimodal
+baseline) are the three scenarios the demo shipped with before this realignment. They keep
+their JSON and their `results/` **until the paper grid is run**, flagged `"legacy": true`, so
+the site keeps building on real data during the transition. They are deleted in a later
+clean-up step, once the user has run the paper grid and its results are validated.
+
+## The manual alternative (fallback)
+
+Equivalent to `run_model.py`, and what the layer did before it existed: edit
+`generate_h3_instances()` in `network-design-bss/src/instance_builder.py` in place, run, save,
+revert. Recorded here because it shows exactly which values a scenario sets, and because it is
+the fallback if the module-swap technique ever stops matching the frozen code.
 
 ```python
 def generate_h3_instances():
@@ -65,25 +135,18 @@ def generate_h3_instances():
         demand_config=DemandConfig(
             seed=20,
             demand_periods=T,
-            period_weights=(0.169, 0.343, 0.488),   # <- observed weekday pattern, was np.random.dirichlet
+            period_weights=(0.4, 0.2, 0.4),   # <- from the scenario's model_parameters
             split_method="multinomial",
         ),
         budget_config=BudgetConfig(
-            total_budget=80000,                     # <- scenario budget
-            op_budget_ratio=0.025,                  # <- scenario operational ratio
+            total_budget=80000,               # <- scenario budget
+            op_budget_ratio=0.05,             # <- scenario operational ratio
         ),
     )
     ...
 ```
 
-`epsilon` is passed at run time (`NetworkDesignRun(epsilon=...)`), not edited.
-
-The period weights `(0.169, 0.343, 0.488)` are the observed weekday split over the
-model's three periods (06–10 / 10–16 / 16–22 local) — computed by
-`python -m demo.experiments.profiles` from `bike_trips.geojson`. All three scenarios share
-them so the designs differ only by money, which keeps the comparison honest.
-
-### Run and save (manual)
+`epsilon` is passed at run time (`NetworkDesignRun(epsilon=...)`), not edited. Run and save:
 
 ```bash
 pipenv run python - <<'PY'
@@ -91,48 +154,31 @@ import json, pathlib, sys
 sys.path.insert(0, "network-design-bss/sdk-builder")
 from sum_network_design_bss import NetworkDesignRun
 
-SCENARIO = "S2_balanced"                     # <- match the edit you made
+SCENARIO = "budget_080k"                     # <- match the edit you made
 run = NetworkDesignRun(epsilon=0.04).execute()
 
 out = pathlib.Path("demo/experiments/results") / SCENARIO
 out.mkdir(parents=True, exist_ok=True)
 (out / "stations.json").write_text(json.dumps(run.stations, indent=2))
-(out / "metrics.json").write_text(json.dumps(run.metrics, indent=2))
+(out / "metrics.json").write_text(json.dumps(run.experiment_row, indent=2))
 print("saved ->", out)
 PY
 ```
 
-### Revert (manual)
+Then revert:
 
 ```bash
 git checkout -- network-design-bss/src/instance_builder.py
 git diff HEAD -- 'network-design-bss/src/**/*.py'   # must print nothing
 ```
 
-## Then simulate and evaluate
+## Then evaluate (and, optionally, stress-test)
 
 ```bash
-python3 -m demo.experiments.simulate --stations demo/experiments/results/S2_balanced/stations.json --day monday
-python3 -m demo.experiments.simulate --stations demo/experiments/results/S2_balanced/stations.json --day sunday
-python3 -m demo.experiments.simulate --stations demo/experiments/results/S2_balanced/stations.json --day monday --mode instance --seeds 5
-python3 -m demo.experiments.evaluate demo/experiments/results/S1_essential \
-                               demo/experiments/results/S2_balanced \
-                               demo/experiments/results/S3_ambitious --compare-day monday
+python3 -m demo.experiments.evaluate demo/experiments/results/budget_080k --compare
+python3 -m demo.experiments.simulate --stations demo/experiments/results/budget_080k/stations.json --day monday   # optional: the replay stress test
 ```
 
-The `--mode instance` run above replays the model's own demand from
-`instance.json`, following the `model_plan.json` rebalancing plan and the
-`shared/bike_arcs.json` ride arcs written alongside `stations.json` and
-`metrics.json` when they are present (falling back to nearest-station choice,
-greedy rebalancing and haversine distance otherwise). It is the only
-simulated day sized the way the scenario was actually solved.
-
-## The human baseline
-
-For the "you vs the optimiser" moment of the demo, build the naive design at the same
-budget and push it through the same simulator:
-
-```bash
-python3 -m demo.experiments.baseline --budget 80000 --out demo/experiments/results/baseline_80k/stations.json
-python3 -m demo.experiments.simulate --stations demo/experiments/results/baseline_80k/stations.json --day monday
-```
+`evaluate.py` reads `model_plan.json` + `metrics.json` (+ `sim_monday.json` / `sim_sunday.json`
+when present) and writes `kpis.json` with three blocks — `paper`, `technical`, `stress_test` —
+described in [`README.md`](../README.md) and [`METHODS.md`](../METHODS.md).

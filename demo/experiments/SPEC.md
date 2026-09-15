@@ -1,5 +1,15 @@
 # SPEC — the decision experience: what was designed, from what, and what is assumed
 
+> **v3 (2026-09-15).** The demonstration was realigned with the submitted paper: primary
+> evaluation is now the optimisation model's own solution (served demand, PT-assisted share,
+> travel-time savings, layout, rebalancing — the paper's own definitions), not a simulated day;
+> the simulator's `sample`/`instance` modes, `baseline.py` and the CO₂/economics KPIs below are
+> deprecated (kept, not called, removed once the paper-grid runs are validated); the scenario set
+> is the paper's 18-run sensitivity grid (budget, operational ratio, ε, temporal profile) rather
+> than three budget-only points. The sections below record the original accounting and are kept
+> for history — they describe the demo as it stood before this change. Current method and
+> numbers: [`README.md`](README.md) and [`METHODS.md`](METHODS.md).
+
 Reference document for the demo layer built on 2026-09-04. It records how the design
 was derived from the repository, which numbers are real, which are assumptions, and
 which data is synthetic and still to be replaced. Companion documents:

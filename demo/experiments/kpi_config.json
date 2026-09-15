@@ -1,8 +1,7 @@
 {
   "_comment": "Every coefficient used by simulate.py and evaluate.py. Values marked PLACEHOLDER are demo defaults to recalibrate from the full one-year datasets or local surveys; sources are indicative, not citations.",
-
   "demand": {
-    "_comment": "Daily volumes are MEASURED, not set here: simulate.py reads them from data/calibration.json (built by trips.py from the observed bike_trips.geojson, ~11-12 trips/day). Larger volumes are explicit growth hypotheses passed as --scale; the labels below are the ones the demo presents. The behavioural parameters remain ASSUMED.",
+    "_comment": "Daily volumes are MEASURED, not set here: simulate.py reads them from data/calibration.json (built by trips.py from the observed bike_trips.geojson, ~11-12 trips/day). Larger volumes are explicit growth hypotheses passed as --scale; the labels below are the ones the demo presents. The behavioural parameters remain ASSUMED. Kept in v3: the replay stress test still reads the behavioural parameters below (walk catchment, retries, detour factor, ride speed). The growth_scenarios block is DEPRECATED (no \"x25\" in v3).",
     "growth_scenarios": {
       "observed": 1,
       "adoption_x10": 10,
@@ -13,48 +12,49 @@
     "ride_detour_factor": 1.3,
     "ride_speed_kmh": 20
   },
-
   "rebalancing": {
     "_comment": "dispatch_fixed_cost_eur and unit_cost_eur_per_bike_km are read at runtime from network-design-bss/src/util/cost.py (CostParameters.dispatch_fixed_cost, .rebalancing_unit_cost), not set here. truck_capacity_bikes (here) and, in the demand block, walk_catchment_m and ride_speed_kmh mirror network-design-bss/src/util/util.py (CAPACITY_REBALANCING_VEHICLE, WALK_CATCHMENT_RADIUS, RIDE_SPEED respectively) and are pinned by demo/experiments/tests/test_src_parity.py.",
-    "hours": [4],
+    "hours": [
+      4
+    ],
     "truck_capacity_bikes": 10
   },
-
   "costs": {
-    "_comment": "station_setup_cost_eur, dock_cost_eur and unit_bike_cost_eur are read at runtime from network-design-bss/src/util/cost.py (CostParameters), not set here, so simulated CAPEX can never silently drift from what the optimiser spent. truck_capacity_bikes (in rebalancing) and, in the demand block, walk_catchment_m and ride_speed_kmh mirror network-design-bss/src/util/util.py (CAPACITY_REBALANCING_VEHICLE, WALK_CATCHMENT_RADIUS, RIDE_SPEED respectively) and are pinned by demo/experiments/tests/test_src_parity.py.",
+    "_comment": "station_setup_cost_eur, dock_cost_eur and unit_bike_cost_eur are read at runtime from network-design-bss/src/util/cost.py (CostParameters), not set here, so simulated CAPEX can never silently drift from what the optimiser spent. truck_capacity_bikes (in rebalancing) and, in the demand block, walk_catchment_m and ride_speed_kmh mirror network-design-bss/src/util/util.py (CAPACITY_REBALANCING_VEHICLE, WALK_CATCHMENT_RADIUS, RIDE_SPEED respectively) and are pinned by demo/experiments/tests/test_src_parity.py. The three keys below (amortization_years, maintenance_eur_per_bike_per_day, fare_eur_per_trip) are DEPRECATED (demo v3, 2026-09-15): the v3 demonstration reports investment against served demand as the paper does, with no fare, maintenance or amortisation assumption; removed once the paper-grid runs are validated.",
     "amortization_years": 8,
     "maintenance_eur_per_bike_per_day": 0.5,
-    "fare_eur_per_trip": 2.0
+    "fare_eur_per_trip": 2.0,
+    "_deprecated": true
   },
-
   "mode_substitution": {
-    "_comment": "What a served bike-share trip replaces. PLACEHOLDER: mid-range of European bike-share user surveys (car share is deliberately conservative for a dense city centre). Must sum to 1.",
-    "car": 0.10,
+    "_comment": "What a served bike-share trip replaces. PLACEHOLDER: mid-range of European bike-share user surveys (car share is deliberately conservative for a dense city centre). Must sum to 1. DEPRECATED (demo v3, 2026-09-15): replaced by the paper's own evaluation (evaluate.paper_kpis reads the model's solved plan); no longer read by the demo, removed once the paper-grid runs are validated.",
+    "car": 0.1,
     "public_transport": 0.45,
     "walk": 0.35,
-    "induced_new_trip": 0.10
+    "induced_new_trip": 0.1,
+    "_deprecated": true
   },
-
   "unserved_fallback": {
-    "_comment": "What an unserved would-be rider does instead. Must sum to 1.",
+    "_comment": "What an unserved would-be rider does instead. Must sum to 1. DEPRECATED (demo v3, 2026-09-15): replaced by the paper's own evaluation (evaluate.paper_kpis reads the model's solved plan); no longer read by the demo, removed once the paper-grid runs are validated.",
     "car": 0.25,
     "public_transport": 0.55,
-    "walk_or_forgo": 0.20
+    "walk_or_forgo": 0.2,
+    "_deprecated": true
   },
-
   "emission_factors_g_per_pkm": {
-    "_comment": "Lifecycle gCO2e per passenger-km, mobitool-style Swiss values. Bike fleet factor is the observed mix: 75% mechanical (8 g) / 25% e-bike (25 g).",
+    "_comment": "Lifecycle gCO2e per passenger-km, mobitool-style Swiss values. Bike fleet factor is the observed mix: 75% mechanical (8 g) / 25% e-bike (25 g). DEPRECATED (demo v3, 2026-09-15): replaced by the paper's own evaluation (evaluate.paper_kpis reads the model's solved plan); no longer read by the demo, removed once the paper-grid runs are validated.",
     "car": 192,
     "bus": 105,
     "tram": 8,
     "public_transport_blend": 55,
     "bike_fleet": 12,
-    "walk": 0
+    "walk": 0,
+    "_deprecated": true
   },
-
   "equivalences": {
-    "_comment": "Broad-audience translations of kg CO2e.",
+    "_comment": "Broad-audience translations of kg CO2e. DEPRECATED (demo v3, 2026-09-15): replaced by the paper's own evaluation (evaluate.paper_kpis reads the model's solved plan); no longer read by the demo, removed once the paper-grid runs are validated.",
     "kg_co2_per_car_day": 12.6,
-    "kg_co2_per_tree_year": 25.0
+    "kg_co2_per_tree_year": 25.0,
+    "_deprecated": true
   }
 }

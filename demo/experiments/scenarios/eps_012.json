@@ -1,0 +1,25 @@
+{
+  "id": "eps_012",
+  "schema": "scenario-v3",
+  "family": "epsilon",
+  "role": "compare",
+  "title": "Strongest dispatch penalty",
+  "axis_label": "ε = 0.12",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table 3 aggregates epsilon 0.12; Fig. 6-8",
+  "model_parameters": {
+    "total_budget": 80000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.12,
+    "solve_mode": "integrated"
+  }
+}

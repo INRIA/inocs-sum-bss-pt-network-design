@@ -38,8 +38,12 @@ export function LayerToggles({
     return (
       <>
         {item('bike', <BikeSwatch color={C_EXISTING} />, t('leg.bike'))}
-        {kind === 'network' && item('transfer', <BikeSwatch color={C_TRANSFER} />, t('leg.transfer'))}
         {kind === 'network' && item('regular', <BikeSwatch color={C_REGULAR} />, t('leg.regular'))}
+        {kind === 'network' && item('transfer', <BikeSwatch color={C_TRANSFER} />, t('leg.transfer'))}
+        {/* the two per-period read-outs of the model's own solution (plan.md section 7) */}
+        {kind === 'network' &&
+          item('capacity', <i style={{ background: '#fff', border: `1.5px solid ${C_TRANSFER}` }} />, t('leg.capacity'))}
+        {kind === 'network' && item('inventory', <i style={{ background: C_TRANSFER, opacity: 0.55 }} />, t('leg.inventory'))}
       </>
     );
   }

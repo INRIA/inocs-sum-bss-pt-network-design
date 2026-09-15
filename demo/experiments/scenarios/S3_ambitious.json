@@ -1,13 +1,26 @@
 {
   "id": "S3_ambitious",
+  "schema": "scenario-v3",
+  "legacy": true,
+  "family": "budget",
+  "role": "card",
+  "card": "ambitious",
   "title": "Ambitious green transition",
+  "axis_label": "140 000 €",
+  "temporal_profile": "geneva_weekday",
+  "outside_paper_range": true,
+  "paper_reference": "Legacy demo v2 run: above Table 2's budget range (140 kEUR); superseded by budget_120k",
   "audience_pitch": "The city goes all in: bigger budget, double the operations money. Is it worth it?",
   "narrative": "Nearly every zone gets a station and rebalancing keeps them stocked, so almost no rider is turned away -- even on the Sunday leisure pattern. But the KPIs show diminishing returns: each additional euro buys fewer new served trips than in S2, and the cost per served trip rises. The lesson for the audience: 'more' is not automatically 'better spent', and quantifying that trade-off is exactly what the optimisation model is for.",
   "model_parameters": {
     "total_budget": 140000,
     "op_budget_ratio": 0.05,
     "demand_periods": 3,
-    "period_weights": [0.169, 0.343, 0.488],
+    "period_weights": [
+      0.169,
+      0.343,
+      0.488
+    ],
     "split_method": "multinomial",
     "seed": 20,
     "epsilon": 0.04,

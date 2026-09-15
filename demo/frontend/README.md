@@ -1,7 +1,8 @@
 # Demo front-end — "Where should the bikes live?"
 
-Static Astro + React site for the SUM / INOCS (Inria) Geneva living lab: a four-screen decision
-game about bike-sharing network design integrated with public transport.
+Static Astro + React site for the SUM / INOCS (Inria) Geneva living lab: a five-step decision
+experience about bike-sharing network design integrated with public transport, built around the
+four questions the submitted paper's sensitivity analysis answers.
 
 Deployed to GitHub Pages from `main`: <https://inria.github.io/inocs-sum-bss-pt-network-design/>
 
@@ -33,35 +34,42 @@ The single source of truth is the Python experiment layer — **nothing here is 
 copy**:
 
 ```
-demo/experiments/scenarios/<id>.json          narrative + model parameters (screen C)
-demo/experiments/results/<id>/*.json          stations, kpis, sim_<day> (screens C badge, D)
+demo/experiments/scenarios/<id>.json          narrative + model parameters (step 3 cards)
+demo/experiments/results/<id>/stations.json   the design (required)
+demo/experiments/results/<id>/kpis.json       paper / technical / stress_test KPI blocks (required)
+demo/experiments/results/<id>/model_plan.json per-period inventories, for the map (required)
+demo/experiments/results/<id>/metrics.json    the full model evaluator row (optional, advanced view)
+demo/experiments/results/<id>/sim_monday.json, sim_sunday.json   the replay stress test (optional)
 demo/experiments/data/geneva_1.5km-radius/*   grid, stops, bike stations, trips, POIs, GTFS shapes
+demo/experiments/data/profiles.json           period weights / hourly profiles, for step 2's day view
 demo/experiments/data/pt_ridership_summary.json
 ```
 
 `scripts/prepare-data.mjs` reads those, slims them, and writes the **gitignored** tree
-`public/data/` plus a `manifest.json`. `src/lib/data.ts` then reads `public/data/` at build time,
-projects every coordinate into the fixed 360×300 map frame, and hands one small payload to the
-React island. The client does no geodesy and never downloads the 10 MB `ridership.geojson`.
+`public/data/` plus a `manifest.json`. Per scenario it also derives `plan_slim.json`
+(`{ periods, stations: [{ id, type, lon, lat, capacity, inventory[] }] }`) from `model_plan.json`
+— built stations only, so the ~1 MB solved plan is never shipped to the client. `src/lib/data.ts`
+then reads `public/data/` at build time, projects every coordinate into the fixed map frame, and
+hands one small payload to the React island. The client does no geodesy and never downloads the
+10 MB `ridership.geojson`.
 
 ### Adding a scenario = zero code changes
 
-Drop `demo/experiments/results/S4_whatever/` (with `stations.json`, `kpis.json`,
-`sim_monday.json`, `sim_sunday.json`, `sim_monday_x25.json`, and optionally `sim_instance.json`
-for the *Average* day — the optimiser's own planning day) and
-`demo/experiments/scenarios/S4_whatever.json`, then rebuild. It appears as a card on step C, and as
-a pill plus a compare-table column on step D. Copy falls back to the scenario JSON's own English
-text until `scen.S4_whatever.*` keys are added to `src/i18n/*.json`.
+Drop a `demo/experiments/results/<id>/` with `stations.json`, `kpis.json` and `model_plan.json`
+(`metrics.json` and the `sim_<day>.json` stress-test files are optional — their absence just
+hides the advanced-view rows and the stress-test panel that need them) and a matching
+`demo/experiments/scenarios/<id>.json`, then rebuild. A `role: "card"` scenario appears as a card
+on step 3; every scenario (card or `compare`) appears in step 5's comparison. Copy falls back to
+the scenario JSON's own English text (`title`, `audience_pitch`, `narrative`) until
+`scen.<id>.*` keys are added to `src/i18n/*.json`.
 
-A results folder that is missing a required file, or that has no matching `scenarios/<id>.json`, is
-**skipped with a warning** — the scenario is hidden, the build still succeeds.
+A results folder that is missing a required file, or that has no matching `scenarios/<id>.json`,
+is **skipped with a warning** — the scenario is hidden, the build still succeeds.
 
 ### Regenerating results
 
-Overwrite `demo/experiments/results/<id>/*.json` (real Gurobi runs replacing the placeholders) and
-rebuild. The "◌ Preliminary — placeholder results" badge is driven by
-`stations.json → placeholder` and `kpis.json → placeholder_model_results`: when those flip to
-`false`, the badge disappears on its own.
+Overwrite `demo/experiments/results/<id>/*.json` (a new Gurobi run, or a re-run evaluation) and
+rebuild.
 
 ## Editing the copy
 
@@ -69,13 +77,25 @@ rebuild. The "◌ Preliminary — placeholder results" badge is driven by
 of the demo. `{braces}` are filled from the data. A key missing in `fr.json` falls back to English;
 a key missing in both renders as the raw key (so it is obvious in development).
 
+## The five steps
+
+Header tabs, not a wizard: **The questions · The city · Choose a plan · The results · Compare
+plans**. Each tab shows its number and title, the selected one also its subtitle; on mobile the
+tabs stay horizontal (title under the number, subtitle under the selected tab only). The four
+questions the paper's sensitivity analysis answers (investment/diminishing returns, PT
+integration, trucks vs docks, the rhythm of the day) are introduced in step 1 and answered one
+per card in step 5, each with a "Show the proof" chart. An **"Advanced view" header toggle**
+reveals the full technical metrics table (objective value, MIP gap, solve time, variables and
+constraints, covered OD pairs, compactness, fill ratio by station type, …) in steps 4 and 5,
+alongside the headline tiles a general audience reads.
+
 ## The layout
 
-One fixed viewport, no page scroll (`ux-plan-v2.md`). On a presentation screen (≥ 980px) the left
-column is a step accordion — the open step fills it, played steps collapse to a one-line
-conclusion — and the map sits permanently on the right. Below 980px the map goes full-bleed and the
-same accordion becomes a draggable bottom sheet (peek / half / full). `→` `←` move between steps,
-`space` plays the day, `Esc` closes a modal.
+One fixed viewport, no page scroll. On a presentation screen (≥ 980px) the header carries the
+step tabs, the left column holds only the current step's content, and the map sits permanently
+on the right. Below 980px the map goes full-bleed and the step content becomes a draggable
+bottom sheet (peek / half / full). `→` `←` move between steps, `space` plays the day, `Esc`
+closes a modal.
 
 ## The map
 
@@ -92,7 +112,11 @@ toggle; on mobile the same list lives in the "Layers" popover. Everything on the
 | PT stop bubbles, hourly Mon/Sun profile | aggregated from `ridership.geojson` at prep time |
 | Existing bike stations | `bike_stations.geojson` (139 Donkey locations) |
 | Landmarks | `pois.geojson` |
-| New stations | `results/<id>/stations.json` |
+| New stations: regular vs transfer, sized by **capacity** (on by default) | `results/<id>/plan_slim.json`, from `model_plan.json` |
+| New stations: **bikes in stock** per period (off by default) | `results/<id>/plan_slim.json`'s per-station `inventory[]` |
+
+Steps 4–5 show a period control (06h / 10h / 16h / 22h, the model's own three periods) once a
+plan is built, driving the bikes-in-stock layer's fill.
 
 `src/data/basemap.geojson` is **committed**; the build never touches the network. Refresh it only
 when needed:
@@ -115,11 +139,8 @@ docker build -f demo/frontend/Dockerfile -t sum-bike-demo .
 docker run --rm -p 8080:80 sum-bike-demo
 ```
 
-## Design sources
+## Design history
 
-- `.specs/demo-game/designer/ux-plan.md` — screen specs, tokens, map spec, i18n, honesty rules
-- `.specs/demo-game/designer/mockup.html` — the validated visual reference
-- `.specs/demo-game/designer/ux-plan-v2.md` — the fullscreen presentation layout + mobile sheet mode
-  (supersedes v1 on transitions, animations and responsive behaviour)
-- `.specs/demo-game/designer/mockup_v2.html` — the validated v2 visual reference
-- `.specs/demo-game/engineer/structure-plan.md` — the data-flow decision implemented here
+Screen specs, mockups and the data-flow decision behind this front end are kept as local design
+notes outside version control, not in this repository; this README and [`AGENTS.md`](../../AGENTS.md)
+are the maintained reference for how the site is built and where its data comes from.

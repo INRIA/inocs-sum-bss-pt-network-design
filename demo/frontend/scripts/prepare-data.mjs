@@ -8,15 +8,22 @@
  *
  *   ../experiments/scenarios/<id>.json              -> public/data/scenarios/<id>.json   (copy)
  *   ../experiments/results/<id>/*.json              -> public/data/results/<id>/*.json   (copy)
+ *   ../experiments/results/<id>/model_plan.json     -> public/data/results/<id>/plan_slim.json (slim)
  *   ../experiments/data/geneva_1.5km-radius/*       -> public/data/city/*                (slim)
  *   ../experiments/data/pt_ridership_summary.json   -> public/data/city/pt_summary.json  (copy)
+ *   ../experiments/data/profiles.json               -> public/data/city/profiles.json    (copy)
  *   (all of the above)                              -> public/data/manifest.json         (index)
  *
- * Rules:
- *  - Never hardcode a scenario id. Scenarios are DISCOVERED by listing results subfolders, so adding a
- *    fourth scenario folder requires zero front-end code changes.
- *  - A results folder missing a required file is SKIPPED with a warning (scenario hidden, no
- *    crash). Missing city inputs fail the build loudly — they are repo-wide prerequisites.
+ * Rules (demo v3, .specs/demo-v3/implementation.md sections 0.2 and 0.5):
+ *  - Never hardcode a scenario id. The manifest lists EVERY `scenarios/<id>.json` that carries the
+ *    v3 fields, and marks which of them already have results, so the compare step can draw the
+ *    runs that are still pending. Adding a scenario is a JSON file, never a code change.
+ *  - A scenario JSON without the v3 fields (`schema`, `family`, `role`, `model_parameters`) is
+ *    SKIPPED with a warning; a results folder missing a required file leaves the scenario in the
+ *    manifest as "no results yet" instead of hiding it. Missing city inputs fail the build loudly —
+ *    they are repo-wide prerequisites.
+ *  - The 1 MB model_plan.json is NEVER shipped: only the built stations, with their per-period
+ *    inventories, are extracted into plan_slim.json.
  *  - The 10 MB ridership.geojson is NEVER shipped: it is aggregated here into a ~30 KB
  *    per-stop hourly profile layer.
  */
@@ -30,10 +37,15 @@ const EXP = resolve(ROOT, '../experiments'); // demo/experiments
 const CITY_SRC = join(EXP, 'data/geneva_1.5km-radius');
 const OUT = join(ROOT, 'public/data');
 
-const REQUIRED_RESULTS = ['stations.json', 'kpis.json', 'sim_monday.json', 'sim_sunday.json', 'sim_monday_x25.json'];
-// sim_instance.json is optional: a results folder solved before the instance mode existed still
-// shows its three observed/hypothesis days instead of being hidden.
-const OPTIONAL_RESULTS = ['metrics.json', 'sim_instance.json'];
+/** v3 contract (implementation.md section 0.5): the model's own solution is the evaluation. */
+const REQUIRED_RESULTS = ['stations.json', 'kpis.json', 'model_plan.json'];
+// metrics.json is the full evaluator row; the two sim_<day> files only back the advanced
+// "stress test with observed trips" block, so a scenario without them still renders everything else.
+const OPTIONAL_RESULTS = ['metrics.json', 'sim_monday.json', 'sim_sunday.json'];
+/** Copied verbatim to public/data/results/<id>/ ; model_plan.json is slimmed instead. */
+const COPIED_RESULTS = ['stations.json', 'kpis.json', ...OPTIONAL_RESULTS];
+/** The v3 scenario fields a front-end scenario cannot be built without. */
+const SCENARIO_FIELDS = ['family', 'role', 'model_parameters'];
 /** How many PT stops the live map shows (design decision, see ux-plan §2). */
 const TOP_STOPS = 40;
 
@@ -63,48 +75,90 @@ mkdirSync(OUT, { recursive: true });
 const resultsDir = requireFile(join(EXP, 'results'), 'demo/experiments/results/');
 const scenarioDir = requireFile(join(EXP, 'scenarios'), 'demo/experiments/scenarios/');
 
-const candidates = readdirSync(resultsDir, { withFileTypes: true })
-  .filter((d) => d.isDirectory())
-  .map((d) => d.name)
+/**
+ * Discovery is driven by the SCENARIO files, not by the results folders: the compare step has to
+ * know about the runs that do not exist yet (they are drawn as "run pending" marks).
+ */
+const scenarioFiles = readdirSync(scenarioDir)
+  .filter((f) => f.endsWith('.json'))
   .sort();
 
+/** model_plan.json (~1 MB) -> the built stations and their per-period inventories only. */
+function slimPlan(plan) {
+  const stations = (plan.stations ?? [])
+    .filter((s) => s.built === true)
+    .map((s) => ({
+      id: s.id,
+      type: s.type,
+      lon: r5(Number(s.lon)),
+      lat: r5(Number(s.lat)),
+      capacity: Number(s.capacity),
+      inventory: (s.inventory ?? []).map((v) => Number(v)),
+    }));
+  return { periods: Number(plan.periods ?? 0), stations };
+}
+
 const scenarios = [];
-for (const id of candidates) {
+for (const file of scenarioFiles) {
+  const id = file.replace(/\.json$/, '');
+  const scenario = readJSON(join(scenarioDir, file));
+  const missingFields = SCENARIO_FIELDS.filter((k) => scenario[k] == null);
+  if (scenario.id !== id || missingFields.length) {
+    warnings.push(
+      `scenarios/${file}: skipped — ${scenario.id !== id ? `id "${scenario.id}" does not match the file name` : `missing ${missingFields.join(', ')} (schema ${scenario.schema ?? 'unset'})`}`
+    );
+    continue;
+  }
+
   const dir = join(resultsDir, id);
-  const missing = REQUIRED_RESULTS.filter((f) => !existsSync(join(dir, f)));
-  if (missing.length) {
-    warnings.push(`results/${id}: skipped — missing ${missing.join(', ')}`);
-    continue;
+  const missing = existsSync(dir) ? REQUIRED_RESULTS.filter((f) => !existsSync(join(dir, f))) : REQUIRED_RESULTS;
+  const hasResults = missing.length === 0;
+  if (!hasResults && existsSync(dir)) {
+    warnings.push(`results/${id}: incomplete — missing ${missing.join(', ')}; listed as a pending run`);
   }
-  const scenarioFile = join(scenarioDir, `${id}.json`);
-  if (!existsSync(scenarioFile)) {
-    warnings.push(`results/${id}: skipped — no scenarios/${id}.json (narrative + parameters required for the game)`);
-    continue;
-  }
-  const scenario = readJSON(scenarioFile);
-  const stations = readJSON(join(dir, 'stations.json'));
-  const kpis = readJSON(join(dir, 'kpis.json'));
 
   writeJSON(join(OUT, 'scenarios', `${id}.json`), scenario);
   const files = {};
-  for (const f of [...REQUIRED_RESULTS, ...OPTIONAL_RESULTS]) {
-    const src = join(dir, f);
-    if (!existsSync(src)) continue;
-    writeJSON(join(OUT, 'results', id, f), readJSON(src));
-    files[f.replace('.json', '')] = `results/${id}/${f}`;
+  let kpis = null;
+  if (hasResults) {
+    for (const f of COPIED_RESULTS) {
+      const src = join(dir, f);
+      if (!existsSync(src)) continue;
+      writeJSON(join(OUT, 'results', id, f), readJSON(src));
+      files[f.replace('.json', '')] = `results/${id}/${f}`;
+    }
+    const slim = slimPlan(readJSON(join(dir, 'model_plan.json')));
+    writeJSON(join(OUT, 'results', id, 'plan_slim.json'), slim);
+    files.plan_slim = `results/${id}/plan_slim.json`;
+    kpis = readJSON(join(dir, 'kpis.json'));
+    if (kpis.schema !== 'kpis-v3') {
+      warnings.push(`results/${id}: kpis.json schema is "${kpis.schema ?? 'unset'}", expected "kpis-v3"`);
+    }
   }
+
   scenarios.push({
     id,
     title: scenario.title ?? id,
+    family: scenario.family,
+    role: scenario.role,
+    card: scenario.card ?? null,
+    legacy: scenario.legacy === true,
+    axis_label: scenario.axis_label ?? null,
+    temporal_profile: scenario.temporal_profile ?? null,
+    outside_paper_range: scenario.outside_paper_range === true,
+    paper_reference: scenario.paper_reference ?? null,
+    has_results: hasResults,
     files,
-    placeholder: stations.placeholder === true || kpis.placeholder_model_results === true,
-    days: Object.keys(kpis.days ?? {}),
+    stress_days: kpis ? Object.keys(kpis.stress_test ?? {}) : [],
   });
 }
 
 if (!scenarios.length) {
-  console.error('\n[prepare-data] FATAL: no usable scenario found under demo/experiments/results/\n');
+  console.error('\n[prepare-data] FATAL: no usable scenario found under demo/experiments/scenarios/\n');
   process.exit(1);
+}
+if (!scenarios.some((s) => s.has_results)) {
+  warnings.push('no scenario has results yet — the demo will render its "no results" state');
 }
 
 // ---------------------------------------------------------------- city layers
@@ -274,6 +328,16 @@ const city = {};
   city.ridership_stops = { path: 'city/ridership_stops.geojson', features: features.length, source_stops: all.length };
 }
 
+/**
+ * profiles.json — the observed temporal profiles the model's period weights come from. Step 2
+ * reads `period_weights` (weekday / sunday) and `period_bounds_local` from it.
+ */
+{
+  const src = readJSON(requireFile(join(EXP, 'data/profiles.json'), 'profiles.json'));
+  writeJSON(join(OUT, 'city/profiles.json'), src);
+  city.profiles = { path: 'city/profiles.json', periods: (src.period_bounds_local ?? []).length };
+}
+
 /** pt_ridership_summary.json — city-wide daily totals + hourly shares + peak hours. */
 {
   const src = readJSON(requireFile(join(EXP, 'data/pt_ridership_summary.json'), 'pt_ridership_summary.json'));
@@ -299,7 +363,12 @@ const total = (function du(d) {
   );
 })(OUT);
 
-console.log(`[prepare-data] ${scenarios.length} scenario(s): ${scenarios.map((s) => s.id).join(', ')}`);
+const withResults = scenarios.filter((s) => s.has_results);
+console.log(
+  `[prepare-data] ${scenarios.length} scenario(s), ${withResults.length} with results: ${withResults.map((s) => s.id).join(', ') || '(none)'}`
+);
+const pending = scenarios.filter((s) => !s.has_results);
+if (pending.length) console.log(`[prepare-data] pending runs: ${pending.map((s) => s.id).join(', ')}`);
 console.log(
   `[prepare-data] city layers: grid ${city.grid.features} · stops ${city.stops.features} · bikes ${city.bike_stations.features} · ` +
     `PT lines ${city.pt_lines.features} · stop profiles ${city.ridership_stops.features} · POIs ${city.pois?.features ?? 0}`

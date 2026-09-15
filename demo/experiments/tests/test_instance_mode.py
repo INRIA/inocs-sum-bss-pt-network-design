@@ -16,6 +16,14 @@ values can be read off the fixture rather than off a previous run:
 The fixture hourly profile puts all its weight on 08h and 17h, so a trip in
 period 0 (06-10) can only land at 08h and one in period 2 (16-22) only at
 17h: the drawn hour is pinned without pinning the RNG's internals.
+
+
+DEPRECATED (demo v3, 2026-09-15): the simulator's `instance` mode is
+replaced by reading `model_plan.json` directly (`evaluate.paper_kpis`) --
+re-simulating the planning day cannot reproduce the model's own result;
+this whole module is skipped, and removed once the paper-grid runs are
+validated. The tests stay so their pins come back with the code if the
+decision is reversed.
 """
 
 import unittest
@@ -25,6 +33,15 @@ from demo.experiments.simulate import (PERIOD_START_HOURS, DaySimulation,
                                        instance_run, instance_trips)
 
 import random
+
+#: Why nothing in this module runs any more.
+DEPRECATED = ("DEPRECATED (demo v3, 2026-09-15): the simulator's instance "
+              "mode is replaced by reading model_plan.json directly "
+              "(evaluate.paper_kpis); removed once the paper-grid runs are "
+              "validated.")
+
+raise unittest.SkipTest(DEPRECATED)
+
 
 #: Two zones, ~556 m apart on the same meridian.
 CELL_A = (46.2000, 6.1400)

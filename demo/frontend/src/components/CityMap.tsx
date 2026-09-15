@@ -16,6 +16,8 @@ interface Props {
   hour: number;
   layers: Layers;
   stations?: StationMarker[];
+  /** index of the inventory snapshot the "bikes in stock" layer reads (06h / 10h / 16h / 22h) */
+  period?: number;
   /** changes on scenario switch -> replays the station drop-in stagger (ux-plan section 9.4) */
   dropKey?: number;
   svgRef: RefObject<SVGSVGElement | null>;
@@ -70,6 +72,7 @@ export default function CityMap({
   hour,
   layers,
   stations,
+  period = 0,
   dropKey = 0,
   svgRef,
   viewBox,
@@ -88,7 +91,7 @@ export default function CityMap({
       viewBox={viewBox}
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-label={t(`${kind === 'network' ? 'd' : kind === 'live' ? 'b' : 'a'}.map.alt`)}
+      aria-label={t(`map.alt.${kind}`)}
     >
       <defs>
         <clipPath id={clip}>
@@ -187,27 +190,44 @@ export default function CityMap({
           </g>
         )}
 
-        {/* the new station network (effect) — transfer and regular are independent layers */}
+        {/* The plan's stations. Regular and transfer are independent layers; on top of the glyph,
+            two read-outs the model itself produced: CAPACITY (circle = docks, on by default) and
+            BIKES IN STOCK (filled circle = v_{i,t} at the selected period boundary, off by
+            default). With capacity off and stock on, the circle is sized by the bikes present. */}
         {kind === 'network' && stations && (
           <g key={dropKey}>
             {stations
               .filter((s) => (s.transfer ? layers.transfer : layers.regular))
-              .map((s, i) => (
-                <BikeGlyph
-                  key={i}
-                  x={s.x}
-                  y={s.y}
-                  s={s.transfer ? 1.1 : 0.85}
-                  color={s.transfer ? C_TRANSFER : C_REGULAR}
-                  halo
-                  drop
-                  delay={`${i * 14}ms`}
-                >
-                  <title>{`${s.transfer ? t('leg.transfer') : t('leg.regular')} — ${s.capacity} ${t(
-                    'd.n.docks'
-                  )}, ${s.bikes} ${t('d.n.bikes')}`}</title>
-                </BikeGlyph>
-              ))}
+              .map((s, i) => {
+                const color = s.transfer ? C_TRANSFER : C_REGULAR;
+                const r = 2.2 + Math.sqrt(Math.max(0, s.capacity)) * 0.75;
+                const inv = s.inventory[period] ?? s.inventory[0] ?? 0;
+                const ri = layers.capacity
+                  ? r * Math.sqrt(s.capacity > 0 ? Math.min(1, inv / s.capacity) : 0)
+                  : 2.2 + Math.sqrt(Math.max(0, inv)) * 0.75;
+                const decorated = layers.capacity || layers.inventory;
+                return (
+                  <g
+                    key={i}
+                    transform={`translate(${s.x},${s.y})`}
+                    className="drop"
+                    style={{ animationDelay: `${i * 14}ms` }}
+                  >
+                    {layers.capacity && <circle r={r} fill="#fff" fillOpacity={0.9} stroke={color} strokeWidth={1.4} />}
+                    {layers.inventory && <circle r={ri} fill={color} opacity={0.5} />}
+                    <BikeGlyph
+                      x={0}
+                      y={0}
+                      s={decorated ? 0.5 : s.transfer ? 1.1 : 0.85}
+                      color={color}
+                      halo={!decorated}
+                    />
+                    <title>{`${s.transfer ? t('leg.transfer') : t('leg.regular')} — ${s.capacity} ${t(
+                      'leg.docks'
+                    )}, ${inv} ${t('leg.bikes')}`}</title>
+                  </g>
+                );
+              })}
           </g>
         )}
       </g>

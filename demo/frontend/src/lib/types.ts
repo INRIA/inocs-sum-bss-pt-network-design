@@ -2,8 +2,22 @@ export type GlyphKey = 'rail' | 'uni' | 'hosp' | 'land' | 'mkt' | 'old';
 export type Weekday = 'mon' | 'sun';
 export type Lang = 'en' | 'fr';
 
-/** Every legend item is a layer toggle (ux-plan-v2 section 4.2); the state is global and persists. */
-export type LayerKey = 'stops' | 'tram' | 'bus' | 'rail' | 'poi' | 'bike' | 'transfer' | 'regular';
+/**
+ * Every legend item is a layer toggle (ux-plan-v2 section 4.2); the state is global and persists
+ * across steps. `capacity` / `inventory` are the two v3 station read-outs: docks (on by default)
+ * and bikes in stock per model period (off by default).
+ */
+export type LayerKey =
+  | 'stops'
+  | 'tram'
+  | 'bus'
+  | 'rail'
+  | 'poi'
+  | 'bike'
+  | 'transfer'
+  | 'regular'
+  | 'capacity'
+  | 'inventory';
 export type Layers = Record<LayerKey, boolean>;
 
 export interface PoiMarker {
@@ -47,53 +61,105 @@ export interface MapData {
   stops: StopBubble[];
 }
 
+/** One built station of a plan: projected once, carrying the model's own per-period inventory. */
 export interface StationMarker {
   x: number;
   y: number;
   transfer: boolean;
   capacity: number;
-  bikes: number;
+  /** `v_{i,t}` at each period boundary (length = periods + 1). */
+  inventory: number[];
 }
 
-export interface DayData {
-  /** verbatim `kpis.json -> days.<day>` */
-  kpi: any;
-  hourly: { demand: number[]; served: number[]; empty: number[]; full: number[] };
-  rebalancing: { bikes_moved: number; truck_dispatches: number; cost_eur: number };
-  /** verbatim `sim_<day>.json -> method` */
-  method: any;
+/** kpis.json -> `paper` (implementation.md section 0.4). A key the run did not produce is null. */
+export interface PaperKpis {
+  demandTotal: number;
+  servedTotal: number;
+  servedRatio: number;
+  demandByPeriod: number[];
+  servedByPeriod: number[];
+  bikeOnlyByPeriod: number[];
+  bikePtByPeriod: number[];
+  flowBikeOnly: number;
+  flowBikePt: number;
+  ptAssistedShare: number;
+  avgTimeGainMin: number;
+  avgTravelTimeMin: number;
+  timeSavingRatio: number;
+  stations: number;
+  nReg: number;
+  nTrans: number;
+  docks: number;
+  bikes: number;
+  capexUsedEur: number;
+  budgetEur: number;
+  opBudgetEur: number;
+  dispatches: number;
+  bikesRebalanced: number;
+  dispatchCostEur: number;
+  investmentPerServedTripEur: number;
+  coveredOdRatio: number;
+  odPairsTotal: number;
+  odPairsCovered: number;
+  nearestNeighborM: number | null;
+  meanPairwiseM: number | null;
+}
+
+/** kpis.json -> `stress_test.<day>` — the demo-side replay of the trips Geneva actually recorded. */
+export interface StressDay {
+  day: string;
+  demand: number;
+  served: number;
+  servedRatio: number;
+  noStation: number;
+  noBike: number;
+  noDock: number;
+  peakEmpty: number;
+  peakFull: number;
+  nDaysReplayed: number;
+  representativeDate: string;
+}
+
+export interface ScenarioParams {
+  budget: number;
+  opsRatio: number;
+  epsilon: number;
+  solveMode: string;
+  demandPeriods: number;
+  periodWeights: number[];
+  splitMethod: string;
+  seed: number;
 }
 
 export interface ScenarioData {
   id: string;
-  short: string;
-  /** Fallbacks used when no `scen.<id>.*` i18n key exists (a brand-new scenario folder). */
-  fallback: {
-    name: string;
-    pitch: string;
-    narrative: string;
-    expect: { service: string; environment: string; economics: string };
-  };
-  highlight: boolean;
-  params: {
-    budget: number;
-    opsRatio: number;
-    epsilon: number;
-    solveMode: string;
-    demandPeriods: number;
-    periodWeights: number[];
-    splitMethod: string;
-  };
-  capexBudget: number;
-  capexSpent: number;
-  placeholder: boolean;
-  provenance: string;
-  placeholderNote: string;
+  /** "baseline" | "budget" | "ops_ratio" | "epsilon" | "rhythm" */
+  family: string;
+  /** "card" | "compare" */
+  role: string;
+  /** cards only: "essential" | "reference" | "ambitious" */
+  card: string | null;
+  legacy: boolean;
+  /** the run exists on disk; false = a scenario the notebook has still to solve */
+  hasResults: boolean;
+  axisLabel: string;
+  temporalProfile: string;
+  outsidePaperRange: boolean;
+  paperReference: string;
+  params: ScenarioParams;
+  /** Fallbacks used when no `scen.<id>.*` i18n key exists (a brand-new scenario file). */
+  fallback: { name: string; pitch: string; narrative: string };
+  paper: PaperKpis | null;
+  /** kpis.json -> `technical`, verbatim: the model's own ExperimentRow keys. */
+  technical: Record<string, number | string | null>;
+  stressTest: StressDay[];
   stations: StationMarker[];
-  transferCount: number;
-  /** keyed by the day ids found in kpis.json: monday | sunday | monday_x25 | ... */
-  days: Record<string, DayData>;
-  dayIds: string[];
+  /** model periods (T) and the local hour of each inventory snapshot, e.g. [6, 10, 16, 22]. */
+  periods: number;
+  periodHours: number[];
+  capexBudget: number;
+  provenance: string;
+  ranAt: string;
 }
 
 export interface GameData {
@@ -107,8 +173,10 @@ export interface GameData {
     bikeTrips: number;
     medianTripKm: number;
     ptBoardings: Record<string, number>;
+    /** profiles.json — observed period weights per day type, and the period boundaries. */
+    periodWeights: Record<string, number[]>;
+    periodBounds: number[][];
+    tripsPerDayObserved: Record<string, number>;
   };
-  /** min/max of operating_result_eur_per_day across every scenario x every day (ux-plan section 4). */
-  opRange: { min: number; max: number };
   warnings: string[];
 }
