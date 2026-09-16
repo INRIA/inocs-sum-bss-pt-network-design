@@ -27,13 +27,16 @@ Everything else is the frozen code, called with the arguments
 Or from a shell:
 
     python -m demo.experiments.run_model budget_080k rhythm_uniform
-    python -m demo.experiments.run_model --write-scenarios   # generate, run nothing
+    python -m demo.experiments.run_model --write-scenarios               # generate all, run nothing
+    python -m demo.experiments.run_model --write-scenarios budget_020k   # generate one
 
 The scenarios themselves are generated, not hand-written: :data:`PAPER_GRID`
 is the single definition of the 18 runs the demonstration is built on (the
 paper's budget, operational-ratio, epsilon and temporal-profile axes around
 its Table D.8 baseline), and :func:`write_scenarios` turns it into
-`scenarios/<id>.json`. Existing files are kept unless `--overwrite` is
+`scenarios/<id>.json`. By default the whole grid is generated; pass scenario
+ids (`ids=[...]` in Python, positional arguments on the command line) to
+regenerate only those. Existing files are kept unless `--overwrite` is
 passed, so copy edited in place survives a regeneration.
 
 Cost note: the shortest-path enumeration is the expensive stage (~50 min cold) and
@@ -454,15 +457,42 @@ def scenario_document(entry):
     return document
 
 
-def paper_scenarios():
-    """Every scenario of :data:`PAPER_GRID`, as complete documents.
+def grid_entries(ids=None):
+    """The entries of :data:`PAPER_GRID` to work on.
 
-    :return: list of 18 scenario dicts, in grid order.
+    This is the one place a scenario selection is resolved, so the notebook,
+    :func:`write_scenarios` and the command line agree on what "all" and
+    "only these" mean.
+
+    :param ids: scenario ids to select (any iterable of strings), or None
+        for the whole grid. A single id may be passed as a plain string.
+    :return: the matching grid entries, in grid order, without duplicates.
+    :raises KeyError: if an id is not in the grid.
     """
-    return [scenario_document(entry) for entry in PAPER_GRID]
+    if ids is None:
+        return list(PAPER_GRID)
+    if isinstance(ids, str):
+        ids = [ids]
+    wanted = set(ids)
+    known = {entry["id"] for entry in PAPER_GRID}
+    unknown = sorted(wanted - known)
+    if unknown:
+        raise KeyError(f"not in PAPER_GRID: {', '.join(unknown)}; "
+                       f"known: {', '.join(entry['id'] for entry in PAPER_GRID)}")
+    return [entry for entry in PAPER_GRID if entry["id"] in wanted]
 
 
-def write_scenarios(out_dir=SCENARIOS_DIR, overwrite=False):
+def paper_scenarios(ids=None):
+    """Scenarios of :data:`PAPER_GRID`, as complete documents.
+
+    :param ids: scenario ids to select, or None (default) for the whole grid;
+        see :func:`grid_entries`.
+    :return: list of scenario dicts, in grid order (18 for the whole grid).
+    """
+    return [scenario_document(entry) for entry in grid_entries(ids)]
+
+
+def write_scenarios(out_dir=SCENARIOS_DIR, overwrite=False, ids=None):
     """Write the paper grid to `<out_dir>/<id>.json`, one file per run.
 
     The files are what the notebook, the evaluator and the front end read;
@@ -473,12 +503,14 @@ def write_scenarios(out_dir=SCENARIOS_DIR, overwrite=False):
 
     :param out_dir: directory to write into (default: `scenarios/`).
     :param overwrite: rewrite files that already exist.
+    :param ids: scenario ids to (re)generate, or None (default) for the whole
+        grid -- e.g. `ids=["budget_020k"]` touches that one file only.
     :return: list of the paths written (skipped files are not included).
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     written, skipped = [], []
-    for document in paper_scenarios():
+    for document in paper_scenarios(ids):
         path = out_dir / f"{document['id']}.json"
         if path.exists() and not overwrite:
             skipped.append(path)
@@ -827,21 +859,28 @@ def main(argv=None):
     parser.add_argument("scenarios", nargs="*", default=None,
                         help="scenario ids to run; default: every scenario in "
                              "scenarios/ (the paper grid plus the legacy "
-                             "designs), which is a Gurobi solve each")
+                             "designs), which is a Gurobi solve each. With "
+                             "--write-scenarios: the grid ids to generate; "
+                             "default: the whole grid")
     parser.add_argument("--out-dir", default=None,
                         help="write here instead of results/<scenario_id>/")
     parser.add_argument("--quiet", action="store_true", help="suppress stage logs")
     parser.add_argument("--write-scenarios", action="store_true",
-                        help="write the paper grid to scenarios/<id>.json and "
-                             "exit without running anything")
+                        help="write the paper grid (or only the ids given) to "
+                             "scenarios/<id>.json and exit without running "
+                             "anything")
     parser.add_argument("--overwrite", action="store_true",
                         help="--write-scenarios: rewrite files that exist "
                              "(discards hand-edited copy)")
     args = parser.parse_args(argv)
 
     if args.write_scenarios:
-        write_scenarios(out_dir=args.out_dir or SCENARIOS_DIR,
-                        overwrite=args.overwrite)
+        try:
+            write_scenarios(out_dir=args.out_dir or SCENARIOS_DIR,
+                            overwrite=args.overwrite,
+                            ids=args.scenarios or None)
+        except KeyError as exc:
+            parser.error(exc.args[0])
         return 0
 
     ids = args.scenarios or available_scenarios()

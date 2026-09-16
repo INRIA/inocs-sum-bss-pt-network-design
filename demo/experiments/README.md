@@ -180,7 +180,8 @@ Table D.8 baseline — 80,000 €, ratio 0.05, ε = 0.04, bimodal profile 0.40/0
 `write_scenarios()` turns it into the JSON files:
 
 ```bash
-python -m demo.experiments.run_model --write-scenarios
+python -m demo.experiments.run_model --write-scenarios               # the whole grid
+python -m demo.experiments.run_model --write-scenarios budget_020k   # only the ids given
 ```
 
 `run_model.py` then injects the chosen scenario into the frozen model by replacing

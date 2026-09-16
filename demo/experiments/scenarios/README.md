@@ -11,12 +11,14 @@ profile — see [`README.md`](../README.md) for the four questions they answer) 
 from one definition, `run_model.PAPER_GRID`, by `run_model.write_scenarios()`:
 
 ```bash
-python -m demo.experiments.run_model --write-scenarios              # keeps existing files
-python -m demo.experiments.run_model --write-scenarios --overwrite   # regenerate from PAPER_GRID
+python -m demo.experiments.run_model --write-scenarios                          # all 18, keeps existing files
+python -m demo.experiments.run_model --write-scenarios --overwrite               # regenerate all from PAPER_GRID
+python -m demo.experiments.run_model --write-scenarios budget_020k --overwrite   # regenerate one (or several) ids
 ```
 
-Existing files are kept unless `--overwrite` is passed, so copy edited in place survives a
-regeneration. Hand-editing a generated file afterwards is fine for copy (`title`,
+By default the whole grid is generated; positional ids restrict it to those scenarios (an id
+not in `PAPER_GRID` is an error, nothing is written). Existing files are kept unless
+`--overwrite` is passed, so copy edited in place survives a regeneration. Hand-editing a generated file afterwards is fine for copy (`title`,
 `axis_label`, `audience_pitch`, `narrative`) but not for `model_parameters` — an `--overwrite`
 regeneration discards it. To change a run's parameters, edit its entry in `PAPER_GRID`
 (`run_model.py`) and regenerate.
