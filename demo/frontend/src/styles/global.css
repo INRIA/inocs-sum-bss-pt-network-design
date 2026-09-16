@@ -1280,10 +1280,11 @@ svg .dl {
   align-items: center;
   gap: 5px;
 }
-/* swatches are shared by the legend bars AND the mobile layers popover — never scope them
-   to .maplegend only (v2 section 6, fixed regression) */
+/* swatches are shared by the legend bars, the mobile layers popover AND the read-out toggles in
+   the results box — never scope them to .maplegend only (v2 section 6, fixed regression) */
 .maplegend i,
-.layerpop i {
+.layerpop i,
+.resleg i {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -1309,7 +1310,8 @@ svg .dl {
   border: 2.5px solid var(--blue);
 }
 .maplegend svg,
-.layerpop svg {
+.layerpop svg,
+.resleg svg {
   flex: none;
   overflow: visible;
 }

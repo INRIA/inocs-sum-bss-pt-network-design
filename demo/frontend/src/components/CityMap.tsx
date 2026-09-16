@@ -231,7 +231,7 @@ export default function CityMap({
                     className="drop"
                     style={{ animationDelay: `${i * 14}ms` }}
                   >
-                    {layers.capacity && <circle r={r} fill="#fff" fillOpacity={0.9} stroke={color} strokeWidth={1.4} />}
+                    {layers.capacity && <circle r={r} fill="#fff" fillOpacity={0.9} stroke={color} strokeWidth={0.6} />}
                     {layers.inventory && <circle r={ri} fill={color} opacity={0.5} />}
                     <BikeGlyph
                       x={0}

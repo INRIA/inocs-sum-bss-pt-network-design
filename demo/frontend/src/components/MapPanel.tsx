@@ -244,7 +244,7 @@ function SizeKey({ stations, fill, t }: { stations: ScenarioData['stations']; fi
           x += r * 2 + 14;
           return (
             <g key={c}>
-              <circle cx={cx} cy={rmax + 2} r={r} fill="#fff" stroke={C_TRANSFER} strokeWidth={1.4} />
+              <circle cx={cx} cy={rmax + 2} r={r} fill="#fff" stroke={C_TRANSFER} strokeWidth={1} />
               {fill && <circle cx={cx} cy={rmax + 2} r={r * 0.7} fill={C_TRANSFER} opacity={0.5} />}
               <text x={cx} y={rmax * 2 + 15} textAnchor="middle" className="axlbl">
                 {c}

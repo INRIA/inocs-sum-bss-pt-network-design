@@ -115,6 +115,8 @@ function buildMap(project: Project): MapData {
   // Second tram gets the green of the "tram = blue/green pair" convention.
   const trams = ptLines.filter((l: any) => l.mode === 'tram');
   if (trams[1]) trams[1].color = '#98C33A';
+  // Tram 12 wears the project theme's light blue.
+  for (const l of ptLines) if (l.line === '12') l.color = '#75BDFB';
 
   const bikes = read(join(DATA, 'city/bike_stations.geojson'));
   const bikeDots = bikes.features

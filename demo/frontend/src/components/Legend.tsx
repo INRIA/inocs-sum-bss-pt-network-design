@@ -46,7 +46,7 @@ export function LayerToggles({
       <>
         {item(
           'capacity',
-          <i style={{ background: '#fff', border: `1.5px solid ${C_TRANSFER}` }} />,
+          <i style={{ background: '#fff', border: `1px solid ${C_TRANSFER}` }} />,
           range ? t('leg.capacity.n', { range }) : t('leg.capacity')
         )}
         {item('inventory', <i style={{ background: C_TRANSFER, opacity: 0.55 }} />, t('leg.inventory'))}
