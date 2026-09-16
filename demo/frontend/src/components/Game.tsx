@@ -50,7 +50,6 @@ export default function Game({ data }: { data: GameData }) {
   const [dropKey, setDropKey] = useState(0);
   const [sheet, setSheet] = useState<SheetKind>(null);
   const [playing, setPlaying] = useState(false);
-  const [advanced, setAdvanced] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   const [openQs, setOpenQs] = useState<number[]>([]);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -64,6 +63,23 @@ export default function Game({ data }: { data: GameData }) {
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  // presentation deep link, applied after hydration so server and client markup match:
+  // ?step=4&plan=budget_080k opens the results of that plan directly (steps are 1-based)
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const plan = q.get('plan');
+    const n = Number(q.get('step'));
+    if (plan && data.scenarios.some((s) => s.id === plan)) {
+      setScenario(plan);
+      setChosen(plan);
+    }
+    if (n >= 1 && n <= 5) {
+      setStep(n - 1);
+      setVisited(Array.from({ length: n }, (_, i) => i));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // the sheet starts at half so both the map and the step are readable on a phone
   useEffect(() => {
@@ -163,15 +179,6 @@ export default function Game({ data }: { data: GameData }) {
             </span>
           </span>
           <span className="team">INOCS · Inria</span>
-          <button
-            className="switch"
-            aria-pressed={advanced}
-            title={t('adv.hint')}
-            onClick={() => setAdvanced((a) => !a)}
-          >
-            <span className="tog" />
-            <span>{t('adv.label')}</span>
-          </button>
           <span className="lang" role="group" aria-label={t('lang.aria')}>
             <button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
               EN
@@ -215,7 +222,6 @@ export default function Game({ data }: { data: GameData }) {
                 lang={lang}
                 scenario={shown}
                 chosen={chosen}
-                advanced={advanced}
                 howOpen={howOpen}
                 onHowToggle={() => setHowOpen((o) => !o)}
                 onScenario={switchScenario}
@@ -229,7 +235,6 @@ export default function Game({ data }: { data: GameData }) {
                 data={data}
                 t={t}
                 lang={lang}
-                advanced={advanced}
                 open={openQs}
                 onToggle={toggleQ}
                 onRestart={() => go(0)}

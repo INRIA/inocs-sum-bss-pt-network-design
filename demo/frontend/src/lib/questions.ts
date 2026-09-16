@@ -52,6 +52,68 @@ const pendingOf = (data: GameData, families: FamilyId[], lang: Lang, t: T): stri
 
 const bySlot = (cards: ScenarioData[], slot: string) => cards.find((s) => s.card === slot);
 
+/** One bar of the question-3 charts: a solved run at the reference capital budget. */
+export interface TruckVersion {
+  sc: ScenarioData;
+  runs: number;
+  cost: number;
+  served: number;
+  servedRatio: number;
+  docks: number;
+  /** other runs (bigger truck budgets) that produced exactly this solution */
+  same: ScenarioData[];
+}
+
+/**
+ * Question 3 compares the SAME network (the reference capital budget) from no trucks at all to
+ * trucks spending the whole daily budget: the operating-ratio and penalty families merged, sorted
+ * by what the trucks cost. Runs that produced an identical solution (a bigger truck budget the
+ * model never uses) collapse into one bar and are listed in `same`, so the chart never repeats a
+ * bar five times.
+ */
+export function truckVersions(data: GameData): { versions: TruckVersion[]; pending: ScenarioData[]; budget: number } {
+  const ref = referenceOf(data.scenarios);
+  const budget = ref?.params.budget ?? 0;
+  const seen = new Set<string>();
+  const members = [...membersOf(data.scenarios, 'ops_ratio'), ...membersOf(data.scenarios, 'epsilon')]
+    .filter((sc) => !seen.has(sc.id) && seen.add(sc.id))
+    .filter((sc) => !sc.legacy && sc.params.budget === budget);
+  const solved = members
+    .filter((sc) => sc.hasResults && sc.paper)
+    // the baseline first, so it is the representative when others reproduce its solution
+    .sort((a, b) => Number(b.family === 'baseline') - Number(a.family === 'baseline'));
+  const versions: TruckVersion[] = [];
+  for (const sc of solved) {
+    const p = sc.paper!;
+    const twin = versions.find((v) => v.cost === p.dispatchCostEur && v.served === p.servedTotal && v.docks === p.docks);
+    if (twin) {
+      twin.same.push(sc);
+      continue;
+    }
+    versions.push({
+      sc,
+      runs: p.dispatches,
+      cost: p.dispatchCostEur,
+      served: p.servedTotal,
+      servedRatio: p.servedRatio,
+      docks: p.docks,
+      same: [],
+    });
+  }
+  versions.sort((a, b) => a.cost - b.cost || a.served - b.served);
+  return { versions, pending: members.filter((sc) => !sc.hasResults), budget };
+}
+
+/** How a truck version is named on the x axis: "no trucks" or "9 runs/day". */
+export const truckLabel = (v: TruckVersion, t: T): string =>
+  v.runs === 0 ? t('s5.q3.x.none') : v.runs === 1 ? t('s5.q3.x.run') : t('s5.q3.x.runs', { n: fmtInt(v.runs) });
+
+/** Question 4's per-period service rates of one run (served / potential per period). */
+export const periodRates = (sc: ScenarioData): number[] | null =>
+  sc.hasResults && sc.paper && sc.paper.demandByPeriod.length
+    ? sc.paper.demandByPeriod.map((d, i) => (d ? (sc.paper!.servedByPeriod[i] ?? 0) / d : 0))
+    : null;
+
 export function answers(data: GameData, t: T, lang: Lang): QuestionAnswer[] {
   const cards = solvedCards(data);
   const first = bySlot(cards, 'essential') ?? cards[0];
@@ -85,23 +147,46 @@ export function answers(data: GameData, t: T, lang: Lang): QuestionAnswer[] {
         })
       : none;
 
-  const q3 = ref?.paper
-    ? t('s5.q3.concl', {
-        name: scenName(ref, t),
-        budget: fmtEur(ref.paper.opBudgetEur),
-        cost: fmtEur(ref.paper.dispatchCostEur),
-        runs: fmtInt(ref.paper.dispatches),
-        bikes: fmtInt(ref.paper.bikesRebalanced),
-      })
-    : none;
+  const tv = truckVersions(data);
+  const base = tv.versions[0];
+  const paid = tv.versions.find((v) => v.sc.family === 'baseline') ?? tv.versions[1];
+  const top = tv.versions[tv.versions.length - 1];
+  const q3 =
+    base && paid && top && base !== paid
+      ? t('s5.q3.concl', {
+          budget: fmtEur(tv.budget),
+          base: truckLabel(base, t),
+          p0: fmtPct(lang, base.servedRatio, 1),
+          runs: fmtInt(paid.runs),
+          cost: fmtEur(paid.cost),
+          p1: fmtPct(lang, paid.servedRatio, 1),
+          extra: fmtInt(paid.served - base.served),
+          topcost: fmtEur(top.cost),
+          topruns: fmtInt(top.runs),
+          extra2: fmtInt(top.served - paid.served),
+          dmin: fmtInt(Math.min(...tv.versions.map((v) => v.docks))),
+          dmax: fmtInt(Math.max(...tv.versions.map((v) => v.docks))),
+        })
+      : none;
 
-  const q4 = ref?.paper
-    ? t(ref.paper.nearestNeighborM != null ? 's5.q4.concl' : 's5.q4.concl.nonn', {
-        nn: ref.paper.nearestNeighborM != null ? fmtInt(ref.paper.nearestNeighborM) : '—',
-        trans: fmtInt(ref.paper.nTrans),
-        stations: fmtInt(ref.paper.stations),
-      })
-    : none;
+  const rhythms = membersOf(data.scenarios, 'rhythm').filter((s) => s.hasResults && s.paper);
+  const best = rhythms.length ? rhythms.reduce((a, b) => (b.paper!.servedRatio > a.paper!.servedRatio ? b : a)) : undefined;
+  const worst = rhythms.length ? rhythms.reduce((a, b) => (b.paper!.servedRatio < a.paper!.servedRatio ? b : a)) : undefined;
+  const rates = worst ? periodRates(worst) : null;
+  const peak = worst ? worst.paper!.demandByPeriod.indexOf(Math.max(...worst.paper!.demandByPeriod)) : -1;
+  const q4 =
+    best && worst && best !== worst && rates && peak >= 0
+      ? t('s5.q4.concl', {
+          budget: fmtEur(worst.params.budget),
+          best: axisTick(best, 'rhythm', lang, t),
+          pb: fmtPct(lang, best.paper!.servedRatio, 0),
+          worst: axisTick(worst, 'rhythm', lang, t),
+          pw: fmtPct(lang, worst.paper!.servedRatio, 0),
+          period: t(`s5.per.${peak}`),
+          share: fmtPct(lang, worst.paper!.demandByPeriod[peak] / worst.paper!.demandTotal, 0),
+          ps: fmtPct(lang, rates[peak], 0),
+        })
+      : none;
 
   const fam: FamilyId[][] = [['budget'], ['budget'], ['ops_ratio', 'epsilon'], ['rhythm']];
   return [q1, q2, q3, q4].map((conclusion, i) => ({

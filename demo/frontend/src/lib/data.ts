@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { boundsOfGeoJSON, makeProjection, pathOf, badgeSpot, inFrame, type Project } from './geo';
-import type { GameData, GlyphKey, MapData, PaperKpis, PoiMarker, ScenarioData, StationMarker, StressDay } from './types';
+import type { GameData, GlyphKey, MapData, PaperKpis, PoiMarker, ScenarioData, StationMarker } from './types';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -166,25 +166,6 @@ function buildPaper(p: any): PaperKpis {
   };
 }
 
-function buildStress(st: any): StressDay[] {
-  return Object.keys(st ?? {}).map((day) => {
-    const d = st[day] ?? {};
-    return {
-      day,
-      demand: num(d.demand),
-      served: num(d.served),
-      servedRatio: num(d.served_ratio),
-      noStation: num(d.unserved_no_station),
-      noBike: num(d.unserved_no_bike),
-      noDock: num(d.unserved_no_dock),
-      peakEmpty: num(d.peak_empty_stations),
-      peakFull: num(d.peak_full_stations),
-      nDaysReplayed: num(d.n_days_replayed),
-      representativeDate: String(d.representative_date ?? ''),
-    };
-  });
-}
-
 function buildScenario(entry: any, project: Project, periodBounds: number[][]): ScenarioData {
   const scenario = read(join(DATA, 'scenarios', `${entry.id}.json`));
   const mp = scenario.model_parameters ?? {};
@@ -192,7 +173,6 @@ function buildScenario(entry: any, project: Project, periodBounds: number[][]): 
 
   let paper: PaperKpis | null = null;
   let technical: Record<string, number | string | null> = {};
-  let stressTest: StressDay[] = [];
   let stations: StationMarker[] = [];
   let periods = num(mp.demand_periods);
   let capexBudget = num(mp.total_budget);
@@ -203,14 +183,13 @@ function buildScenario(entry: any, project: Project, periodBounds: number[][]): 
     const kpis = read(join(DATA, 'results', entry.id, 'kpis.json'));
     paper = buildPaper(kpis.paper ?? {});
     technical = { ...(kpis.technical ?? {}) };
-    stressTest = buildStress(kpis.stress_test);
 
     const meta = read(join(DATA, 'results', entry.id, 'stations.json'));
     capexBudget = num(meta.capex_budget_eur, capexBudget);
     provenance = String(meta.provenance ?? '');
     ranAt = String(meta.run?.ran_at ?? technical.ran_at ?? '');
     // `run` carries the solver statistics the evaluator row does not: keep them in `technical`
-    // so the advanced table reads one flat record (implementation.md section 0.4).
+    // so the story sheet reads one flat record (implementation.md section 0.4).
     for (const k of ['n_variables', 'n_constraints', 'gurobi_status', 'mip_gap', 'wall_clock_s'] as const) {
       if (technical[k] == null && meta.run?.[k] != null) technical[k] = meta.run[k];
     }
@@ -257,7 +236,6 @@ function buildScenario(entry: any, project: Project, periodBounds: number[][]): 
     },
     paper,
     technical,
-    stressTest,
     stations,
     periods,
     periodHours,

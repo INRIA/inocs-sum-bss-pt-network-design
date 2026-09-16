@@ -197,6 +197,8 @@ export interface BarRow {
   id: string;
   label: string;
   sub?: string;
+  /** optional third line under the axis */
+  sub2?: string;
   /** null = the run does not exist yet -> dashed hollow bar */
   value: number | null;
   /** already formatted, printed on top of the bar */
@@ -210,6 +212,8 @@ export function BarsChart({
   color = C_SERIES,
   pendingLabel,
   alt,
+  width = 360,
+  left = 32,
 }: {
   rows: BarRow[];
   ymax: number;
@@ -217,10 +221,14 @@ export function BarsChart({
   color?: string;
   pendingLabel: string;
   alt: string;
+  /** viewBox width — 520 for a full-column chart with many bars, 360 for a half-width one */
+  width?: number;
+  /** room for the y tick labels */
+  left?: number;
 }) {
-  const W = 360;
-  const H = 126;
-  const L = 32;
+  const W = width;
+  const H = rows.some((r) => r.sub2) ? 136 : 126;
+  const L = left;
   const B = 92;
   const T = 72;
   const n = Math.max(rows.length, 1);
@@ -275,9 +283,115 @@ export function BarsChart({
                 {r.sub}
               </text>
             )}
+            {r.sub2 && (
+              <text className="axlbl" x={cx} y={B + 32} textAnchor="middle">
+                {r.sub2}
+              </text>
+            )}
           </g>
         );
       })}
     </svg>
+  );
+}
+
+export interface RhythmPanelData {
+  id: string;
+  title: string;
+  /** printed under the title: "90 % served · 40/20/40" */
+  sub: string;
+  /** share of the day's potential trips in each period, 0..1 (from the scenario's own weights) */
+  share: number[];
+  /** served / potential per period, 0..1 — null while the run is pending */
+  served: number[] | null;
+}
+
+/**
+ * Question 4: one small panel per rhythm, the model's periods on the x axis. Bar height = the
+ * period's share of the day's trips (its magnitude), the filled part = the share of it the model
+ * serves. Every panel uses the same y scale so the rhythms compare at a glance.
+ */
+export function RhythmPanels({
+  panels,
+  periods,
+  ymax,
+  pendingLabel,
+  servedLabel,
+  alt,
+}: {
+  panels: RhythmPanelData[];
+  /** two lines per period: name and hours */
+  periods: [string, string][];
+  /** ceiling of the share axis, 0..1 */
+  ymax: number;
+  pendingLabel: string;
+  servedLabel: (ratio: number) => string;
+  alt: string;
+}) {
+  const W = 200;
+  const H = 150;
+  const L = 28;
+  const B = 94;
+  const T = 76;
+  return (
+    <div className="multi" role="img" aria-label={alt}>
+      {panels.map((p) => {
+        const n = Math.max(p.share.length, 1);
+        const slot = (W - L - 6) / n;
+        const bw = Math.min(40, slot * 0.6);
+        return (
+          <div className="mpanel" key={p.id}>
+            <div className="mtitle">
+              <b>{p.title}</b>
+              <span>{p.sub}</span>
+            </div>
+            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <line className="axis" x1={L} x2={W} y1={B} y2={B} />
+              {ticks.map((f) => (
+                <Fragment key={f}>
+                  <line className="grid" x1={L} x2={W} y1={B - f * T} y2={B - f * T} />
+                  <text className="axlbl" x={L - 4} y={B - f * T + 3} textAnchor="end">
+                    {Math.round(ymax * f * 100)}
+                  </text>
+                </Fragment>
+              ))}
+              {p.share.map((s, i) => {
+                const cx = L + (i + 0.5) * slot;
+                const h = (Math.min(s, ymax) / ymax) * T;
+                const r = p.served?.[i];
+                const hs = r == null ? 0 : h * Math.max(0, Math.min(1, r));
+                return (
+                  <g key={i}>
+                    <rect
+                      x={cx - bw / 2}
+                      y={B - h}
+                      width={bw}
+                      height={h}
+                      rx={3}
+                      fill={p.served ? C_POTENTIAL : 'none'}
+                      stroke={p.served ? C_POTENTIAL_LINE : C_PENDING}
+                      strokeDasharray={p.served ? undefined : '3 2'}
+                    />
+                    {p.served && <rect x={cx - bw / 2} y={B - hs} width={bw} height={hs} rx={3} fill={C_SERIES} />}
+                    <text className="dl" x={cx} y={B - h - 4} textAnchor="middle">
+                      {Math.round(s * 100)} %
+                    </text>
+                    <text className="axlbl" x={cx} y={B + 11} textAnchor="middle">
+                      {periods[i]?.[0] ?? i + 1}
+                    </text>
+                    <text className="axlbl" x={cx} y={B + 21} textAnchor="middle">
+                      {periods[i]?.[1] ?? ''}
+                    </text>
+                    <text className="dl" x={cx} y={B + 33} textAnchor="middle" fill={r == null ? C_PENDING : C_SERIES}>
+                      {r == null ? pendingLabel : servedLabel(r)}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        );
+      })}
+    </div>
   );
 }

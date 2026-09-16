@@ -36,10 +36,10 @@ copy**:
 ```
 demo/experiments/scenarios/<id>.json          narrative + model parameters (step 3 cards)
 demo/experiments/results/<id>/stations.json   the design (required)
-demo/experiments/results/<id>/kpis.json       paper / technical / stress_test KPI blocks (required)
+demo/experiments/results/<id>/kpis.json       paper / technical / stress_test KPI blocks (required; the site reads `paper`)
 demo/experiments/results/<id>/model_plan.json per-period inventories, for the map (required)
-demo/experiments/results/<id>/metrics.json    the full model evaluator row (optional, advanced view)
-demo/experiments/results/<id>/sim_monday.json, sim_sunday.json   the replay stress test (optional)
+demo/experiments/results/<id>/metrics.json    the full model evaluator row (optional, not shown on the site)
+demo/experiments/results/<id>/sim_monday.json, sim_sunday.json   the replay stress test (optional, not shown on the site)
 demo/experiments/data/geneva_1.5km-radius/*   grid, stops, bike stations, trips, POIs, GTFS shapes
 demo/experiments/data/profiles.json           period weights / hourly profiles, for step 2's day view
 demo/experiments/data/pt_ridership_summary.json
@@ -84,10 +84,10 @@ plans**. Each tab shows its number and title, the selected one also its subtitle
 tabs stay horizontal (title under the number, subtitle under the selected tab only). The four
 questions the paper's sensitivity analysis answers (investment/diminishing returns, PT
 integration, trucks vs docks, the rhythm of the day) are introduced in step 1 and answered one
-per card in step 5, each with a "Show the proof" chart. An **"Advanced view" header toggle**
-reveals the full technical metrics table (objective value, MIP gap, solve time, variables and
-constraints, covered OD pairs, compactness, fill ratio by station type, …) in steps 4 and 5,
-alongside the headline tiles a general audience reads.
+per card in step 5, each with a "Show the proof" chart. Step 3 offers one card per card slot
+of the scenario grid — starter (20 k€), essential (60 k€), reference (80 k€), ambitious
+(120 k€) — and step 4 switches between the same four plans. The solver statistics and the
+observed-trip replay stay in the result files but are not shown on the site.
 
 ## The layout
 
@@ -115,8 +115,17 @@ toggle; on mobile the same list lives in the "Layers" popover. Everything on the
 | New stations: regular vs transfer, sized by **capacity** (on by default) | `results/<id>/plan_slim.json`, from `model_plan.json` |
 | New stations: **bikes in stock** per period (off by default) | `results/<id>/plan_slim.json`'s per-station `inventory[]` |
 
-Steps 4–5 show a period control (06h / 10h / 16h / 22h, the model's own three periods) once a
-plan is built, driving the bikes-in-stock layer's fill.
+Once a plan is built (steps 4–5) an **"Optimized network results"** box floats over the right
+side of the map (about 30 % of its width; the button at the bottom right opens and closes it)
+so the map never loses height to it. It holds the four "what you built" facts and the capital
+spent, the capacity / bikes-in-stock toggles with a size key in docks, and the period control
+(06h / 10h / 16h / 22h, the model's own three periods) that drives the bikes-in-stock fill.
+With a read-out on, every station also carries its number ("bikes / docks" when both are on);
+the numbers hide below a readable zoom, like the existing-station glyphs degrade to dots. On
+mobile the box is not shown: the "Layers" popover carries the same toggles and periods, and the
+four facts ride at the top of the step-4 sheet.
+
+For presentations, `?step=4&plan=budget_080k` opens a step (1–5) and a plan directly.
 
 `src/data/basemap.geojson` is **committed**; the build never touches the network. Refresh it only
 when needed:

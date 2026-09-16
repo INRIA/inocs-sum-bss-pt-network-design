@@ -7,7 +7,7 @@ import type { SheetKind } from './Sheet';
 
 /**
  * Step 3 — choose a plan. The cards are the scenarios whose `role` is "card", one per card slot
- * (essential / reference / ambitious). The compare-only runs of the other families are never
+ * (starter / essential / reference / ambitious). The compare-only runs of the other families are never
  * offered here: they exist to answer the four questions in step 5.
  */
 export default function Step3({

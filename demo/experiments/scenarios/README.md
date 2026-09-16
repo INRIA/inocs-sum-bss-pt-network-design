@@ -86,7 +86,7 @@ time limit — the paper's own "valley" (Fig. 6) — the notebook flags this and
 | `schema` | `"scenario-v3"` |
 | `family` | `baseline` \| `budget` \| `ops_ratio` \| `epsilon` \| `rhythm` — the sensitivity axis this run belongs to. `baseline` belongs to every family at once, at its own axis value: the front end adds it to each family's chart. |
 | `role` | `card` (carries front-end copy, shown on "choose a plan") or `compare` (a grid point only, shown in the Compare charts) |
-| `card` | cards only: `essential` \| `reference` \| `ambitious` |
+| `card` | cards only: `starter` \| `essential` \| `reference` \| `ambitious` — the card slot, in the order "choose a plan" shows them |
 | `title`, `axis_label` | front-end copy: the plan's name and the value shown on its axis |
 | `temporal_profile` | `bimodal` \| `uniform` \| `sharp` \| `geneva_weekday` — which period-weight vector `model_parameters.period_weights` was built from (`bimodal` = the paper's baseline 0.40/0.20/0.40; `geneva_weekday` = the observed Geneva weekday split, measured by `profiles.py`) |
 | `outside_paper_range` | true for the two budget points (20k, 40k) added below the paper's own Table 2 range (60–120k) to locate the PT-integration threshold |

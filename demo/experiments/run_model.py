@@ -120,21 +120,36 @@ TEMPORAL_PROFILES = {
 #:
 #: `family` is the sensitivity axis the run belongs to ("baseline" for the
 #: reference run, which belongs to every family and is added to each family's
-#: chart at its own axis value); `role` is "card" for the three plans the
-#: demonstration offers the visitor and "compare" for the points that exist
-#: only in the comparison charts.
+#: chart at its own axis value); `role` is "card" for the four plans the
+#: demonstration offers the visitor (starter / essential / reference /
+#: ambitious) and "compare" for the points that exist only in the comparison
+#: charts.
 PAPER_GRID = (
     # -- family: budget (Table 2 budgets; Fig. 9, 12a, 14) -------------------
     {
         "id": "budget_020k",
         "family": "budget",
-        "role": "compare",
+        "role": "card",
+        "card": "starter",
         "title": "Starter budget",
         "axis_label": "20 000 €",
         "temporal_profile": "bimodal",
         "outside_paper_range": True,
         "paper_reference": ("Below Table 2's budget range; added to locate "
                             "the PT-integration threshold of Fig. 14"),
+        "audience_pitch": ("The city tests the water with the smallest "
+                           "budget on this page -- what does a seed network "
+                           "buy, and what does it leave out?"),
+        "narrative": (
+            "Twenty thousand euros is below the range the study examines "
+            "(Table 2); this run was added to locate the point where "
+            "public-transport integration begins (Fig. 14). With so little "
+            "money the optimiser buys coverage first: a few small stations "
+            "at the zone centres that carry the most demand, and only a "
+            "handful at public-transport stops. Read this plan as the seed "
+            "every other plan grows from -- a bike-only service for a "
+            "fraction of the potential riders, against which each extra "
+            "euro of the larger budgets can be measured."),
         "model_parameters": {"total_budget": 20000},
     },
     {

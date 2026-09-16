@@ -51,7 +51,7 @@ export default function Step2({
       <h2>{t('s2.title')}</h2>
       <p className="lede">{t('s2.lede')}</p>
 
-      <div className="facts">
+      <div className="facts facts-row">
         <div className="fact">
           <b className="mono">{fmtInt(data.city.ptBoardings.monday ?? 0)}</b>
           <span>{t('s2.f1', { sun: fmtInt(data.city.ptBoardings.sunday ?? 0) })}</span>

@@ -105,21 +105,6 @@ export interface PaperKpis {
   meanPairwiseM: number | null;
 }
 
-/** kpis.json -> `stress_test.<day>` — the demo-side replay of the trips Geneva actually recorded. */
-export interface StressDay {
-  day: string;
-  demand: number;
-  served: number;
-  servedRatio: number;
-  noStation: number;
-  noBike: number;
-  noDock: number;
-  peakEmpty: number;
-  peakFull: number;
-  nDaysReplayed: number;
-  representativeDate: string;
-}
-
 export interface ScenarioParams {
   budget: number;
   opsRatio: number;
@@ -137,7 +122,7 @@ export interface ScenarioData {
   family: string;
   /** "card" | "compare" */
   role: string;
-  /** cards only: "essential" | "reference" | "ambitious" */
+  /** cards only: "starter" | "essential" | "reference" | "ambitious" */
   card: string | null;
   legacy: boolean;
   /** the run exists on disk; false = a scenario the notebook has still to solve */
@@ -150,9 +135,8 @@ export interface ScenarioData {
   /** Fallbacks used when no `scen.<id>.*` i18n key exists (a brand-new scenario file). */
   fallback: { name: string; pitch: string; narrative: string };
   paper: PaperKpis | null;
-  /** kpis.json -> `technical`, verbatim: the model's own ExperimentRow keys. */
+  /** kpis.json -> `technical` plus the run record of stations.json: the model's own ExperimentRow keys and solver statistics (step 1 facts, the story sheet). */
   technical: Record<string, number | string | null>;
-  stressTest: StressDay[];
   stations: StationMarker[];
   /** model periods (T) and the local hour of each inventory snapshot, e.g. [6, 10, 16, 22]. */
   periods: number;

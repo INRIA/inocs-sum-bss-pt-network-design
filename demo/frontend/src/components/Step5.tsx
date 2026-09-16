@@ -3,7 +3,6 @@ import { allPlans, answers } from '../lib/questions';
 import { scenName } from '../lib/scen';
 import { fmtEur, fmtInt, fmtNum, fmtPct } from '../lib/format';
 import Proof from './Proofs';
-import { TechCompare } from './TechTable';
 import type { GameData, Lang } from '../lib/types';
 
 /**
@@ -15,7 +14,6 @@ export default function Step5({
   data,
   t,
   lang,
-  advanced,
   open,
   onToggle,
   onRestart,
@@ -23,14 +21,12 @@ export default function Step5({
   data: GameData;
   t: T;
   lang: Lang;
-  advanced: boolean;
   open: number[];
   onToggle: (n: number) => void;
   onRestart: () => void;
 }) {
   const qa = answers(data, t, lang);
   const plans = allPlans(data);
-  const solved = plans.filter((s) => s.hasResults && s.paper);
 
   return (
     <>
@@ -71,16 +67,6 @@ export default function Step5({
           </div>
         ))}
 
-      {advanced && (
-        <div className="advbox">
-          <h3>
-            {t('s5.tech.h')} <span className="tag">{t('adv.tag')}</span>
-          </h3>
-          <p className="note">{t('s5.tech.p')}</p>
-          <TechCompare scenarios={solved} t={t} lang={lang} />
-        </div>
-      )}
-
       <div className="qblock">
         <h3>{t('s5.all.h')}</h3>
         <div className="tw">
@@ -97,8 +83,6 @@ export default function Step5({
                 <th className="n">{t('s5.all.bikes')}</th>
                 <th className="n">{t('s5.all.trucks')}</th>
                 <th className="n">{t('s5.all.pertrip')}</th>
-                {advanced && <th className="n">{t('s5.all.od')}</th>}
-                {advanced && <th className="n">{t('s5.all.nn')}</th>}
               </tr>
             </thead>
             <tbody>
@@ -109,7 +93,7 @@ export default function Step5({
                   return (
                     <tr className="pend" key={s.id}>
                       <td>{name}</td>
-                      <td className="n" colSpan={advanced ? 11 : 9}>
+                      <td className="n" colSpan={9}>
                         {t('pending.row')}
                       </td>
                     </tr>
@@ -130,8 +114,6 @@ export default function Step5({
                     <td className="n">{fmtInt(p.bikes)}</td>
                     <td className="n">{fmtInt(p.dispatchCostEur)}</td>
                     <td className="n">{fmtInt(p.investmentPerServedTripEur)}</td>
-                    {advanced && <td className="n">{fmtPct(lang, p.coveredOdRatio, 1)}</td>}
-                    {advanced && <td className="n">{p.nearestNeighborM != null ? fmtInt(p.nearestNeighborM) : '—'}</td>}
                   </tr>
                 );
               })}

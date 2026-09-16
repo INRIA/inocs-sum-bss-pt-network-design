@@ -28,8 +28,8 @@ export const FAMILIES: Record<FamilyId, FamilyConfig> = {
 /** Display order of the families in the all-plans table. */
 export const FAMILY_ORDER = ['baseline', 'budget', 'ops_ratio', 'epsilon', 'rhythm'];
 
-/** Card slots of step 3, in the order the cards are shown. */
-export const CARD_ORDER = ['essential', 'reference', 'ambitious'];
+/** Card slots of step 3, in the order the cards are shown (smallest budget first). */
+export const CARD_ORDER = ['starter', 'essential', 'reference', 'ambitious'];
 
 /** The numeric position of a scenario on its family's axis (rhythm sorts on its evening share). */
 export function axisValue(sc: ScenarioData, axis: AxisKey): number {
@@ -64,7 +64,7 @@ export const solved = (list: ScenarioData[]): ScenarioData[] => list.filter((s) 
 export const pending = (list: ScenarioData[]): ScenarioData[] => list.filter((s) => !s.hasResults);
 
 /**
- * The three plans of step 3, one per card slot. A slot prefers the paper-grid run over the legacy
+ * The four plans of step 3, one per card slot. A slot prefers the paper-grid run over the legacy
  * one, and a scenario with results over one still to run — so the site keeps working through the
  * transition without naming a single scenario id.
  */

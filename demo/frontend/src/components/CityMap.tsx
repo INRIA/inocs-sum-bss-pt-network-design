@@ -57,6 +57,12 @@ export const bubbleR = (w: number, intensity: number, scale = 1) =>
 /** The bike glyph spans ~10.2 user units; under 6 rendered px its wheels stop reading as a bike. */
 const GLYPH_UNITS = 10.2;
 
+/** Capacity circle radius (map units) for a station with `docks` docks — shared with the size key. */
+export const stationR = (docks: number) => 2.2 + Math.sqrt(Math.max(0, docks)) * 0.75;
+
+/** Station number labels are drawn at 4.2 map units; below 6 rendered px they would only be noise. */
+const LABEL_UNITS = 4.2;
+
 /**
  * The single persistent map (ux-plan-v2 section 4). One SVG for the whole game: the element, its
  * viewBox (the pan/zoom camera) and the layer state survive every step change — only `kind`
@@ -84,6 +90,7 @@ export default function CityMap({
   // v2 section 6, note 2: below a rendered size threshold the 139 existing stations become dots
   // again — they turn back into bikes as the player zooms in.
   const microDot = GLYPH_UNITS * 0.5 * unitPx < 6;
+  const showLabels = LABEL_UNITS * unitPx >= 6;
 
   return (
     <svg
@@ -193,19 +200,30 @@ export default function CityMap({
         {/* The plan's stations. Regular and transfer are independent layers; on top of the glyph,
             two read-outs the model itself produced: CAPACITY (circle = docks, on by default) and
             BIKES IN STOCK (filled circle = v_{i,t} at the selected period boundary, off by
-            default). With capacity off and stock on, the circle is sized by the bikes present. */}
+            default). With capacity off and stock on, the circle is sized by the bikes present.
+            The number beside the station spells the read-out(s) out — "bikes / docks" when both
+            are on — and hides below the readable zoom, like the glyph degrades to a dot. */}
         {kind === 'network' && stations && (
           <g key={dropKey}>
             {stations
               .filter((s) => (s.transfer ? layers.transfer : layers.regular))
               .map((s, i) => {
                 const color = s.transfer ? C_TRANSFER : C_REGULAR;
-                const r = 2.2 + Math.sqrt(Math.max(0, s.capacity)) * 0.75;
+                const r = stationR(s.capacity);
                 const inv = s.inventory[period] ?? s.inventory[0] ?? 0;
                 const ri = layers.capacity
                   ? r * Math.sqrt(s.capacity > 0 ? Math.min(1, inv / s.capacity) : 0)
-                  : 2.2 + Math.sqrt(Math.max(0, inv)) * 0.75;
+                  : stationR(inv);
                 const decorated = layers.capacity || layers.inventory;
+                const label =
+                  layers.capacity && layers.inventory
+                    ? `${inv}/${s.capacity}`
+                    : layers.capacity
+                      ? `${s.capacity}`
+                      : layers.inventory
+                        ? `${inv}`
+                        : null;
+                const rShown = layers.capacity ? r : ri;
                 return (
                   <g
                     key={i}
@@ -222,6 +240,22 @@ export default function CityMap({
                       color={color}
                       halo={!decorated}
                     />
+                    {label && showLabels && (
+                      <text
+                        x={rShown + 1.2}
+                        y={LABEL_UNITS * 0.36}
+                        fontFamily='"Spline Sans Mono",monospace'
+                        fontSize={LABEL_UNITS}
+                        fontWeight={700}
+                        fill={color}
+                        paintOrder="stroke"
+                        stroke="#FFFFFF"
+                        strokeWidth={1.6}
+                        strokeLinejoin="round"
+                      >
+                        {label}
+                      </text>
+                    )}
                     <title>{`${s.transfer ? t('leg.transfer') : t('leg.regular')} — ${s.capacity} ${t(
                       'leg.docks'
                     )}, ${inv} ${t('leg.bikes')}`}</title>

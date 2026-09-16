@@ -21,13 +21,3 @@ export const hh = (h: number): string => `${String(h).padStart(2, '0')}:00`;
 
 /** Hour label used by the map period control and the period chart: "06h". */
 export const hlabel = (h: number): string => `${String(h).padStart(2, '0')}h`;
-
-/** The advanced tables: a metric the run did not produce renders as an em dash, never as 0. */
-export const dash = '—';
-
-export const fmtOrDash = (lang: Lang, v: number | string | null | undefined, digits = 2): string => {
-  if (v == null || v === '') return dash;
-  const n = Number(v);
-  if (!Number.isFinite(n)) return String(v);
-  return fmtNum(lang, n, digits);
-};

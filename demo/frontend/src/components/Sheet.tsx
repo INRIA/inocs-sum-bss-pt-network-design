@@ -132,32 +132,18 @@ function Story({ sc, data, t, lang }: { sc: ScenarioData; data: GameData; t: T; 
   );
 }
 
-/** "How is this computed?" — one authored explanation per headline, plus the two advanced popups. */
+/** "How is this computed?" — one authored explanation per headline tile of step 4. */
 function How({ topic, sc, t, lang }: { topic: string; sc: ScenarioData | undefined; t: T; lang: Lang }) {
   const p = sc?.paper;
   const vars: Record<string, string | number> = {
     demand: p ? fmtInt(p.demandTotal) : '—',
-    nvar: sc?.technical.n_variables != null ? fmtInt(Number(sc.technical.n_variables)) : '—',
-    ncon: sc?.technical.n_constraints != null ? fmtInt(Number(sc.technical.n_constraints)) : '—',
     gain: p ? fmtNum(lang, p.avgTimeGainMin, 1) : '—',
     saving: p ? fmtPct(lang, p.timeSavingRatio, 0) : '—',
   };
-  const stress = sc?.stressTest ?? [];
   return (
     <>
       <h3>{t(`how.${topic}.h`)}</h3>
       <p dangerouslySetInnerHTML={{ __html: t(`how.${topic}.p`, vars) }} />
-      {topic === 'stress' && stress.length > 0 && (
-        <ul>
-          {stress.map((d) => (
-            <li key={d.day}>
-              {t(`s4.stress.day.${d.day}`, { n: fmtInt(d.nDaysReplayed) })} — {fmtNum(lang, d.demand, 2)}{' '}
-              {t('s4.stress.trips').toLowerCase()}, {fmtPct(lang, d.servedRatio, 1)} {t('s4.stress.served').toLowerCase()}
-              {d.representativeDate ? ` · ${d.representativeDate}` : ''}
-            </li>
-          ))}
-        </ul>
-      )}
     </>
   );
 }

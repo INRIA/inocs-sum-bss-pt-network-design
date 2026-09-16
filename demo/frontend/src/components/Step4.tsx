@@ -4,9 +4,7 @@ import { cardsOf, referenceOf } from '../lib/families';
 import { scenName } from '../lib/scen';
 import { fmtEur, fmtInt, fmtNum, fmtPct, fmtShare, hlabel } from '../lib/format';
 import { C_POTENTIAL, C_POTENTIAL_LINE, C_SERIES, C_SERIES2, PeriodChart } from './Charts';
-import { TechTable } from './TechTable';
 import NetFacts from './NetFacts';
-import StressTable from './StressTable';
 import type { GameData, Lang, ScenarioData } from '../lib/types';
 import type { SheetKind } from './Sheet';
 
@@ -46,8 +44,8 @@ function Tile({
 
 /**
  * Step 4 — the results, read from the model's own solution the way the paper evaluates it
- * (plan.md section 6). Six tiles, the period chart, and — behind the header's "Advanced view"
- * switch — the evaluator's full metric table and the demo-side stress test.
+ * (plan.md section 6): the plan pills, six tiles, the "how the model simulates users" box and the
+ * period chart. Everything the plan built on the map lives in the results box over the map.
  */
 export default function Step4({
   data,
@@ -55,7 +53,6 @@ export default function Step4({
   lang,
   scenario,
   chosen,
-  advanced,
   howOpen,
   onHowToggle,
   onScenario,
@@ -68,7 +65,6 @@ export default function Step4({
   lang: Lang;
   scenario: ScenarioData | undefined;
   chosen: string | null;
-  advanced: boolean;
   howOpen: boolean;
   onHowToggle: () => void;
   onScenario: (id: string) => void;
@@ -243,25 +239,6 @@ export default function Step4({
         />
         <div className="reading">{reading}</div>
       </div>
-
-      {advanced && (
-        <div className="advbox">
-          <h3>
-            {t('s4.adv.h')} <span className="tag">{t('adv.tag')}</span>
-          </h3>
-          <p className="note">{t('s4.adv.p')}</p>
-          <TechTable sc={sc} t={t} lang={lang} />
-          <div className="row">
-            <button className="ghostbtn small" onClick={() => onSheet({ kind: 'how', topic: 'hood' })}>
-              {t('how.hood.h')}
-            </button>
-            <button className="ghostbtn small" onClick={() => onSheet({ kind: 'how', topic: 'stress' })}>
-              {t('how.stress.h')}
-            </button>
-          </div>
-          <StressTable sc={sc} t={t} lang={lang} />
-        </div>
-      )}
 
       <div className="dfoot">
         <button className="cta" onClick={onNext}>

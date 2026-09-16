@@ -219,47 +219,6 @@ button {
   background: var(--green);
   color: #23310a;
 }
-.switch {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #cfddee;
-  white-space: nowrap;
-  flex: none;
-}
-.switch .tog {
-  width: 32px;
-  height: 18px;
-  border-radius: 99px;
-  background: rgba(255, 255, 255, 0.28);
-  position: relative;
-  transition: background 0.15s;
-  flex: none;
-}
-.switch .tog::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  transition: left 0.15s;
-}
-.switch[aria-pressed='true'] {
-  color: #fff;
-}
-.switch[aria-pressed='true'] .tog {
-  background: var(--green);
-}
-.switch[aria-pressed='true'] .tog::after {
-  left: 16px;
-}
 
 /* ---------- header tabs: the five steps (plan.md section 7) ---------- */
 .tabs {
@@ -510,6 +469,10 @@ h2 {
   margin-top: 12px;
   flex: none;
 }
+/* step 2: the four city facts sit in one row on desktop (two per row on phones, below) */
+.facts.facts-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 .fact {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -602,10 +565,10 @@ input[type='range'] {
   font-weight: 800;
 }
 
-/* ---------- C: scenario cards side by side ---------- */
+/* ---------- C: scenario cards side by side (one per card slot, four today) ---------- */
 .scards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-top: 10px;
   flex: 1;
@@ -968,6 +931,30 @@ input[type='range'] {
   gap: 10px;
   align-items: center;
 }
+/* question 4: one small panel per rhythm, same y scale (Charts.tsx RhythmPanels) */
+.multi {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+.mpanel svg {
+  width: 100%;
+  height: auto;
+}
+.mtitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  font-size: 11px;
+  color: var(--ink-2);
+  padding-left: 4px;
+}
+.mtitle b {
+  color: var(--blue);
+  font-size: 12px;
+}
 .ghostbtn.small {
   padding: 6px 11px;
   font-size: 12px;
@@ -1001,7 +988,7 @@ input[type='range'] {
   margin-top: 8px;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  flex: none;
 }
 .chartcard h3 {
   font-size: 13.5px;
@@ -1038,6 +1025,10 @@ input[type='range'] {
 .two svg {
   width: 100%;
   height: auto;
+  flex: none;
+}
+.chartcard svg {
+  max-height: 240px;
 }
 .reading {
   font-size: 12.5px;
@@ -1080,31 +1071,7 @@ svg .dl {
   white-space: nowrap;
 }
 
-/* the advanced block (header switch) */
-.advbox {
-  margin-top: 10px;
-  border: 1px dashed var(--green-ink);
-  border-radius: 12px;
-  padding: 10px 13px;
-  background: var(--green-tint);
-}
-.advbox h3 {
-  font-size: 13px;
-  color: var(--green-ink);
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.advbox h3 .tag {
-  font: 500 10px 'Spline Sans Mono', monospace;
-  border: 1px solid var(--green-ink);
-  border-radius: 99px;
-  padding: 1px 7px;
-}
-.advbox .note {
-  margin: 4px 0 0;
-}
+/* the all-plans table of step 5 */
 .tw {
   overflow-x: auto;
   margin-top: 8px;
@@ -1143,22 +1110,6 @@ svg .dl {
 }
 .tw tr.pend td:first-child {
   font-style: normal;
-}
-table.tech tr.grp th {
-  background: var(--green-tint);
-  color: var(--green-ink);
-  font-size: 11.5px;
-  padding: 7px 8px;
-}
-table.tech .ref {
-  display: block;
-  font: 500 10px 'Spline Sans Mono', monospace;
-  color: var(--ink-2);
-  margin-top: 2px;
-  font-weight: 400;
-}
-table.tech thead th {
-  background: var(--surface);
 }
 
 /* step 5 proof blocks */
@@ -1400,35 +1351,106 @@ table.tech thead th {
 .legit[aria-pressed='false'] {
   opacity: 0.35;
 }
-/* the period control: one button per inventory snapshot the model wrote (plan.md section 7) */
-.perctl {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding: 7px 12px;
-  border-top: 1px solid var(--line-2);
-  font-size: 12px;
-  flex: none;
+/* ---------- results box: floats over the map's right side, never steals map height ---------- */
+.mapwrap {
+  position: relative;
 }
-.perctl .seg button {
+.resbtn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 27;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 99px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+.resbtn:hover {
+  background: var(--blue-d);
+}
+.resbtn b {
+  font-size: 11px;
+}
+.respanel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  max-height: calc(100% - 62px);
+  z-index: 26;
+  width: 30%;
+  min-width: 190px;
+  max-width: 300px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 10px 12px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  font-size: 11px;
+  color: var(--ink-2);
+}
+.respanel .note {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+.respanel .leghead {
+  margin-top: 6px;
+  color: var(--green-ink);
+}
+.respanel .seg button {
   padding: 4px 9px;
   font-size: 11.5px;
 }
-.perctl .note {
-  margin: 0;
-  flex: 1;
-  min-width: 160px;
+.reshead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
 }
-.netpanel {
-  border-top: 1px solid var(--line);
-  padding: 8px 12px;
-  background: var(--surface);
+.reshead b {
+  font-size: 12.5px;
+  color: var(--blue);
+}
+.resclose {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-2);
   flex: none;
 }
+.resclose:hover {
+  background: var(--tint-2);
+}
+.resname {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 12px;
+}
+/* the four "what you built" facts, two by two in the box */
 .netfacts {
   display: flex;
   gap: 8px;
+}
+.netfacts.resfacts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+  margin-top: 2px;
 }
 .netfacts .fact {
   flex: 1;
@@ -1441,17 +1463,28 @@ table.tech thead th {
 .netfacts .fact span {
   font-size: 10.5px;
 }
-.dockrow {
+.resleg {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 7px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
-.dockrow .note {
-  margin: 0;
-  font-size: 11px;
+.resleg .legit,
+.layerpop .legit {
+  align-items: flex-start;
+}
+.resleg .legit > :first-child,
+.layerpop .legit > :first-child {
+  margin-top: 2px;
+}
+.sizekey {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding-left: 4px;
+}
+.sizekey svg {
+  overflow: visible;
 }
 .credit {
   flex: none;
@@ -1656,8 +1689,8 @@ table.tech thead th {
     max-height: 100%;
   }
   .maplegend,
-  .netpanel,
-  .perctl,
+  .respanel,
+  .resbtn,
   .credit,
   .team {
     display: none;
@@ -1726,7 +1759,8 @@ table.tech thead th {
     grid-template-columns: 1fr;
     flex: none;
   }
-  .facts {
+  .facts,
+  .facts.facts-row {
     grid-template-columns: 1fr 1fr;
   }
   .scards {
@@ -1742,10 +1776,19 @@ table.tech thead th {
     scroll-snap-align: center;
     overflow: visible;
   }
+  /* four plan pills: two per row on a phone */
+  .pillrow {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .spill {
+    flex: 1 1 calc(50% - 6px);
+  }
   .tiles {
     grid-template-columns: 1fr 1fr;
   }
-  .two {
+  .two,
+  .multi {
     grid-template-columns: 1fr;
   }
   .dfoot {
