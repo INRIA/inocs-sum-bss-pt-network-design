@@ -1,6 +1,5 @@
 {
   "_comment": "Flat, single-level dictionary. Edit by hand — this file IS the copy of the demo. Keys with {braces} take interpolated values from the data (demo-v3 plan.md). Missing keys in fr.json fall back to this file.",
-
   "brand.lab": "Geneva living lab",
   "lang.aria": "Language",
   "nav.aria": "The five steps of the demo",
@@ -8,7 +7,6 @@
   "credit.kbd": "steps · space plays the day",
   "sheet.aria": "Details",
   "sheet.close": "Close",
-
   "tab.1": "The questions",
   "tab.2": "The city",
   "tab.3": "Choose a plan",
@@ -19,7 +17,6 @@
   "tabsub.3": "Four budgets, one optimiser",
   "tabsub.4": "A day on the network, read the paper's way",
   "tabsub.5": "The four questions answered",
-
   "q1.h": "How much should the city invest — and where does the next euro stop paying off?",
   "q1.p": "The same demand, solved again at every budget of the paper's ladder.",
   "q1.short": "How much should the city invest?",
@@ -36,7 +33,6 @@
   "q4.p": "The same budget optimised for a two-peak weekday, a sharp single peak, a flat day and Geneva's observed rhythm.",
   "q4.short": "Does the rhythm of the day change the map?",
   "q4.paper": "a flat day serves the most; a sharp peak packs the stations closer together (Fig. 12)",
-
   "s1.eyebrow": "A decision game on real Geneva data",
   "s1.title": "Where should the bikes live?",
   "s1.lede": "Geneva wants shared bikes that work with its trams and buses, not against them. Behind this demo is an optimisation model that decides, on a budget, <b>where to open stations, how many docks each gets and how many bikes start the day there</b>, so that as much potential demand as possible is served — by bike alone or by bike plus public transport. It answers four questions a city asks.",
@@ -47,7 +43,6 @@
   "s1.f3": "periods in the model's day — morning, midday, evening — because bikes end up where people went",
   "s1.paper": "Research: Z. Wu, S. Sharif Azadeh, L. Brotcorne — <i>Network Design of Bike Sharing Systems with Public Transport Integration</i>, INOCS (Inria Lille) &amp; TU Delft, EU SUM project. The demo uses the model exactly as submitted; demand here is counted from observed shared-bike trips, where the paper estimates it from a public-transport survey and ridership.",
   "s1.cta": "Watch the city move →",
-
   "s2.eyebrow": "Step 2 — observe",
   "s2.title": "Watch the city live",
   "s2.lede": "Drag through a day or press play. The red circles on the map grow with boardings and alightings. Find the pattern a planner has to serve — and see how the model summarises it.",
@@ -78,7 +73,6 @@
   "s2.model.baseline": "The paper's baseline uses a bimodal profile instead ({w}), so a plan solved for it targets two commuting peaks rather than Geneva's observed evening-heavy day.",
   "s2.note": "Ridership: public-transport operator data, per stop × hour × weekday. Bike trips: operator data, Jun–Dec 2024. The hourly animation illustrates the rhythm; the model itself solves the three periods above.",
   "s2.cta": "You've seen where Geneva moves. Take the budget →",
-
   "s3.eyebrow": "Step 3 — decide",
   "s3.title": "Choose a plan",
   "s3.lede": "Four ambitions for serving that rhythm. The optimisation model places the stations — <b>you set the ambition.</b> Every plan is solved on the same potential demand, so what changes between them is the money, not the problem.",
@@ -95,7 +89,6 @@
   "s3.tag.reference": "the reference plan",
   "s3.tag.ambitious": "all in",
   "s3.note": "{n} more runs — other budget levels, the truck dial, the dispatch penalty and the rhythms of the day — are not plans to pick: they appear in step 5 to answer the four questions.",
-
   "s4.eyebrow": "Step 4 — consequences",
   "s4.title": "{name}: a day on the network",
   "s4.lede": "Read from the model's own solution, the way the paper evaluates it.",
@@ -134,7 +127,6 @@
   "s4.reading.ambitious": "Almost the same day as the {refname}: the extra money lifts served demand by {delta} trips. Docks nearly double, but those riders were already served.",
   "s4.cta": "Compare the plans →",
   "s4.back": "Try a different plan",
-
   "s5.eyebrow": "Step 5 — the answers",
   "s5.title": "Compare plans",
   "s5.lede": "The four questions of step 1, answered from the runs. Open a card to see the proof: one chart per question, solid marks for the runs made, hollow marks for the runs still to come.",
@@ -144,6 +136,15 @@
   "s5.pending": "runs pending: {list}",
   "s5.paperref": "paper: {ref}",
   "s5.q.nodata": "Not enough runs on disk yet to answer this from the data — the proof below shows which ones are missing.",
+  "s5.why": "Why?",
+  "s5.q1.ans": "{lo}–{hi} k€",
+  "s5.q1.why": "That is where the curve bends: {lo} already serves {plo} of the demand, {hi} serves {phi}. The next {more} add only {pts} points, while each served trip costs {c2} of investment instead of {c1}.",
+  "s5.q2.ans": "Between {lo} and {hi} k€",
+  "s5.q2.why": "The biggest jump in the budget ladder: trips combining bike and PT go from {s1} to {s2} of served trips as transfer stations grow from {t1} to {t2}. After that the share levels off ({s3} at {top}).",
+  "s5.q3.ans": "Docks, plus a few truck runs",
+  "s5.q3.why": "The docks alone serve {p0}. {runs} truck runs a day ({cost}) lift it to {p1}. Spending {topcost} a day on trucks adds only {extra2} more trips.",
+  "s5.q4.ans": "The service more than the map",
+  "s5.q4.why": "Every rhythm builds {smin} to {smax} stations. What changes is how much is served: {pb} on a “{best}” day, {pw} on a “{worst}” day, whose {period} peak is only {ps} served.",
   "s5.q3.concl": "With {budget} of capital and {base}, the network serves {p0}. {runs} truck runs a day ({cost}) lift it to {p1}: {extra} more trips. Spending {topcost} ({topruns} runs) adds only {extra2} more. Docks stay between {dmin} and {dmax} in every version: trucks add service on top of the docks, they do not replace them.",
   "s5.q3.read": "The same {budget} network, from no trucks at all to trucks spending the whole daily operating budget. Both charts share the x axis: the version's capital budget and what limits its trucks.",
   "s5.q3.x.none": "no trucks",
@@ -188,7 +189,6 @@
   "s5.all.pertrip": "€ / daily trip",
   "s5.all.note": "Advanced columns: OD pairs covered (share of the origin–destination pairs with any served flow) and the mean nearest-neighbour distance between built stations. Italic rows are scenarios whose run has still to be made.",
   "s5.cta": "Back to the questions",
-
   "pending.short": "pending",
   "pending.row": "run pending",
   "unit.keur": "{n} k€",
@@ -196,7 +196,6 @@
   "profile.uniform": "Flat",
   "profile.sharp": "Sharp peak",
   "profile.geneva_weekday": "Geneva weekday",
-
   "story.h": "{name} — the full story",
   "story.result": "Result.",
   "story.result.v": "{stations} stations ({reg} regular, {trans} transfer), {docks} docks, {bikes} bikes; {served} of potential demand served, {pt} of it with public transport.",
@@ -226,7 +225,6 @@
   "story.solver": "Solver · status · time",
   "story.solver.v": "Gurobi · status {status} · gap {gap} · {wall} s · {date}",
   "story.src": "Unit costs, path penalty and capacity bounds are the model's own constants, quoted from the paper's Table D.8; every other row is read from the scenario configuration and from the run's own record.",
-
   "how.served.h": "How “trips served” is computed",
   "how.served.p": "The model receives a potential demand of {demand} trips a day between the zones of the study area, split into three periods. It decides which stations to open, their docks and their morning stock, and assigns each trip to one of up to three pre-computed routes (bike only, or bike + tram/bus) — a route is usable only if every station on it is built and has a bike to take and a dock to leave it in. “Trips served” is the total assigned flow divided by the potential demand, exactly the objective the paper maximises. Potential demand is an upper bound (the paper: “a proxy for potential multimodal demand, not a prediction that all passengers would switch”).",
   "how.pt.h": "How “connected to public transport” is computed",
@@ -235,7 +233,6 @@
   "how.time.p": "For each served trip the model knows the travel time of its route and the time of the best alternative without bikes (walking, or walking + public transport). The difference, averaged over served trips and weighted by flow, is the time saved ({gain} min here); the percentage ({saving}) relates it to that alternative. The paper reports about 4.4 minutes and 48 % for its baseline, and suggests cities multiply this by their value of time for a cost–benefit appraisal.",
   "how.ops.h": "How “trucks” is computed",
   "how.ops.p": "The model plans, per period, how many bikes to move between which stations and how many truck runs that takes (a truck carries 10 bikes; a run costs 40 € plus 10 € per km). The daily operating budget caps this spending, and a small penalty ε in the objective discourages runs that do not add served trips.",
-
   "map.layers": "Layers",
   "map.zin": "Zoom in",
   "map.zout": "Zoom out",
@@ -258,7 +255,6 @@
   "map.label.cap": "Number beside a station = docks",
   "map.label.inv": "Number beside a station = bikes in stock",
   "map.label.zoom": "Zoom in to read the numbers beside the stations",
-
   "leg.pt.h": "Public transport",
   "leg.bike.h": "Bike sharing",
   "leg.tram": "Tram line",
@@ -277,7 +273,6 @@
   "leg.atpt": "at PT stops",
   "leg.docks": "docks",
   "leg.bikes": "bikes",
-
   "poi.rail": "Gare Cornavin",
   "poi.uni": "University",
   "poi.hosp": "HUG Hospital",
@@ -296,7 +291,6 @@
   "scen.budget_120k.name": "Ambitious plan",
   "scen.budget_120k.pitch": "Is more always better? Twice the essential budget, and the returns start to flatten.",
   "scen.budget_120k.narrative": "At 120 000 € the city buys the top of the paper's range. Nearly every zone gets a station and the network reaches deep into the tram and bus map — but each additional euro buys fewer newly served trips than the one before it. Put the served share and the investment per served trip next to the reference plan: the gap between them is the diminishing return the model exists to quantify.",
-
   "scen.S1_essential.name": "Essential network",
   "scen.S1_essential.tag": "minimum viable",
   "scen.S1_essential.pitch": "The city invests the bare minimum. Where do the few stations go — and who is left out?",

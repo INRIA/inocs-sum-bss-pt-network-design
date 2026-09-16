@@ -34,8 +34,12 @@ export function axisTick(sc: ScenarioData, family: FamilyId, lang: Lang, t: T): 
  */
 export interface QuestionAnswer {
   n: number;
-  /** the data-driven one-liner shown on the card and again under its proof */
+  /** the data-driven one-liner shown under the proof */
   conclusion: string;
+  /** the short answer the card leads with ("60–80 k€"), "" when the runs cannot support one */
+  answer: string;
+  /** the one-sentence argument printed small under the answer */
+  why: string;
   /** axis labels of the runs this question still needs, "" when the family is complete */
   pending: string;
   /** families whose pending runs this question is waiting for */
@@ -114,6 +118,53 @@ export const periodRates = (sc: ScenarioData): number[] | null =>
     ? sc.paper.demandByPeriod.map((d, i) => (d ? (sc.paper!.servedByPeriod[i] ?? 0) / d : 0))
     : null;
 
+/** Budgets on the card answers: "60 k€" reads at a glance where "60 000 €" does not. */
+const kEur = (n: number): string => fmtInt(n / 1000);
+
+/**
+ * The budget family as one curve: solved paper-grid runs, one point per budget (legacy runs and
+ * duplicates dropped), cheapest first.
+ */
+function budgetCurve(data: GameData): ScenarioData[] {
+  const out: ScenarioData[] = [];
+  for (const sc of membersOf(data.scenarios, 'budget')) {
+    if (sc.legacy || !sc.hasResults || !sc.paper) continue;
+    if (!out.some((o) => o.params.budget === sc.params.budget)) out.push(sc);
+  }
+  return out.sort((a, b) => a.params.budget - b.params.budget);
+}
+
+/**
+ * Question 1's answer range: where the served-demand curve bends (the paper's diminishing returns,
+ * Fig. 9 / 12a). Parameter-free "kneedle" rule: normalise budget and served share to 0..1 and take
+ * the run farthest above the straight line joining the cheapest and the dearest run; the range
+ * pairs it with whichever neighbour is next-farthest.
+ */
+export function budgetKnee(curve: ScenarioData[]): [ScenarioData, ScenarioData] | null {
+  if (curve.length < 3) return null;
+  const xs = curve.map((s) => s.params.budget);
+  const ys = curve.map((s) => s.paper!.servedRatio);
+  const [x0, x1, y0, y1] = [xs[0], xs[xs.length - 1], Math.min(...ys), Math.max(...ys)];
+  if (x1 === x0 || y1 === y0) return null;
+  const gap = curve.map((_, i) => (ys[i] - y0) / (y1 - y0) - (xs[i] - x0) / (x1 - x0));
+  const k = gap.indexOf(Math.max(...gap));
+  const j = k === 0 ? 1 : k === gap.length - 1 ? k - 1 : gap[k - 1] > gap[k + 1] ? k - 1 : k + 1;
+  const [lo, hi] = [Math.min(j, k), Math.max(j, k)];
+  return [curve[lo], curve[hi]];
+}
+
+/**
+ * Question 2's answer range: the paper's regime transition (Fig. 14) located as the budget step
+ * where the PT-assisted share of served trips rises the most.
+ */
+export function ptTransition(curve: ScenarioData[]): [ScenarioData, ScenarioData] | null {
+  if (curve.length < 2) return null;
+  const rise = (i: number) => curve[i + 1].paper!.ptAssistedShare - curve[i].paper!.ptAssistedShare;
+  let best = 0;
+  for (let i = 1; i < curve.length - 1; i++) if (rise(i) > rise(best)) best = i;
+  return [curve[best], curve[best + 1]];
+}
+
 export function answers(data: GameData, t: T, lang: Lang): QuestionAnswer[] {
   const cards = solvedCards(data);
   const first = bySlot(cards, 'essential') ?? cards[0];
@@ -188,10 +239,83 @@ export function answers(data: GameData, t: T, lang: Lang): QuestionAnswer[] {
         })
       : none;
 
+  // ---- the short answers the cards lead with -------------------------------------------------
+  const curve = budgetCurve(data);
+  const top1 = curve[curve.length - 1];
+  const knee = budgetKnee(curve);
+  const a1 =
+    knee && top1 && top1 !== knee[1]
+      ? {
+          answer: t('s5.q1.ans', { lo: kEur(knee[0].params.budget), hi: kEur(knee[1].params.budget) }),
+          why: t('s5.q1.why', {
+            lo: fmtEur(knee[0].params.budget),
+            plo: fmtPct(lang, knee[0].paper!.servedRatio, 0),
+            hi: fmtEur(knee[1].params.budget),
+            phi: fmtPct(lang, knee[1].paper!.servedRatio, 0),
+            more: fmtEur(top1.params.budget - knee[1].params.budget),
+            pts: fmtNum(lang, (top1.paper!.servedRatio - knee[1].paper!.servedRatio) * 100, 1),
+            c1: fmtEur(knee[1].paper!.investmentPerServedTripEur),
+            c2: fmtEur(top1.paper!.investmentPerServedTripEur),
+          }),
+        }
+      : null;
+
+  const flip = ptTransition(curve);
+  const a2 =
+    flip && top1
+      ? {
+          answer: t('s5.q2.ans', { lo: kEur(flip[0].params.budget), hi: kEur(flip[1].params.budget) }),
+          why: t('s5.q2.why', {
+            s1: fmtPct(lang, flip[0].paper!.ptAssistedShare, 0),
+            s2: fmtPct(lang, flip[1].paper!.ptAssistedShare, 0),
+            t1: fmtInt(flip[0].paper!.nTrans),
+            t2: fmtInt(flip[1].paper!.nTrans),
+            top: fmtEur(top1.params.budget),
+            s3: fmtPct(lang, top1.paper!.ptAssistedShare, 0),
+          }),
+        }
+      : null;
+
+  const a3 =
+    base && paid && top && base !== paid && base.runs === 0
+      ? {
+          answer: t('s5.q3.ans'),
+          why: t('s5.q3.why', {
+            p0: fmtPct(lang, base.servedRatio, 0),
+            runs: fmtInt(paid.runs),
+            cost: fmtEur(paid.cost),
+            p1: fmtPct(lang, paid.servedRatio, 0),
+            topcost: fmtEur(top.cost),
+            extra2: fmtInt(top.served - paid.served),
+          }),
+        }
+      : null;
+
+  const counts = rhythms.map((s) => s.paper!.stations);
+  const a4 =
+    best && worst && best !== worst && rates && peak >= 0
+      ? {
+          answer: t('s5.q4.ans'),
+          why: t('s5.q4.why', {
+            smin: fmtInt(Math.min(...counts)),
+            smax: fmtInt(Math.max(...counts)),
+            best: axisTick(best, 'rhythm', lang, t),
+            pb: fmtPct(lang, best.paper!.servedRatio, 0),
+            worst: axisTick(worst, 'rhythm', lang, t),
+            pw: fmtPct(lang, worst.paper!.servedRatio, 0),
+            period: t(`s5.per.${peak}`),
+            ps: fmtPct(lang, rates[peak], 0),
+          }),
+        }
+      : null;
+
   const fam: FamilyId[][] = [['budget'], ['budget'], ['ops_ratio', 'epsilon'], ['rhythm']];
+  const short = [a1, a2, a3, a4];
   return [q1, q2, q3, q4].map((conclusion, i) => ({
     n: i + 1,
     conclusion,
+    answer: short[i]?.answer ?? '',
+    why: short[i]?.why ?? '',
     pending: pendingOf(data, fam[i], lang, t),
     families: fam[i],
   }));

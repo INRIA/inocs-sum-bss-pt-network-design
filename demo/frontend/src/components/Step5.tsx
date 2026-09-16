@@ -6,8 +6,9 @@ import Proof from './Proofs';
 import type { GameData, Lang } from '../lib/types';
 
 /**
- * Step 5 — the four questions answered. Each card carries a conclusion computed from the runs and
- * a "show the proof" button; several proofs can be open at once and always stack in question
+ * Step 5 — the four questions answered. Each card is a summary: the question, a short answer and a
+ * one-sentence "why", all computed from the runs, then a "show the proof" button (the full
+ * conclusion sits under the proof); several proofs can be open at once and always stack in question
  * order. The all-plans table at the bottom lists every scenario, pending runs included.
  */
 export default function Step5({
@@ -39,7 +40,16 @@ export default function Step5({
           <div className={`qcard${open.includes(a.n) ? ' open' : ''}`} key={a.n}>
             <span className="no">{t('s1.qno', { n: a.n })}</span>
             <h3>{t(`q${a.n}.short`)}</h3>
-            <p className="concl">{a.conclusion}</p>
+            {a.answer ? (
+              <>
+                <p className="ans">{a.answer}</p>
+                <p className="why">
+                  <b>{t('s5.why')}</b> {a.why}
+                </p>
+              </>
+            ) : (
+              <p className="concl">{a.conclusion}</p>
+            )}
             {a.pending && <span className="pb">{t('s5.pending', { list: a.pending })}</span>}
             <button className="proof" onClick={() => onToggle(a.n)}>
               {open.includes(a.n) ? t('s5.hide') : t('s5.show')}

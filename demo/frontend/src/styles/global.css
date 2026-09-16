@@ -786,6 +786,29 @@ input[type='range'] {
 .qcard h3 {
   font-size: 14.5px;
 }
+.qcard .ans {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--blue);
+  text-wrap: balance;
+}
+.qcard .why {
+  margin: 0;
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.qcard .why b {
+  font: 600 10px 'Spline Sans Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-ink);
+  margin-right: 4px;
+}
 .qcard .concl {
   font-size: 12.5px;
   color: var(--ink);

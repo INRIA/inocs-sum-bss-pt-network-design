@@ -1,6 +1,5 @@
 {
   "_comment": "Dictionnaire plat. Toute clé absente ici retombe sur en.json (jamais de chaîne vide). Les {accolades} sont remplacées par des valeurs lues dans les données.",
-
   "brand.lab": "Laboratoire vivant de Genève",
   "lang.aria": "Langue",
   "nav.aria": "Les cinq étapes de la démo",
@@ -8,7 +7,6 @@
   "credit.kbd": "étapes · espace anime la journée",
   "sheet.aria": "Détails",
   "sheet.close": "Fermer",
-
   "tab.1": "Les questions",
   "tab.2": "La ville",
   "tab.3": "Choisir un plan",
@@ -19,7 +17,6 @@
   "tabsub.3": "Quatre budgets, un optimiseur",
   "tabsub.4": "Une journée sur le réseau, lue comme dans l'article",
   "tabsub.5": "Les quatre questions, répondues",
-
   "q1.h": "Combien la ville doit-elle investir — et à partir de quand l'euro suivant ne rapporte-t-il plus ?",
   "q1.p": "La même demande, résolue à nouveau à chaque budget de l'échelle de l'article.",
   "q1.short": "Combien la ville doit-elle investir ?",
@@ -36,7 +33,6 @@
   "q4.p": "Le même budget optimisé pour un jour ouvré à deux pointes, une pointe unique marquée, une journée plate et le rythme observé à Genève.",
   "q4.short": "Le rythme de la journée change-t-il la carte ?",
   "q4.paper": "une journée plate sert le plus ; une pointe marquée resserre les stations (fig. 12)",
-
   "s1.eyebrow": "Un jeu de décision sur données genevoises réelles",
   "s1.title": "Où doivent vivre les vélos ?",
   "s1.lede": "Genève veut des vélos en libre-service qui travaillent avec ses trams et ses bus, pas contre eux. Derrière cette démo, un modèle d'optimisation décide, à budget donné, <b>où ouvrir des stations, combien de bornes chacune reçoit et combien de vélos y commencent la journée</b>, afin de servir le plus possible de la demande potentielle — à vélo seul ou en combinant vélo et transports publics. Il répond à quatre questions que se pose une ville.",
@@ -47,7 +43,6 @@
   "s1.f3": "périodes dans la journée du modèle — matin, midi, soir — parce que les vélos finissent là où les gens sont allés",
   "s1.paper": "Recherche : Z. Wu, S. Sharif Azadeh, L. Brotcorne — <i>Network Design of Bike Sharing Systems with Public Transport Integration</i>, INOCS (Inria Lille) &amp; TU Delft, projet européen SUM. La démo utilise le modèle tel qu'il a été soumis ; ici la demande est comptée à partir des trajets à vélo observés, là où l'article l'estime à partir d'une enquête et de la fréquentation des transports publics.",
   "s1.cta": "Observer la ville en mouvement →",
-
   "s2.eyebrow": "Étape 2 — observer",
   "s2.title": "La ville en direct",
   "s2.lede": "Faites défiler une journée ou lancez la lecture. Les cercles rouges sur la carte grandissent avec les montées et les descentes. Trouvez le motif qu'un planificateur doit servir — et voyez comment le modèle le résume.",
@@ -78,7 +73,6 @@
   "s2.model.baseline": "La référence de l'article utilise à la place un profil bimodal ({w}) : un plan résolu pour ce profil vise deux pointes pendulaires plutôt que la journée genevoise observée, très chargée le soir.",
   "s2.note": "Fréquentation : données de l'opérateur TP, par arrêt × heure × jour. Trajets à vélo : données opérateur, juin–déc. 2024. L'animation horaire illustre le rythme ; le modèle, lui, résout les trois périodes ci-dessus.",
   "s2.cta": "Vous avez vu où Genève bouge. À vous le budget →",
-
   "s3.eyebrow": "Étape 3 — décider",
   "s3.title": "Choisissez un plan",
   "s3.lede": "Quatre ambitions pour servir ce rythme. Le modèle d'optimisation place les stations — <b>vous fixez l'ambition.</b> Chaque plan est résolu sur la même demande potentielle : ce qui change d'un plan à l'autre, c'est l'argent, pas le problème.",
@@ -95,7 +89,6 @@
   "s3.tag.reference": "le plan de référence",
   "s3.tag.ambitious": "tout misé",
   "s3.note": "{n} autres calculs — d'autres niveaux de budget, le curseur des camions, la pénalité de tournée et les rythmes de la journée — ne sont pas des plans à choisir : ils apparaissent à l'étape 5 pour répondre aux quatre questions.",
-
   "s4.eyebrow": "Étape 4 — conséquences",
   "s4.title": "{name} : une journée sur le réseau",
   "s4.lede": "Lu dans la solution du modèle lui-même, comme l'article l'évalue.",
@@ -134,7 +127,6 @@
   "s4.reading.ambitious": "Presque la même journée qu'avec le {refname} : l'argent supplémentaire ajoute {delta} trajets servis. Les bornes doublent presque, mais ces usagers étaient déjà servis.",
   "s4.cta": "Comparer les plans →",
   "s4.back": "Essayer un autre plan",
-
   "s5.eyebrow": "Étape 5 — les réponses",
   "s5.title": "Comparer les plans",
   "s5.lede": "Les quatre questions de l'étape 1, répondues à partir des calculs. Ouvrez une carte pour voir la preuve : un graphique par question, marques pleines pour les calculs faits, marques creuses pour ceux qui restent à faire.",
@@ -144,6 +136,15 @@
   "s5.pending": "calculs à venir : {list}",
   "s5.paperref": "article : {ref}",
   "s5.q.nodata": "Pas encore assez de calculs sur le disque pour répondre à partir des données — la preuve ci-dessous montre lesquels manquent.",
+  "s5.why": "Pourquoi ?",
+  "s5.q1.ans": "{lo}–{hi} k€",
+  "s5.q1.why": "C'est là que la courbe s'infléchit : {lo} servent déjà {plo} de la demande, {hi} en servent {phi}. Les {more} suivants n'ajoutent que {pts} points, et chaque trajet servi coûte {c2} d'investissement au lieu de {c1}.",
+  "s5.q2.ans": "Entre {lo} et {hi} k€",
+  "s5.q2.why": "Le plus grand saut de l'échelle de budgets : les trajets vélo + TP passent de {s1} à {s2} des trajets servis, et les stations de correspondance de {t1} à {t2}. Ensuite la part se stabilise ({s3} à {top}).",
+  "s5.q3.ans": "Des bornes, plus quelques tournées",
+  "s5.q3.why": "Les bornes seules servent {p0}. {runs} tournées de camion par jour ({cost}) portent ce taux à {p1}. Dépenser {topcost} par jour en camions n'ajoute que {extra2} trajets.",
+  "s5.q4.ans": "Le service plus que la carte",
+  "s5.q4.why": "Chaque rythme construit entre {smin} et {smax} stations. Ce qui change, c'est la part servie : {pb} pour une journée « {best} », {pw} pour une journée « {worst} », dont la pointe du {period} n'est servie qu'à {ps}.",
   "s5.q3.concl": "Avec {budget} de capital et {base}, le réseau sert {p0}. {runs} tournées de camion par jour ({cost}) le portent à {p1} : {extra} trajets de plus. Dépenser {topcost} ({topruns} tournées) n'ajoute que {extra2} trajets. Les bornes restent entre {dmin} et {dmax} dans toutes les versions : les camions ajoutent du service par-dessus les bornes, ils ne les remplacent pas.",
   "s5.q3.read": "Le même réseau à {budget}, de « aucun camion » à des camions dépensant tout le budget d'exploitation quotidien. Les deux graphiques partagent l'axe des x : le capital de la version et ce qui limite ses camions.",
   "s5.q3.x.none": "sans camions",
@@ -188,7 +189,6 @@
   "s5.all.pertrip": "€ / trajet/j",
   "s5.all.note": "Colonnes avancées : paires origine–destination couvertes (part des paires ayant un flux servi) et distance moyenne au plus proche voisin entre stations construites. Les lignes en italique sont des scénarios dont le calcul reste à faire.",
   "s5.cta": "Retour aux questions",
-
   "pending.short": "à venir",
   "pending.row": "calcul à venir",
   "unit.keur": "{n} k€",
@@ -196,7 +196,6 @@
   "profile.uniform": "Plat",
   "profile.sharp": "Pointe marquée",
   "profile.geneva_weekday": "Jour ouvré genevois",
-
   "story.h": "{name} — l'histoire complète",
   "story.result": "Résultat.",
   "story.result.v": "{stations} stations ({reg} ordinaires, {trans} de transfert), {docks} bornes, {bikes} vélos ; {served} de la demande potentielle servie, dont {pt} avec les transports publics.",
@@ -226,7 +225,6 @@
   "story.solver": "Solveur · statut · temps",
   "story.solver.v": "Gurobi · statut {status} · écart {gap} · {wall} s · {date}",
   "story.src": "Les coûts unitaires, la pénalité de chemin et les bornes de capacité sont les constantes du modèle, citées du tableau D.8 de l'article ; toutes les autres lignes sont lues dans la configuration du scénario et dans l'enregistrement du calcul.",
-
   "how.served.h": "Comment « trajets servis » est calculé",
   "how.served.p": "Le modèle reçoit une demande potentielle de {demand} trajets par jour entre les zones de la zone d'étude, répartie en trois périodes. Il décide quelles stations ouvrir, leurs bornes et leur stock du matin, puis affecte chaque trajet à l'un de trois itinéraires pré-calculés au plus (vélo seul, ou vélo + tram/bus) — un itinéraire n'est utilisable que si chaque station qu'il emprunte est construite, dispose d'un vélo à prendre et d'une borne où le laisser. « Trajets servis » est le flux affecté total divisé par la demande potentielle, exactement l'objectif que l'article maximise. La demande potentielle est une borne supérieure (l'article : « une approximation de la demande multimodale potentielle, pas une prévision que tous les usagers basculeraient »).",
   "how.pt.h": "Comment « connectés aux transports publics » est calculé",
@@ -235,7 +233,6 @@
   "how.time.p": "Pour chaque trajet servi, le modèle connaît le temps de parcours de son itinéraire et celui de la meilleure solution sans vélo (marche, ou marche + transport public). La différence, moyennée sur les trajets servis et pondérée par le flux, est le temps gagné ({gain} min ici) ; le pourcentage ({saving}) le rapporte à cette alternative. L'article rapporte environ 4,4 minutes et 48 % pour sa configuration de référence, et suggère aux villes de multiplier ce gain par leur valeur du temps pour une analyse coûts–bénéfices.",
   "how.ops.h": "Comment « camions » est calculé",
   "how.ops.p": "Le modèle planifie, période par période, combien de vélos déplacer entre quelles stations et combien de tournées cela représente (un camion transporte 10 vélos ; une tournée coûte 40 € plus 10 € par km). Le budget d'exploitation quotidien plafonne cette dépense, et une petite pénalité ε dans l'objectif décourage les tournées qui n'ajoutent aucun trajet servi.",
-
   "map.layers": "Couches",
   "map.zin": "Zoomer",
   "map.zout": "Dézoomer",
@@ -258,7 +255,6 @@
   "map.label.cap": "Nombre à côté d'une station = bornes",
   "map.label.inv": "Nombre à côté d'une station = vélos en stock",
   "map.label.zoom": "Zoomez pour lire les nombres à côté des stations",
-
   "leg.pt.h": "Transports publics",
   "leg.bike.h": "Vélos en libre-service",
   "leg.tram": "Ligne de tram",
@@ -277,7 +273,6 @@
   "leg.atpt": "aux arrêts TP",
   "leg.docks": "bornes",
   "leg.bikes": "vélos",
-
   "poi.rail": "Gare Cornavin",
   "poi.uni": "Université",
   "poi.hosp": "Hôpital HUG",
@@ -296,7 +291,6 @@
   "scen.budget_120k.name": "Plan ambitieux",
   "scen.budget_120k.pitch": "Plus, est-ce toujours mieux ? Deux fois le budget essentiel, et les rendements commencent à s'aplatir.",
   "scen.budget_120k.narrative": "À 120 000 €, la ville achète le haut de la plage de l'article. Presque chaque zone reçoit une station et le réseau s'enfonce loin dans la carte des trams et des bus — mais chaque euro supplémentaire achète moins de trajets nouvellement servis que le précédent. Placez la part servie et l'investissement par trajet servi à côté du plan de référence : l'écart entre les deux est le rendement décroissant que le modèle existe pour quantifier.",
-
   "scen.S1_essential.name": "Réseau essentiel",
   "scen.S1_essential.tag": "minimum viable",
   "scen.S1_essential.pitch": "La ville investit le strict minimum. Où vont les quelques stations — et qui est laissé de côté ?",
