@@ -1,0 +1,28 @@
+{
+  "id": "budget_080k",
+  "schema": "scenario-v3",
+  "family": "baseline",
+  "role": "card",
+  "card": "reference",
+  "title": "Reference plan",
+  "axis_label": "80 000 €",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table D.8 baseline; Table 2",
+  "audience_pitch": "The paper's baseline: 80 000 EUR of investment, 5 % of it kept for daily operations.",
+  "narrative": "This is the configuration the published study uses as its reference (Table D.8): 80 000 EUR of capital, an operational envelope of 5 % for moving bikes around, three demand periods and a moderate penalty on truck dispatches. Every other plan on this page changes exactly one of those settings, so whatever differs is attributable to that one change.",
+  "model_parameters": {
+    "total_budget": 80000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  }
+}

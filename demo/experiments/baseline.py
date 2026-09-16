@@ -34,11 +34,18 @@ so the same simulator replays it, and the demo can show the two side by side:
 
 The cost arithmetic mirrors network-design-bss/src/util/cost.py so the comparison
 is at equal spend: station 100 + dock 20 each + bike 60 each.
+
+DEPRECATED (demo v3, 2026-09-15): replaced by the paper's own comparison --
+the budget ladder of the scenario grid (`run_model.PAPER_GRID`), where every
+point is an optimised design and the contrast is between budgets rather than
+between the optimiser and a hand-drawn sketch; removed once the paper-grid
+runs are validated. The demonstration no longer ships a `baseline_*` result.
 """
 
 import argparse
 import csv
 import json
+import warnings
 from collections import Counter
 from pathlib import Path
 
@@ -51,6 +58,12 @@ from .pipeline.instance import (candidates_of, cells_of, find_instance,
 #: Two candidate sites closer than this are the same place: the model merges
 #: cell centres and PT stops within it, so the baseline must not buy both.
 MERGE_RADIUS_KM = 0.1
+
+#: Emitted by every entry point of this deprecated module.
+_DEPRECATION = ("DEPRECATED (demo v3, 2026-09-15): demo.experiments.baseline "
+                "is replaced by the paper's budget ladder "
+                "(run_model.PAPER_GRID); removed once the paper-grid runs "
+                "are validated.")
 
 
 def _resolve_instance(instance):
@@ -69,6 +82,8 @@ def build_baseline(total_budget, capacity=12, fill_ratio=0.5,
                    od_file=None, instance=None, output_file=None):
     """Build the naive design for a given budget.
 
+    DEPRECATED (demo v3, 2026-09-15): see the module docstring.
+
     :param total_budget: EUR, same figure the scenario gives the model.
     :param capacity: docks per station -- uniform, as a person would plan it.
     :param fill_ratio: share of docks stocked with a bike at day start.
@@ -79,6 +94,7 @@ def build_baseline(total_budget, capacity=12, fill_ratio=0.5,
     :param output_file: where to write stations.json; not written if None.
     :return: list of station dicts (stations.json schema).
     """
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
     config = load_kpi_config()["costs"]
     bikes_each = int(round(capacity * fill_ratio))
     cost_each = (config["station_setup_cost_eur"]
@@ -151,6 +167,7 @@ def main(argv=None):
                              "from (default: the reference scenario's)")
     parser.add_argument("--out", required=True, help="stations.json to write")
     args = parser.parse_args(argv)
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
     build_baseline(args.budget, capacity=args.capacity,
                    instance=args.instance, output_file=args.out)
     return 0

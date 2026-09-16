@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { LayerKey, Layers, MapData } from '../lib/types';
+import type { LayerKey, Layers, MapData, StationMarker } from '../lib/types';
 import type { T } from '../lib/i18n';
 import type { MapKind } from './CityMap';
 import { BikeSwatch, C_EXISTING, C_REGULAR, C_TRANSFER } from './glyphs';
@@ -9,7 +9,9 @@ import { BikeSwatch, C_EXISTING, C_REGULAR, C_TRANSFER } from './glyphs';
  * toggle for its map layer. A hidden layer's item stays in place at 35% opacity — the bar doubles
  * as the state indicator, so there is no layout shift and no layer buttons anywhere else in the UI.
  *
- * The same two groups fill the mobile "Layers" popover, so the swatch styles must stay shared
+ * Three groups: `pt` (top bar), `bike` (bottom bar) and `readouts` — the model's two per-period
+ * station read-outs, capacity and bikes in stock, which live in the results box over the map.
+ * The same groups fill the mobile "Layers" popover, so the swatch styles must stay shared
  * (see global.css: `.maplegend i, .layerpop i`).
  */
 export function LayerToggles({
@@ -19,13 +21,15 @@ export function LayerToggles({
   t,
   layers,
   onToggle,
+  stations,
 }: {
-  group: 'pt' | 'bike';
+  group: 'pt' | 'bike' | 'readouts';
   kind: MapKind;
   map: MapData;
   t: T;
   layers: Layers;
   onToggle: (k: LayerKey) => void;
+  stations?: StationMarker[];
 }) {
   const item = (key: LayerKey, swatch: ReactNode, label: string) => (
     <button key={key} className="legit" aria-pressed={layers[key]} onClick={() => onToggle(key)}>
@@ -34,12 +38,28 @@ export function LayerToggles({
     </button>
   );
 
+  if (group === 'readouts') {
+    if (kind !== 'network') return null;
+    const caps = (stations ?? []).map((s) => s.capacity);
+    const range = caps.length ? `${Math.min(...caps)}–${Math.max(...caps)}` : '';
+    return (
+      <>
+        {item(
+          'capacity',
+          <i style={{ background: '#fff', border: `1px solid ${C_TRANSFER}` }} />,
+          range ? t('leg.capacity.n', { range }) : t('leg.capacity')
+        )}
+        {item('inventory', <i style={{ background: C_TRANSFER, opacity: 0.55 }} />, t('leg.inventory'))}
+      </>
+    );
+  }
+
   if (group === 'bike') {
     return (
       <>
         {item('bike', <BikeSwatch color={C_EXISTING} />, t('leg.bike'))}
-        {kind === 'network' && item('transfer', <BikeSwatch color={C_TRANSFER} />, t('leg.transfer'))}
         {kind === 'network' && item('regular', <BikeSwatch color={C_REGULAR} />, t('leg.regular'))}
+        {kind === 'network' && item('transfer', <BikeSwatch color={C_TRANSFER} />, t('leg.transfer'))}
       </>
     );
   }

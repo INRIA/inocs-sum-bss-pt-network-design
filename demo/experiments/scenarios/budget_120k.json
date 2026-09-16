@@ -1,0 +1,28 @@
+{
+  "id": "budget_120k",
+  "schema": "scenario-v3",
+  "family": "budget",
+  "role": "card",
+  "card": "ambitious",
+  "title": "Ambitious plan",
+  "axis_label": "120 000 €",
+  "temporal_profile": "bimodal",
+  "outside_paper_range": false,
+  "paper_reference": "Table 2 budget 120 kEUR (upper end); Fig. 9, 12a, 14",
+  "audience_pitch": "Is more always better? Twice the essential budget, and the returns start to flatten.",
+  "narrative": "At 120 000 EUR the city buys the top of the paper's range. Nearly every zone gets a station and the network reaches deep into the tram and bus map -- but each additional euro buys fewer newly served trips than the one before it. Put the served share and the investment per served trip next to the reference plan: the gap between them is the diminishing return the model exists to quantify.",
+  "model_parameters": {
+    "total_budget": 120000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.4,
+      0.2,
+      0.4
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  }
+}

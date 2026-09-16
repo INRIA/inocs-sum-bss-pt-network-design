@@ -70,13 +70,20 @@ network-design-bss/
     build_package.py, build_docs.py, sync_requirements.py, README.md (maintainer doc)
   sdk/                     committed wheel + pdoc docs (generated). legacy/ = superseded 0.1.0 build
 demo/
-  experiments/             scenarios/, run_model.py, trips.py, profiles.py, ridership.py, stations_real.py,
-                           baseline.py, simulate.py, evaluate.py, pipeline/, tests/, kpi_config.json
+  experiments/             scenarios/ (18-run paper grid + legacy S1-S3), run_model.py (PAPER_GRID,
+                           write_scenarios), trips.py, profiles.py, ridership.py, stations_real.py,
+                           simulate.py (replay only, live), evaluate.py (paper/technical/stress_test),
+                           pipeline/, tests/, kpi_config.json
+                           baseline.py, pipeline/instance.py  DEPRECATED, see below
                            data/  (the layer's own copy of the sample + observed layers)
-                           results/<scenario>/ (stations, metrics, instance, model_plan, sim_*, kpis) + results/shared/bike_arcs.json
-  frontend/                Astro + React static site (the public demo). scripts/prepare-data.mjs = the only data bridge
+                           results/<scenario>/ (stations, metrics [full evaluator row], model_plan,
+                           instance, sim_monday/sim_sunday [stress test], kpis [schema kpis-v3]) +
+                           results/shared/bike_arcs.json
+  frontend/                Astro + React static site (the public demo), v3: five header-tab steps +
+                           advanced toggle. scripts/prepare-data.mjs = the only data bridge
 notebooks/                 gva_demo.ipynb (pipeline walkthrough), simulation_demo.ipynb (reference values),
-                           demo_scenarios.ipynb (S1–S3 + baseline + evaluation)
+                           demo_scenarios.ipynb (generate the 18-scenario grid, run it one
+                           scenario at a time, stress-test replay, evaluate, compare)
 config/configuration.json  legacy parameter-sweep ranges read by util.util (budget / k paths / penalty); not used by the SDK
 .github/workflows/deploy-pages.yml   builds demo/frontend and publishes it to GitHub Pages on push to main
 ```
@@ -95,11 +102,10 @@ PYTHONPATH=network-design-bss/sdk-builder pipenv run python -m sum_network_desig
 PYTHONPATH=network-design-bss/sdk-builder pipenv run python -m sum_network_design_bss --export out/
 
 # demo pipeline (stdlib except run_model, which needs the full env + Gurobi)
-python3 -m demo.experiments.run_model S1_essential S2_balanced S3_ambitious
-python3 -m demo.experiments.simulate --stations demo/experiments/results/S2_balanced/stations.json --day monday
-python3 -m demo.experiments.simulate --stations demo/experiments/results/S2_balanced/stations.json --day monday --mode instance --seeds 5
-python3 -m demo.experiments.evaluate demo/experiments/results/S1_essential demo/experiments/results/S2_balanced --compare-day monday
-python3 -m demo.experiments.baseline --budget 20000 --instance demo/experiments/results/S2_balanced/instance.json --out demo/experiments/results/baseline_20k/stations.json
+python3 -m demo.experiments.run_model --write-scenarios                        # (re)generate scenarios/*.json from PAPER_GRID
+python3 -m demo.experiments.run_model budget_080k rhythm_uniform               # model runs; the notebook is the supported way to run the grid
+python3 -m demo.experiments.simulate --stations demo/experiments/results/budget_080k/stations.json --day monday   # stress-test replay only
+python3 -m demo.experiments.evaluate demo/experiments/results/budget_060k demo/experiments/results/budget_080k demo/experiments/results/budget_120k --compare
 
 # tests (unittest-style, pytest-compatible; pytest.ini points at demo/experiments/tests)
 DEMO_TESTS_FAST=1 python3 -m unittest discover -s demo/experiments/tests -t .   # ~0.3 s, skips the 112-day replay
@@ -129,13 +135,19 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   `"integrated"` (one MIP) and `"sequential"` (design, then operations). `"benders"` and `"alns"`
   are declared in `runner.SOLVE_MODES` but not implemented in the frozen tree.
 - `demo.experiments.run_model.run_scenario(id)` — injects `scenarios/<id>.json` by replacing
-  `instance_builder.generate_h3_instances` in `sys.modules`; writes `stations.json`, `metrics.json`,
-  `instance.json`, `model_plan.json`, `results/shared/bike_arcs.json`, each with a `run` provenance block.
-- `demo.experiments.simulate.DaySimulation` — one engine, three modes: `replay` (observed trips,
-  the proof), `sample` (resampled × `--scale`), `instance` (the model's own 1,453-trip day; the only
-  day comparable to `metrics.json`). Details: `demo/experiments/METHODS.md` §3.
-- `demo.experiments.evaluate.evaluate_day / evaluate_scenario / compare` — KPIs from
-  `kpi_config.json`; pure dict → dict.
+  `instance_builder.generate_h3_instances` in `sys.modules`; writes `stations.json`, `metrics.json`
+  (the SDK's full `experiment_row`, not just `HEADLINE_METRICS`), `instance.json`, `model_plan.json`,
+  `results/shared/bike_arcs.json`, each with a `run` provenance block.
+  `demo.experiments.run_model.write_scenarios()` turns `PAPER_GRID` (the 18-run definition) into
+  `scenarios/<id>.json`.
+- `demo.experiments.simulate.DaySimulation` / `replay()` — the **stress test**: the observed trips
+  of Geneva replayed against a design. `sample`/`instance` modes are DEPRECATED (see below).
+  Details: `demo/experiments/METHODS.md` §3.
+- `demo.experiments.evaluate.evaluate_scenario(dir) / compare` — writes `kpis.json`
+  (`"schema": "kpis-v3"`) with three blocks: `paper` (the paper's own metrics, from
+  `model_plan.json` + `metrics.json`), `technical` (the full evaluator row + solver stats),
+  `stress_test` (the replay, labelled as a demo-side check). `evaluate_day_legacy` is DEPRECATED.
+  Pure dict → dict; no coefficient from `kpi_config.json` reaches `paper` or `technical`.
 
 ## Data contracts
 
@@ -144,17 +156,31 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   703 rows / 1,453 trips, counted from the observed trips by `od_builder.py`). The four GeoJSON files
   come from the companion package `inocs-sum-gtfs-geojson`.
 - `demo/experiments/results/<scenario>/` is what the front-end consumes; required:
-  `stations.json`, `kpis.json`, `sim_monday.json`, `sim_sunday.json`, `sim_monday_x25.json`;
-  optional: `metrics.json`, `sim_instance.json`. Scenarios are discovered by folder, a missing file
-  hides the scenario with a warning. A scenario also needs `scenarios/<id>.json`.
-- Scenario parameters (`scenarios/S*.json → model_parameters`): `total_budget`, `op_budget_ratio`,
-  `demand_periods`, `period_weights` (must sum to 1), `split_method`, `seed`, `epsilon`, `solve_mode`.
-  Committed S1/S2/S3: 20k/80k/140k €, all solved optimal on 2026-09-10.
+  `stations.json`, `kpis.json`, `model_plan.json`; optional: `metrics.json`, `sim_monday.json`,
+  `sim_sunday.json` (the stress-test replay, read into `kpis.json`'s `stress_test` block).
+  `prepare-data.mjs` also writes a `plan_slim.json` (periods + built stations with per-period
+  inventory) from `model_plan.json`, for the map. Scenarios are discovered by folder, a missing
+  required file hides the scenario with a warning. A scenario also needs `scenarios/<id>.json`.
+  Deleted, not written any more: `sim_monday_x25.json`, `sim_instance.json`, `results/baseline_20k/`.
+- Scenario JSON (`scenarios/<id>.json`, `"schema": "scenario-v3"`; full field reference:
+  `demo/experiments/scenarios/README.md`):
+  `id`, `family` (`baseline`/`budget`/`ops_ratio`/`epsilon`/`rhythm`), `role` (`card`/`compare`),
+  `card` + `audience_pitch` + `narrative` (cards only), `title`, `axis_label`, `temporal_profile`,
+  `outside_paper_range`, `paper_reference`, `legacy` (S1-S3 only), and `model_parameters`:
+  `total_budget`, `op_budget_ratio`, `demand_periods`, `period_weights` (must sum to 1),
+  `split_method`, `seed`, `epsilon`, `solve_mode`. Generated by
+  `python -m demo.experiments.run_model --write-scenarios` from `run_model.PAPER_GRID` (18 runs);
+  existing files are kept unless `--overwrite` is passed. Legacy `S1_essential`/`S2_balanced`/
+  `S3_ambitious` (20k/80k/140k €, observed weekday weights, solved optimal 2026-09-10) stay,
+  flagged `legacy: true`, until the paper grid is run and validated.
+- `evaluate.py` CLI: `python -m demo.experiments.evaluate <result_dir>... [--compare] [--out FILE]`
+  writes/reads `kpis.json`; `--compare` renders the cross-scenario markdown table.
 
 ## Gotchas
 
 - First model run spends ~50 min enumerating shortest paths; cached under `src/osm_cache/` and
-  `src/data/shortest_paths_result/` (keys carry no scenario parameter, so S1→S3 pay it once).
+  `src/data/shortest_paths_result/` (keys carry no scenario parameter, so running the grid back
+  to back pays it once).
   Solve itself is ~15 s.
 - `bootstrap()` changes the cwd. Resolve paths before calling it, or use `NetworkDesignRun`.
 - Running from the wheel: `PermissionError` from `bootstrap()` means `work_dir` was omitted.
@@ -170,6 +196,30 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
 - No git remote is configured in this checkout and history starts here (files staged, no commit
   yet at the time of writing): `git diff HEAD` fails until the first commit.
 
+## Deprecated (to remove after the paper-grid runs are validated)
+
+Demo v3 (2026-09-15) realigns the demonstration with the submitted paper. The following are
+kept and marked (module docstring + `warnings.warn(..., DeprecationWarning)`), no longer called
+by the live pipeline, and their tests are `@unittest.skip`ped rather than deleted — removal is a
+separate clean-up step once the user has run the 18-scenario grid and it is validated:
+
+- `simulate.py`: the `sample` and `instance` modes (`sample`, `instance_run`, `instance_trips`,
+  `DaySimulation.draw_trips`, the `plan`/`arcs`/`candidates` arguments, `--mode sample|instance`).
+  `replay` (the stress test) stays live.
+- `baseline.py` — the whole module (naive "human" design). Superseded by the budget ladder
+  itself: every point on it is an optimised design, so the contrast is between budgets, not
+  between a human and the optimiser.
+- `pipeline/instance.py` — the whole module (readers for the deprecated simulation modes).
+- `evaluate.evaluate_day_legacy` (formerly `evaluate_day`) — the simulator-based service /
+  mobility / environment / economics KPI families; replaced by `evaluate.paper_kpis` /
+  `evaluate.stress_test_kpis`.
+- `kpi_config.json` blocks `mode_substitution`, `unserved_fallback`,
+  `emission_factors_g_per_pkm`, `equivalences`, and the `costs.amortization_years` /
+  `maintenance_eur_per_bike_per_day` / `fare_eur_per_trip` keys — marked `"_deprecated": true`.
+  `demand.growth_scenarios` (the ×10/×25 labels) likewise.
+- Already deleted (not just deprecated): `sim_monday_x25.json`, `sim_instance.json`,
+  `results/baseline_20k/`, for every scenario.
+
 ## Known upstream issues (report, do not fix in `src/`)
 
 Tracked in the demo layer's findings (local `.specs/`, summarised here so they survive):
@@ -181,6 +231,11 @@ Tracked in the demo layer's findings (local `.specs/`, summarised here so they s
    `compat._stub_missing_benders` targets an import that upstream has since removed (harmless).
 5. `covered_od_ratio` counts OD *pairs* with any positive assignment, not flow volume
    (`output_handler/metrics_evaluator.py::_compute_coverage_metrics`).
+6. Dispatch cost is computed twice: once inside the frozen evaluator's `experiment_row`
+   (`dispatch_cost`, written into `metrics.json` → `kpis.json`'s `technical` block) and again by
+   `demo/experiments/pipeline/model_plan.py` (`summary.dispatch_cost_eur`, read into `kpis.json`'s
+   `paper` block) from the same `r`/`n` decisions. The two should be numerically identical; to be
+   confirmed equal once the paper-grid runs exist.
 
 ## Documentation map
 

@@ -21,6 +21,13 @@ every build_*() call is pointed at a tempfile.
 Set DEMO_TESTS_FAST=1 to skip the full 112-day Monday replay (the slowest
 characterization test; the other tests are cheap given the tiny observed
 volumes, ~11.5 trips/day).
+
+Demo v3 (2026-09-15): the classes pinning deprecated artefacts
+(`sim_monday_x25.json`, `sim_instance.json`, `results/baseline_20k/`) are
+kept but skipped -- the artefacts themselves are gone, and the code they
+pinned is deprecated, not yet deleted. `EvaluateGoldenTests` now pins
+`kpis.json` in its v3 form (`evaluate.evaluate_scenario`), and
+`ScenarioValidationTests` validates the whole generated paper grid.
 """
 
 import json
@@ -29,13 +36,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from demo.experiments.baseline import build_baseline
-from demo.experiments.evaluate import evaluate_day
-from demo.experiments.pipeline.instance import (find_instance, load_bike_arcs,
-                                                load_instance, load_model_plan)
+from demo.experiments.evaluate import KPIS_SCHEMA, evaluate_scenario
 from demo.experiments.profiles import build_profiles
-from demo.experiments.simulate import (instance_run, load_stations, replay,
-                                       sample)
+from demo.experiments.run_model import PAPER_GRID, SCENARIO_SCHEMA
+from demo.experiments.simulate import load_stations, replay
 from demo.experiments.trips import build_calibration
 
 from ._helpers import DATA, RESULTS, SCENARIOS, assert_json_equal, load_json, strip_paths
@@ -43,6 +47,16 @@ from ._helpers import DATA, RESULTS, SCENARIOS, assert_json_equal, load_json, st
 #: Skip the full 112-observed-day Monday replay (the one genuinely slow
 #: characterization test) when set. Every other test here is cheap.
 FAST = os.environ.get("DEMO_TESTS_FAST") == "1"
+
+#: Why the sample / instance / baseline golden tests no longer run. The
+#: classes stay so the pins come back with the code if a decision is
+#: reversed; the artefacts they compared against were removed with the
+#: modes themselves (implementation.md 2).
+DEPRECATED = ("DEPRECATED (demo v3, 2026-09-15): the sample and instance "
+              "simulation modes and baseline.py are replaced by the model's "
+              "own solved plan; their committed artefacts "
+              "(sim_monday_x25.json, sim_instance.json, results/baseline_20k/) "
+              "were removed with them.")
 
 #: Every result directory that ships committed artefacts to pin against.
 _SCENARIO_DIRS = sorted(p for p in RESULTS.iterdir() if p.is_dir()) if RESULTS.is_dir() else []
@@ -75,6 +89,7 @@ class CalibrationGoldenTests(unittest.TestCase):
                           "build_profiles() vs data/profiles.json")
 
 
+@unittest.skip(DEPRECATED)
 class BaselineGoldenTest(unittest.TestCase):
     """build_baseline(20000) must reproduce results/baseline_20k/stations.json
     (the bare-list schema).
@@ -86,6 +101,9 @@ class BaselineGoldenTest(unittest.TestCase):
     """
 
     def test_build_baseline_20k_matches_committed(self):
+        from demo.experiments.baseline import build_baseline
+        from demo.experiments.pipeline.instance import find_instance
+
         committed_path = RESULTS / "baseline_20k" / "stations.json"
         if not committed_path.is_file():
             raise unittest.SkipTest("results/baseline_20k/stations.json not committed")
@@ -140,11 +158,14 @@ class ReplayGoldenTests(unittest.TestCase):
         self._check_replay("sunday")
 
 
+@unittest.skip(DEPRECATED)
 class SampleGoldenTests(unittest.TestCase):
     """sample(..., scale, seeds, seed) must reproduce every committed
     sim_monday_x25.json (seeded Monte Carlo resampling is deterministic)."""
 
     def test_sample_x25_matches_committed(self):
+        from demo.experiments.simulate import sample
+
         checked_any = False
         for scenario_dir in _SCENARIO_DIRS:
             sim_path = scenario_dir / "sim_monday_x25.json"
@@ -183,6 +204,7 @@ _INSTANCE_KEYS = ("totals", "model_view", "seed_ensemble", "rebalancing",
                   "hourly", "stations")
 
 
+@unittest.skip(DEPRECATED)
 class InstanceGoldenTests(unittest.TestCase):
     """instance_run(...) must reproduce every committed sim_instance.json.
 
@@ -194,6 +216,12 @@ class InstanceGoldenTests(unittest.TestCase):
     """
 
     def test_instance_mode_matches_committed(self):
+        from demo.experiments.pipeline.instance import (find_instance,
+                                                        load_bike_arcs,
+                                                        load_instance,
+                                                        load_model_plan)
+        from demo.experiments.simulate import instance_run
+
         checked_any = False
         for scenario_dir in _SCENARIO_DIRS:
             sim_path = scenario_dir / "sim_instance.json"
@@ -232,46 +260,78 @@ class InstanceGoldenTests(unittest.TestCase):
 
 
 class EvaluateGoldenTests(unittest.TestCase):
-    """evaluate_day(sim, model_metrics=metrics) must reproduce every entry
-    of every committed kpis.json."""
+    """evaluate_scenario(dir) must reproduce every committed kpis.json.
 
-    def test_evaluate_day_matches_committed_kpis(self):
+    The v3 KPI file is computed from `model_plan.json` + `metrics.json`
+    (+ the replay sims), so this pins the whole evaluation in one call --
+    the paper block, the technical row and the stress test. Nothing is
+    written: the committed files are read-only fixtures here.
+    """
+
+    def test_evaluate_scenario_matches_committed_kpis(self):
         checked_any = False
         for scenario_dir in _SCENARIO_DIRS:
             kpis_path = scenario_dir / "kpis.json"
             if not kpis_path.is_file():
                 continue
-            kpis = load_json(kpis_path)
-            metrics_path = scenario_dir / "metrics.json"
-            model_metrics = load_json(metrics_path) if metrics_path.is_file() else None
-            for day, expected in kpis["days"].items():
-                sim_path = scenario_dir / f"sim_{day}.json"
-                if not sim_path.is_file():
-                    continue
-                with self.subTest(scenario=scenario_dir.name, day=day):
-                    sim = load_json(sim_path)
-                    got = json.loads(json.dumps(
-                        evaluate_day(sim, model_metrics=model_metrics)))
-                    assert_json_equal(
-                        self, got, expected,
-                        f"evaluate_day({scenario_dir.name}/sim_{day}.json) "
-                        f"vs kpis.json['days'][{day!r}]")
-                    checked_any = True
+            committed = load_json(kpis_path)
+            with self.subTest(scenario=scenario_dir.name):
+                self.assertEqual(committed.get("schema"), KPIS_SCHEMA,
+                                 f"{kpis_path} is not {KPIS_SCHEMA}")
+                got = json.loads(json.dumps(
+                    evaluate_scenario(scenario_dir, write=False)))
+                assert_json_equal(
+                    self, strip_paths(got), strip_paths(committed),
+                    f"evaluate_scenario({scenario_dir.name}) vs kpis.json")
+                checked_any = True
         if not checked_any:
             raise unittest.SkipTest(f"no committed kpis.json found under {RESULTS}")
 
 
+#: Keys every scenario definition must carry (implementation.md 0.2).
+_SCENARIO_REQUIRED_KEYS = ("id", "family", "role", "model_parameters")
+
+#: The sensitivity axes a scenario may belong to. "baseline" is the paper's
+#: reference run, which belongs to every family at once.
+_SCENARIO_FAMILIES = ("baseline", "budget", "ops_ratio", "epsilon", "rhythm")
+
+#: Cards carry the copy the demonstration shows on its "choose a plan" step.
+_CARD_KEYS = ("card", "audience_pitch", "narrative")
+
+
 class ScenarioValidationTests(unittest.TestCase):
-    """Every scenarios/S*.json: period_weights sums to 1 (within 1e-6) and
-    has one weight per demand_periods."""
+    """Every scenarios/*.json: the v3 contract, and the grid as a whole.
+
+    The paper grid is generated from `run_model.PAPER_GRID`, so these check
+    the generator's output as committed -- not a hand-maintained list.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.scenarios = [(path, load_json(path))
+                         for path in sorted(SCENARIOS.glob("*.json"))]
+
+    def test_scenarios_are_committed(self):
+        if not self.scenarios:
+            raise unittest.SkipTest(f"no scenarios/*.json found under {SCENARIOS}")
+
+    def test_schema_and_required_keys(self):
+        for path, scenario in self.scenarios:
+            with self.subTest(scenario=path.name):
+                self.assertEqual(scenario.get("schema"), SCENARIO_SCHEMA,
+                                 f"{path.name}: not {SCENARIO_SCHEMA}")
+                for key in _SCENARIO_REQUIRED_KEYS:
+                    self.assertIn(key, scenario, f"{path.name}: no {key!r}")
+                self.assertEqual(scenario["id"], path.stem,
+                                 f"{path.name}: id does not match its filename")
+                self.assertIn(scenario["family"], _SCENARIO_FAMILIES,
+                              f"{path.name}: unknown family")
+                self.assertIn(scenario["role"], ("card", "compare"),
+                              f"{path.name}: unknown role")
 
     def test_period_weights_sum_and_length(self):
-        scenario_files = sorted(SCENARIOS.glob("S*.json")) if SCENARIOS.is_dir() else []
-        if not scenario_files:
-            raise unittest.SkipTest(f"no scenarios/S*.json found under {SCENARIOS}")
-        for path in scenario_files:
+        for path, scenario in self.scenarios:
             with self.subTest(scenario=path.name):
-                scenario = load_json(path)
                 params = scenario["model_parameters"]
                 weights = params["period_weights"]
                 periods = params["demand_periods"]
@@ -283,6 +343,33 @@ class ScenarioValidationTests(unittest.TestCase):
                 self.assertAlmostEqual(
                     total, 1.0, delta=1e-6,
                     msg=f"{path.name}: period_weights sum to {total}, not 1")
+
+    def test_cards_carry_their_copy(self):
+        for path, scenario in self.scenarios:
+            if scenario["role"] != "card":
+                continue
+            with self.subTest(scenario=path.name):
+                for key in _CARD_KEYS:
+                    self.assertTrue(scenario.get(key),
+                                    f"{path.name}: a card needs {key!r}")
+
+    def test_ids_are_unique(self):
+        ids = [scenario["id"] for _, scenario in self.scenarios]
+        self.assertEqual(sorted(ids), sorted(set(ids)), "duplicate scenario ids")
+
+    def test_the_paper_grid_is_the_committed_grid(self):
+        """18 non-legacy scenarios, exactly one of them the baseline."""
+        grid = [scenario for _, scenario in self.scenarios
+                if not scenario.get("legacy")]
+        self.assertEqual(
+            len(grid), len(PAPER_GRID),
+            f"{len(grid)} non-legacy scenarios committed, "
+            f"{len(PAPER_GRID)} in run_model.PAPER_GRID -- regenerate with "
+            f"`python -m demo.experiments.run_model --write-scenarios`")
+        self.assertEqual(len(grid), 18, "the paper grid is 18 runs")
+        baselines = [s["id"] for s in grid if s["family"] == "baseline"]
+        self.assertEqual(len(baselines), 1,
+                         f"expected exactly one baseline scenario, got {baselines}")
 
 
 if __name__ == "__main__":

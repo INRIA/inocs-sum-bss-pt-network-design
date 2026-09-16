@@ -1,0 +1,25 @@
+{
+  "id": "rhythm_uniform",
+  "schema": "scenario-v3",
+  "family": "rhythm",
+  "role": "compare",
+  "title": "Flat day",
+  "axis_label": "Uniform (1/3 each)",
+  "temporal_profile": "uniform",
+  "outside_paper_range": false,
+  "paper_reference": "Table 2 uniform profile; Fig. 12",
+  "model_parameters": {
+    "total_budget": 80000,
+    "op_budget_ratio": 0.05,
+    "demand_periods": 3,
+    "period_weights": [
+      0.3333,
+      0.3333,
+      0.3334
+    ],
+    "split_method": "multinomial",
+    "seed": 20,
+    "epsilon": 0.04,
+    "solve_mode": "integrated"
+  }
+}

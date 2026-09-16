@@ -1,13 +1,26 @@
 {
   "id": "S2_balanced",
+  "schema": "scenario-v3",
+  "legacy": true,
+  "family": "budget",
+  "role": "card",
+  "card": "reference",
   "title": "Balanced network",
+  "axis_label": "80 000 €",
+  "temporal_profile": "geneva_weekday",
+  "outside_paper_range": false,
+  "paper_reference": "Legacy demo v2 run: Table 2 / Table D.8 budget 80 kEUR, but at operational ratio 0.025 and the observed Geneva weekday weights instead of the baseline 0.05 / bimodal; superseded by budget_080k",
   "audience_pitch": "The city funds a solid network -- the reference plan studied for Geneva.",
   "narrative": "This is the configuration of the published Geneva proof-of-concept (80 000 EUR, 2.5% operational budget), with one change: the demand period weights are the ones observed in the real trip data instead of random draws, so the design targets the actual morning and evening peaks. Coverage is broad, most trips are served on a standard Monday, and the network roughly breaks even.",
   "model_parameters": {
     "total_budget": 80000,
     "op_budget_ratio": 0.025,
     "demand_periods": 3,
-    "period_weights": [0.169, 0.343, 0.488],
+    "period_weights": [
+      0.169,
+      0.343,
+      0.488
+    ],
     "split_method": "multinomial",
     "seed": 20,
     "epsilon": 0.04,

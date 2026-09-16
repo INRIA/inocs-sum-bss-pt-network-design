@@ -8,6 +8,13 @@ demo's instance mode replays, and its shape -- 56 zones, 100 candidates,
 973 demand rows, 1,453 trips -- is quoted throughout the documentation), and
 the optional artefacts (model_plan.json, bike_arcs.json) are checked to
 degrade to None rather than raise when they have not been exported yet.
+
+
+DEPRECATED (demo v3, 2026-09-15): pipeline/instance.py -- the readers of
+the instance the optimiser solved -- is replaced by reading
+`model_plan.json` directly (`evaluate.paper_kpis`); this whole module is
+skipped, and removed once the paper-grid runs are validated. The tests stay
+so their pins come back with the code if the decision is reversed.
 """
 
 import json
@@ -22,6 +29,15 @@ from demo.experiments.pipeline.instance import (REFERENCE_INSTANCE_SCENARIO,
                                                 load_instance, load_model_plan)
 
 from ._helpers import RESULTS
+
+#: Why nothing in this module runs any more.
+DEPRECATED = ("DEPRECATED (demo v3, 2026-09-15): "
+              "demo.experiments.pipeline.instance is replaced by reading "
+              "model_plan.json directly (evaluate.paper_kpis); removed once "
+              "the paper-grid runs are validated.")
+
+raise unittest.SkipTest(DEPRECATED)
+
 
 #: The committed instance every optimiser scenario shares.
 INSTANCE_PATH = RESULTS / REFERENCE_INSTANCE_SCENARIO / "instance.json"

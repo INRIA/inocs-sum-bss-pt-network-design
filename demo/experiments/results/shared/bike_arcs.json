@@ -1,6 +1,6 @@
 {
   "h3_version": "geneva_1.5km-radius",
-  "src_commit": "d75a72f66ee6363938b76c0cf75cfa16b72f2b72",
+  "src_commit": "fddb34d333b94c7072b3b3f07209bab9c26966bd",
   "n_arcs": 4116,
   "note": "The model's bike arcs: OSM-routed distance/time between candidate stations within RIDE_CATCHMENT_RADIUS; identical for every scenario of this instance.",
   "arcs": [

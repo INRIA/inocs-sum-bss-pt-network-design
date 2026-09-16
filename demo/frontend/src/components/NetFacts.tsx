@@ -3,18 +3,17 @@ import type { T } from '../lib/i18n';
 import { fmtInt } from '../lib/format';
 
 /**
- * "What you built": the four physical facts of the network (ux-plan-v2 section 4.3). They live
- * under the map on desktop and fold into the top of the D sheet on mobile (section 6, note 1) —
- * one component so the two placements can never drift apart. Performance KPIs stay in the left
- * column; these are never duplicated there.
+ * "What you built": the four physical facts of the network (ux-plan-v2 section 4.3), read from the
+ * model's own solution. They live under the map on desktop and fold into the top of the step-4
+ * sheet on mobile (section 6, note 1) — one component so the two placements can never drift apart.
  */
-export default function NetFacts({ sc, day, t, className = '' }: { sc: ScenarioData; day: string; t: T; className?: string }) {
-  const svc = sc.days[day]?.kpi?.service ?? {};
+export default function NetFacts({ sc, t, className = '' }: { sc: ScenarioData; t: T; className?: string }) {
+  const p = sc.paper;
   const facts: [string, string][] = [
-    [String(svc.stations ?? sc.stations.length), t('d.n.newstations')],
-    [String(sc.transferCount), t('d.n.atpt')],
-    [fmtInt(svc.docks ?? 0), t('d.n.docks')],
-    [fmtInt(svc.bikes ?? 0), t('d.n.bikes')],
+    [fmtInt(p?.stations ?? sc.stations.length), t('leg.stations')],
+    [fmtInt(p?.nTrans ?? sc.stations.filter((s) => s.transfer).length), t('leg.atpt')],
+    [fmtInt(p?.docks ?? 0), t('leg.docks')],
+    [fmtInt(p?.bikes ?? 0), t('leg.bikes')],
   ];
   return (
     <div className={`netfacts ${className}`.trim()}>

@@ -1,0 +1,162 @@
+{
+  "scenario": "rhythm_sharp",
+  "schema": "kpis-v3",
+  "paper": {
+    "demand_total": 1453,
+    "served_total": 1189,
+    "served_ratio": 0.818,
+    "demand_by_period": [
+      891,
+      277,
+      285
+    ],
+    "served_by_period": [
+      648,
+      265,
+      276
+    ],
+    "bike_only_by_period": [
+      426,
+      158,
+      152
+    ],
+    "bike_pt_by_period": [
+      222,
+      107,
+      124
+    ],
+    "flow_bike_only": 736,
+    "flow_bike_pt": 453,
+    "pt_assisted_share": 0.381,
+    "avg_time_gain_min": 5.56,
+    "avg_travel_time_min": 5.91,
+    "time_saving_ratio": 0.485,
+    "stations": 75,
+    "n_reg": 48,
+    "n_trans": 27,
+    "docks": 1072,
+    "bikes": 851,
+    "capex_used_eur": 80000,
+    "budget_eur": 80000,
+    "op_budget_eur": 4000.0,
+    "dispatches": 9,
+    "bikes_rebalanced": 84,
+    "dispatch_cost_eur": 428.86,
+    "investment_per_served_trip_eur": 67.3,
+    "covered_od_ratio": 0.89,
+    "od_pairs_total": 703,
+    "od_pairs_covered": 626,
+    "nearest_neighbor_m": 141.4,
+    "mean_pairwise_m": 931.6
+  },
+  "technical": {
+    "config": "Geneva_H3True_SEED20_DISmultinomial_P0.60-0.20-0.20_BUD80000_OP0.0500_SCALE1.00",
+    "solve_mode": "integrated",
+    "od_num": 703,
+    "total_demand": 1453,
+    "distribution_type": "multinomial",
+    "time_weights": [
+      0.6,
+      0.2,
+      0.2
+    ],
+    "total_budget": 80000,
+    "operational_budget_ratio": 0.05,
+    "period": 3,
+    "epsilon": 0.04,
+    "reb_budget": 4000.0,
+    "network_nodes": 194,
+    "network_edges": 5876,
+    "n_candidates": 100,
+    "n_selected_stations": 75,
+    "mean_pairwise_distance": 931.6045006988433,
+    "nearest_neighbor_distance": 141.3846792120788,
+    "n_reg_station": 48,
+    "n_trans_station": 27,
+    "avg_capacity_reg": 15.75,
+    "avg_capacity_trans": 11.703703703703704,
+    "fill_ratio_reg": 0.7554958963935726,
+    "fill_ratio_trans": 0.6559617445582356,
+    "brw_reg": 1.0,
+    "ret_reg": 0.6527777777777778,
+    "brw_trans": 0.9506172839506175,
+    "ret_trans": 0.7283950617283951,
+    "flow_total": 1189.0,
+    "supported_flow_per_investment": 0.0148625,
+    "avg_travel_time": 5.909465695800348,
+    "total_time_gain": 6605.550911081644,
+    "average_time_gain": 5.555551649353779,
+    "covered_od_ratio": 0.89,
+    "flow_bike_only": 736.0,
+    "flow_bike_pt": 453.0,
+    "dispatch_count": 9.0,
+    "reb_volume": 84.0,
+    "dispatch_cost": 428.86301564710425,
+    "avg_bikes_per_dispatch": 9.333333333333334,
+    "avg_dispatch_distance": 0.38257230915057927,
+    "status": 2,
+    "obj_val": 1032.945,
+    "obj_bound": 1032.945,
+    "mip_gap": 0.0,
+    "runtime": 1025.682,
+    "n_variables": 53432,
+    "n_constraints": 36287,
+    "gurobi_status": 2,
+    "wall_clock_s": 1038.2,
+    "ran_at": "2026-09-15"
+  },
+  "stress_test": {
+    "monday": {
+      "demand": 11.51,
+      "served": 9.19,
+      "served_ratio": 0.798,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 2.32,
+      "peak_empty_stations": 2,
+      "peak_full_stations": 35,
+      "n_days_replayed": 112,
+      "representative_date": "2024-08-23",
+      "method": {
+        "mode": "replay",
+        "description": "trace-driven simulation: observed trips replayed at their recorded local time and coordinates; totals are the mean over all replayed days, hourly detail is the median-demand day",
+        "demand_source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+        "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+        "n_days_replayed": 112,
+        "representative_date": "2024-08-23",
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      }
+    },
+    "sunday": {
+      "demand": 9.44,
+      "served": 6.78,
+      "served_ratio": 0.718,
+      "unserved_no_station": 0,
+      "unserved_no_bike": 0,
+      "unserved_no_dock": 2.67,
+      "peak_empty_stations": 2,
+      "peak_full_stations": 35,
+      "n_days_replayed": 18,
+      "representative_date": "2024-08-11",
+      "method": {
+        "mode": "replay",
+        "description": "trace-driven simulation: observed trips replayed at their recorded local time and coordinates; totals are the mean over all replayed days, hourly detail is the median-demand day",
+        "demand_source": "/demo/experiments/data/geneva_1.5km-radius/bike_trips.geojson",
+        "timezone_assumption": "naive `trip_started_at_utc` timestamps read as UTC and converted to Europe/Zurich; validated against PT ridership peak hours (ridership.py)",
+        "n_days_replayed": 18,
+        "representative_date": "2024-08-11",
+        "behavior_parameters": {
+          "walk_catchment_m": 300,
+          "station_retry_count": 2,
+          "ride_detour_factor": 1.3,
+          "ride_speed_kmh": 20
+        }
+      }
+    }
+  }
+}

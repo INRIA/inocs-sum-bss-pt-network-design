@@ -2,9 +2,9 @@ import { hasKey, type T } from './i18n';
 import type { ScenarioData } from './types';
 
 /**
- * Scenario copy resolution: an i18n key wins; a scenario folder that has no `scen.<id>.*` keys yet
- * falls back to the EN text in its own scenarios/<id>.json. That is what makes "add a fourth
- * scenario folder, change no code" true end to end.
+ * Scenario copy resolution: an i18n key wins; a scenario file that has no `scen.<id>.*` keys yet
+ * falls back to the EN text in its own scenarios/<id>.json. That is what makes "add a scenario
+ * file, change no code" true end to end.
  */
 export function scenCopy(sc: ScenarioData, t: T, field: string, fallback: string): string {
   const key = `scen.${sc.id}.${field}`;
@@ -13,17 +13,15 @@ export function scenCopy(sc: ScenarioData, t: T, field: string, fallback: string
 
 export const scenName = (sc: ScenarioData, t: T): string => scenCopy(sc, t, 'name', sc.fallback.name);
 
-/** A day is a labelled hypothesis when the pipeline says so — never because of its name. */
-export const isHypDay = (sc: ScenarioData, day: string): boolean =>
-  sc.days[day]?.kpi?.method?.volume_is_hypothesis === true || sc.days[day]?.method?.volume_is_hypothesis === true;
+export const scenPitch = (sc: ScenarioData, t: T): string => scenCopy(sc, t, 'pitch', sc.fallback.pitch);
+
+export const scenNarrative = (sc: ScenarioData, t: T): string => scenCopy(sc, t, 'narrative', sc.fallback.narrative);
 
 /**
- * The average day — the optimiser's own planning day, i.e. the solved instance's demand replayed
- * through the same simulator. Recognised by the pipeline's `method.mode`, never by the day id.
+ * The tag badge of a card: the paper's own baseline says so, anything else uses its authored tag
+ * and falls back to the generic label of its card slot.
  */
-export const isModelDay = (sc: ScenarioData, day: string): boolean =>
-  (sc.days[day]?.kpi?.method?.mode ?? sc.days[day]?.method?.mode) === 'instance';
-
-/** How the day's trip count should be described in copy: observed, modelled or simulated. */
-export const dayKind = (sc: ScenarioData, day: string): 'obs' | 'mod' | 'sim' =>
-  isHypDay(sc, day) ? 'sim' : isModelDay(sc, day) ? 'mod' : 'obs';
+export function scenTag(sc: ScenarioData, t: T): string {
+  if (sc.family === 'baseline') return t('s3.tag.baseline');
+  return scenCopy(sc, t, 'tag', sc.card ? t(`s3.tag.${sc.card}`) : sc.axisLabel);
+}

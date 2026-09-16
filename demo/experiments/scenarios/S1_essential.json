@@ -1,13 +1,26 @@
 {
   "id": "S1_essential",
+  "schema": "scenario-v3",
+  "legacy": true,
+  "family": "budget",
+  "role": "card",
+  "card": "essential",
   "title": "Essential network",
+  "axis_label": "20 000 €",
+  "temporal_profile": "geneva_weekday",
+  "outside_paper_range": true,
+  "paper_reference": "Legacy demo v2 run: below Table 2's budget range (20 kEUR) and at operational ratio 0.025 instead of the Table D.8 baseline 0.05; superseded by budget_060k",
   "audience_pitch": "The city invests the minimum. Where do the few stations go, and who is left out?",
   "narrative": "With a small budget the optimiser must triage: it concentrates stations where demand and public-transport connections pay off most, and whole neighbourhoods stay uncovered. The simulation shows riders finding no station nearby, and stations running empty at the morning peak.",
   "model_parameters": {
     "total_budget": 20000,
     "op_budget_ratio": 0.025,
     "demand_periods": 3,
-    "period_weights": [0.169, 0.343, 0.488],
+    "period_weights": [
+      0.169,
+      0.343,
+      0.488
+    ],
     "split_method": "multinomial",
     "seed": 20,
     "epsilon": 0.04,

@@ -52,6 +52,14 @@ block restates the day the way the model's own MetricsEvaluator would
 count-based covered_od_ratio).
 
 Units: distances km, times minutes, money EUR (matching the frozen model).
+
+DEPRECATED (demo v3, 2026-09-15): the `sample` and `instance` modes --
+`sample`, `instance_run`, `instance_trips`, `DaySimulation.draw_trips` and
+the `plan` / `arcs` / `candidates` arguments of `DaySimulation`, plus the
+`--mode sample|instance` CLI options -- are replaced by the model's own
+solved plan, read by `evaluate.paper_kpis` from `model_plan.json`; removed
+once the paper-grid runs are validated. What stays is `replay`: the observed
+trips of Geneva against a design, the demonstration's stress test.
 """
 
 import argparse
@@ -60,14 +68,12 @@ import json
 import math
 import random
 import statistics
+import warnings
 from pathlib import Path
 
 from . import GEOJSON_DIR
 from .pipeline.config import load_kpi_config
 from .pipeline.geometry import haversine_km
-from .pipeline.instance import (candidates_of, cells_of, demand_of,
-                                find_instance, load_bike_arcs, load_instance,
-                                load_model_plan)
 from .profiles import PERIOD_BOUNDS, load_profiles
 from .trips import TIMEZONE_NOTE, load_calibration, trips_by_date
 
@@ -77,6 +83,13 @@ from .trips import TIMEZONE_NOTE, load_calibration, trips_by_date
 #: ((6, 10), (10, 16), (16, 22)); the model itself has no hour semantics
 #: (findings.md #10).
 PERIOD_START_HOURS = tuple(lo for lo, _ in PERIOD_BOUNDS)
+
+#: Shared by every deprecated entry point below (demo v3, 2026-09-15).
+_DEPRECATION = ("DEPRECATED (demo v3, 2026-09-15): the simulator's sample "
+                "and instance modes are replaced by the model's own solved "
+                "plan (model_plan.json, read by evaluate.paper_kpis); "
+                "removed once the paper-grid runs are validated. Use "
+                "mode 'replay' -- the observed trips -- for the stress test.")
 
 #: A design station is matched to a model candidate site by id first; when
 #: the ids differ (baseline designs rename them) the nearest candidate within
@@ -137,6 +150,10 @@ OUTSIDE_MODEL = "outside_model"
 def instance_trips(instance, profiles, rng, cells=None, day="monday"):
     """The model's own planning day, as trips the engine can replay.
 
+    DEPRECATED (demo v3, 2026-09-15): replaced by reading the solved plan
+    directly (`evaluate.paper_kpis`); removed once the paper-grid runs are
+    validated.
+
     Every unit of the instance's OD demand becomes one trip between the two
     cell centres. The model's periods carry no hour semantics (findings.md
     #10), so each trip's hour is drawn inside its period's local-hour window
@@ -160,6 +177,9 @@ def instance_trips(instance, profiles, rng, cells=None, day="monday"):
     :return: ``{hour: [(o_lat, o_lon, d_lat, d_lon, meta), ...]}`` with
              ``meta = (origin_cell, dest_cell, period)``.
     """
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
+    from .pipeline.instance import cells_of, demand_of
+
     cells = cells_of(instance) if cells is None else cells
     hourly_share = profiles["hourly_share"][day]
 
@@ -213,6 +233,12 @@ class DaySimulation:
                  limit) unless ``allow_unrouted``.
     :param allow_unrouted: keep serving trips whose station pair has no model
                            arc, falling back to haversine x detour for them.
+
+    DEPRECATED (demo v3, 2026-09-15): the `candidates`, `plan` and `arcs`
+    arguments (the model-artefact machinery of the instance mode) are
+    replaced by reading `model_plan.json` directly in `evaluate.paper_kpis`;
+    removed once the paper-grid runs are validated. A replay passes none of
+    them and is unaffected.
     """
 
     def __init__(self, stations, day, config=None, profiles=None, seed=42,
@@ -235,7 +261,9 @@ class DaySimulation:
 
         self._cand_cache = {}
 
-        # -- the model's own artefacts, all optional -----------------------
+        # -- the model's own artefacts, all optional (deprecated) ----------
+        if candidates is not None or plan is not None or arcs is not None:
+            warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
         self.candidates = candidates
         self.plan = plan
         self.arcs = arcs
@@ -318,8 +346,12 @@ class DaySimulation:
         distributions (hourly profile x od.csv flow shares), placed at the
         cell centres.
 
+        DEPRECATED (demo v3, 2026-09-15): replaced by the model's own demand
+        (`model_plan.json`); removed once the paper-grid runs are validated.
+
         :return: {hour: [(o_lat, o_lon, d_lat, d_lon), ...]}.
         """
+        warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
         hourly_share = self.profiles["hourly_share"][self.day]
         hours = self.rng.choices(range(24), weights=hourly_share, k=n_trips)
         ods = self.rng.choices(range(len(self.od_pairs)),
@@ -780,6 +812,11 @@ def replay(stations, day, date=None, config=None):
 def sample(stations, day, scale=1.0, seeds=1, seed=42, config=None):
     """Monte Carlo resampling from the observed empirical distributions.
 
+    DEPRECATED (demo v3, 2026-09-15): the demo no longer scales the observed
+    day (decision 2 of the v3 plan: no "x25"); the demand scale that matters
+    is the model's own planning day. Removed once the paper-grid runs are
+    validated.
+
     :param stations: the design (:func:`load_stations` schema).
     :param day: "monday" or "sunday".
     :param scale: demand-growth multiplier on the measured daily volume;
@@ -788,6 +825,7 @@ def sample(stations, day, scale=1.0, seeds=1, seed=42, config=None):
                   totals become the mean across them.
     :return: result dict, evaluate.py-compatible.
     """
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
     calibration = load_calibration()
     base = calibration["trips_per_day"][day]
     volume = max(1, round(base * scale))
@@ -841,7 +879,11 @@ def _instance_cells(instance):
     recovered from the layer's grid: the model enumerates paths only between
     its kept cells, so that demand can never be served on its side either.
     ``instance_trips`` flags it and the engine counts it unserved.
+
+    DEPRECATED (demo v3, 2026-09-15), with the rest of the instance mode.
     """
+    from .pipeline.instance import cells_of
+
     return cells_of(instance)
 
 
@@ -869,6 +911,12 @@ def instance_run(stations, instance, seeds=1, seed=42, config=None,
                  day="monday", instance_path=None, profiles=None):
     """Replay the model's own planning day against a design.
 
+    DEPRECATED (demo v3, 2026-09-15): re-simulating the planning day cannot
+    reproduce the model's own result (it re-routes trips and cannot follow a
+    bike+PT path, so it reported 45 % served where the model served 87 %);
+    the served demand is now read from `model_plan.json` by
+    `evaluate.paper_kpis`. Removed once the paper-grid runs are validated.
+
     The demand is the instance's 1,453 trips over 703 OD pairs and three
     periods -- the day the designs were actually sized for. Only the
     within-period hour of each trip is random, so `seeds` independent runs
@@ -883,6 +931,9 @@ def instance_run(stations, instance, seeds=1, seed=42, config=None,
     :param allow_unrouted: serve trips with no model arc anyway (haversine).
     :return: result dict, evaluate.py-compatible.
     """
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
+    from .pipeline.instance import candidates_of, demand_of
+
     profiles = profiles or load_profiles()
     cells = _instance_cells(instance) if cells is None else cells
     candidates = candidates_of(instance)
@@ -961,7 +1012,12 @@ def simulate_day(stations_file, day, mode="replay", scale=1.0, seeds=1,
     :param allow_unrouted: instance mode: serve trips whose station pair has
                            no model ride arc.
     :return: (result dict, path written).
+
+    DEPRECATED (demo v3, 2026-09-15): modes "sample" and "instance"; "replay"
+    stays as the demonstration's stress test.
     """
+    if mode != "replay":
+        warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
     stations_file = Path(stations_file)
     stations = load_stations(stations_file)
 
@@ -971,6 +1027,9 @@ def simulate_day(stations_file, day, mode="replay", scale=1.0, seeds=1,
     elif mode == "sample":
         result = sample(stations, day, scale=scale, seeds=seeds, seed=seed)
     elif mode == "instance":
+        from .pipeline.instance import (find_instance, load_bike_arcs,
+                                        load_instance, load_model_plan)
+
         instance_path = (Path(instance).resolve() if instance
                          else find_instance(stations_file))
         if instance_path is None:
@@ -1008,8 +1067,9 @@ def main(argv=None):
     parser.add_argument("--mode", default="replay",
                         choices=("replay", "sample", "instance"),
                         help="replay = observed trips (default); "
-                             "sample = resampled demand at --scale; "
-                             "instance = the model's own planning day")
+                             "sample = resampled demand at --scale "
+                             "(DEPRECATED); instance = the model's own "
+                             "planning day (DEPRECATED)")
     parser.add_argument("--date", default=None,
                         help="replay only this observed date (YYYY-MM-DD)")
     parser.add_argument("--scale", type=float, default=1.0,
