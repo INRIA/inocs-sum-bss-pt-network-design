@@ -1,0 +1,685 @@
+{
+  "placeholder": false,
+  "provenance": "NetworkDesignRun(solve_mode='integrated', epsilon=0.08) on the frozen model in network-design-bss/src/ -- real optimiser output",
+  "scenario": "eps_008",
+  "run": {
+    "ran_at": "2026-09-15T16:21:02+00:00",
+    "config_name": "Geneva_H3True_SEED20_DISmultinomial_P0.40-0.20-0.40_BUD80000_OP0.0500_SCALE1.00",
+    "solve_mode": "integrated",
+    "epsilon": 0.08,
+    "model_parameters": {
+      "total_budget": 80000,
+      "op_budget_ratio": 0.05,
+      "demand_periods": 3,
+      "period_weights": [
+        0.4,
+        0.2,
+        0.4
+      ],
+      "split_method": "multinomial",
+      "seed": 20,
+      "epsilon": 0.08,
+      "solve_mode": "integrated"
+    },
+    "gurobi_status": 2,
+    "gurobi_status_optimal": true,
+    "mip_gap": 0.0,
+    "n_variables": 53522,
+    "n_constraints": 36465,
+    "wall_clock_s": 14.0,
+    "src_commit": "fddb34d333b94c7072b3b3f07209bab9c26966bd",
+    "repo_commit": "7353223c756d2e7a693933d6fe0cbe8c5d314d2c"
+  },
+  "capex_budget_eur": 80000,
+  "operational_budget_eur": 4000.0,
+  "stations": [
+    {
+      "station": "BS-897a8dc123bffff",
+      "type": "BikeStation",
+      "lon": 6.142942318053548,
+      "lat": 46.20255336075002,
+      "capacity": 30.0,
+      "initial_bikes": 28.0
+    },
+    {
+      "station": "BS-897a8dc120bffff",
+      "type": "BikeStation",
+      "lon": 6.142443498907109,
+      "lat": 46.20852679506198,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "BS-897a8dc126fffff",
+      "type": "BikeStation",
+      "lon": 6.1504034332047555,
+      "lat": 46.20389988223916,
+      "capacity": 30.0,
+      "initial_bikes": 13.0
+    },
+    {
+      "station": "BS-897a8dca1a3ffff",
+      "type": "BikeStation",
+      "lon": 6.1523080015167,
+      "lat": 46.21131722558726,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "BS-897a8dc120fffff",
+      "type": "BikeStation",
+      "lon": 6.142692913026572,
+      "lat": 46.20554012404232,
+      "capacity": 30.0,
+      "initial_bikes": 17.0
+    },
+    {
+      "station": "BS-897a8dc1277ffff",
+      "type": "BikeStation",
+      "lon": 6.145346301939326,
+      "lat": 46.20399779562068,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "BS-897a8dc127bffff",
+      "type": "BikeStation",
+      "lon": 6.1475006886689005,
+      "lat": 46.208428783083576,
+      "capacity": 30.0,
+      "initial_bikes": 18.0
+    },
+    {
+      "station": "BS-897a8dcacd7ffff",
+      "type": "BikeStation",
+      "lon": 6.153056647895562,
+      "lat": 46.20235759828306,
+      "capacity": 30.0,
+      "initial_bikes": 28.0
+    },
+    {
+      "station": "BS-897a8dc1223ffff",
+      "type": "BikeStation",
+      "lon": 6.143191713984848,
+      "lat": 46.19956650519702,
+      "capacity": 30.0,
+      "initial_bikes": 24.0
+    },
+    {
+      "station": "transfer_PT_12-4",
+      "type": "TransferStation",
+      "lon": 6.14740505,
+      "lat": 46.20301863,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "transfer_PT_12-5",
+      "type": "TransferStation",
+      "lon": 6.15286681,
+      "lat": 46.2017192,
+      "capacity": 30.0,
+      "initial_bikes": 22.0
+    },
+    {
+      "station": "transfer_PT_25-2",
+      "type": "TransferStation",
+      "lon": 6.15601091,
+      "lat": 46.2022912,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "transfer_PT_25-3",
+      "type": "TransferStation",
+      "lon": 6.15151934,
+      "lat": 46.20339788,
+      "capacity": 30.0,
+      "initial_bikes": 30.0
+    },
+    {
+      "station": "transfer_PT_25-4",
+      "type": "TransferStation",
+      "lon": 6.14699183,
+      "lat": 46.20734569,
+      "capacity": 30.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc1273ffff",
+      "type": "BikeStation",
+      "lon": 6.145096858694698,
+      "lat": 46.20698448063075,
+      "capacity": 28.0,
+      "initial_bikes": 19.0
+    },
+    {
+      "station": "BS-897a8dcac53ffff",
+      "type": "BikeStation",
+      "lon": 6.160516738526988,
+      "lat": 46.20370406841964,
+      "capacity": 28.0,
+      "initial_bikes": 23.0
+    },
+    {
+      "station": "BS-897a8dcaccfffff",
+      "type": "BikeStation",
+      "lon": 6.15811333421407,
+      "lat": 46.20225972351935,
+      "capacity": 27.0,
+      "initial_bikes": 26.0
+    },
+    {
+      "station": "BS-897a8dc1247ffff",
+      "type": "BikeStation",
+      "lon": 6.144847406353609,
+      "lat": 46.20997107336448,
+      "capacity": 26.0,
+      "initial_bikes": 26.0
+    },
+    {
+      "station": "transfer_PT_1-2",
+      "type": "TransferStation",
+      "lon": 6.14964186,
+      "lat": 46.21188998,
+      "capacity": 23.0,
+      "initial_bikes": 23.0
+    },
+    {
+      "station": "BS-897a8dc1267ffff",
+      "type": "BikeStation",
+      "lon": 6.147999642492493,
+      "lat": 46.20245547735985,
+      "capacity": 20.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dcacc7ffff",
+      "type": "BikeStation",
+      "lon": 6.155709814189103,
+      "lat": 46.20081532448962,
+      "capacity": 20.0,
+      "initial_bikes": 20.0
+    },
+    {
+      "station": "transfer_PT_8-0",
+      "type": "TransferStation",
+      "lon": 6.15185171,
+      "lat": 46.20163216,
+      "capacity": 20.0,
+      "initial_bikes": 0.0
+    },
+    {
+      "station": "BS-897a8dca1b7ffff",
+      "type": "BikeStation",
+      "lon": 6.1499044029444665,
+      "lat": 46.20987303140201,
+      "capacity": 18.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dcac93ffff",
+      "type": "BikeStation",
+      "lon": 6.148249105745643,
+      "lat": 46.1994686861078,
+      "capacity": 17.0,
+      "initial_bikes": 15.0
+    },
+    {
+      "station": "BS-897a8dcaccbffff",
+      "type": "BikeStation",
+      "lon": 6.157863727229427,
+      "lat": 46.20524629393072,
+      "capacity": 17.0,
+      "initial_bikes": 15.0
+    },
+    {
+      "station": "BS-897a8dca1b3ffff",
+      "type": "BikeStation",
+      "lon": 6.149654874156067,
+      "lat": 46.21285946756379,
+      "capacity": 17.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc1233ffff",
+      "type": "BikeStation",
+      "lon": 6.140538218479875,
+      "lat": 46.201108871742555,
+      "capacity": 16.0,
+      "initial_bikes": 12.0
+    },
+    {
+      "station": "BS-897a8dcac57ffff",
+      "type": "BikeStation",
+      "lon": 6.160766374592204,
+      "lat": 46.20071748402882,
+      "capacity": 16.0,
+      "initial_bikes": 16.0
+    },
+    {
+      "station": "BS-897a8dc134bffff",
+      "type": "BikeStation",
+      "lon": 6.148748004918582,
+      "lat": 46.19349482688311,
+      "capacity": 16.0,
+      "initial_bikes": 16.0
+    },
+    {
+      "station": "BS-897a8dc1237ffff",
+      "type": "BikeStation",
+      "lon": 6.1407875761988455,
+      "lat": 46.198121937911054,
+      "capacity": 14.0,
+      "initial_bikes": 14.0
+    },
+    {
+      "station": "transfer_PT_6-1",
+      "type": "TransferStation",
+      "lon": 6.14355128,
+      "lat": 46.20815387,
+      "capacity": 14.0,
+      "initial_bikes": 14.0
+    },
+    {
+      "station": "BS-897a8dc1203ffff",
+      "type": "BikeStation",
+      "lon": 6.140039475770063,
+      "lat": 46.20708246262266,
+      "capacity": 13.0,
+      "initial_bikes": 13.0
+    },
+    {
+      "station": "BS-897a8dc12abffff",
+      "type": "BikeStation",
+      "lon": 6.137884674627347,
+      "lat": 46.20265124845381,
+      "capacity": 13.0,
+      "initial_bikes": 11.0
+    },
+    {
+      "station": "transfer_PT_E-0",
+      "type": "TransferStation",
+      "lon": 6.1539358,
+      "lat": 46.20263937,
+      "capacity": 13.0,
+      "initial_bikes": 13.0
+    },
+    {
+      "station": "transfer_PT_14-1",
+      "type": "TransferStation",
+      "lon": 6.14223974,
+      "lat": 46.2093599,
+      "capacity": 12.0,
+      "initial_bikes": 11.0
+    },
+    {
+      "station": "transfer_PT_1-1",
+      "type": "TransferStation",
+      "lon": 6.148501,
+      "lat": 46.21047887,
+      "capacity": 12.0,
+      "initial_bikes": 12.0
+    },
+    {
+      "station": "BS-897a8dc1227ffff",
+      "type": "BikeStation",
+      "lon": 6.143441100817268,
+      "lat": 46.196579557395275,
+      "capacity": 11.0,
+      "initial_bikes": 10.0
+    },
+    {
+      "station": "transfer_PT_14-0",
+      "type": "TransferStation",
+      "lon": 6.14153007,
+      "lat": 46.20761301,
+      "capacity": 11.0,
+      "initial_bikes": 11.0
+    },
+    {
+      "station": "BS-897a8dcacc3ffff",
+      "type": "BikeStation",
+      "lon": 6.155460245416849,
+      "lat": 46.20380197317223,
+      "capacity": 10.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcac5bffff",
+      "type": "BikeStation",
+      "lon": 6.162920027123126,
+      "lat": 46.20514835919167,
+      "capacity": 10.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dca127ffff",
+      "type": "BikeStation",
+      "lon": 6.160267093328597,
+      "lat": 46.20669056055972,
+      "capacity": 10.0,
+      "initial_bikes": 7.0
+    },
+    {
+      "station": "BS-897a8dc124fffff",
+      "type": "BikeStation",
+      "lon": 6.147251198104818,
+      "lat": 46.21141529753134,
+      "capacity": 10.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dc122fffff",
+      "type": "BikeStation",
+      "lon": 6.145845161126405,
+      "lat": 46.1980241488193,
+      "capacity": 10.0,
+      "initial_bikes": 10.0
+    },
+    {
+      "station": "BS-897a8dcac87ffff",
+      "type": "BikeStation",
+      "lon": 6.151151910255976,
+      "lat": 46.19493946657595,
+      "capacity": 9.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "transfer_PT_33-2",
+      "type": "TransferStation",
+      "lon": 6.16211946,
+      "lat": 46.20170055,
+      "capacity": 9.0,
+      "initial_bikes": 9.0
+    },
+    {
+      "station": "transfer_PT_92-12",
+      "type": "TransferStation",
+      "lon": 6.14656063,
+      "lat": 46.20105393,
+      "capacity": 9.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "BS-897a8dcac97ffff",
+      "type": "BikeStation",
+      "lon": 6.148498559888734,
+      "lat": 46.19648180261156,
+      "capacity": 8.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcac9bffff",
+      "type": "BikeStation",
+      "lon": 6.150652934670258,
+      "lat": 46.20091316926199,
+      "capacity": 8.0,
+      "initial_bikes": 8.0
+    },
+    {
+      "station": "BS-897a8dc12afffff",
+      "type": "BikeStation",
+      "lon": 6.138134003223032,
+      "lat": 46.19966432859711,
+      "capacity": 8.0,
+      "initial_bikes": 8.0
+    },
+    {
+      "station": "BS-897a8dcac8fffff",
+      "type": "BikeStation",
+      "lon": 6.1535556998967325,
+      "lat": 46.19638405213572,
+      "capacity": 7.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "transfer_PT_E-1",
+      "type": "TransferStation",
+      "lon": 6.15909213,
+      "lat": 46.20612097,
+      "capacity": 7.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "BS-897a8dc1207ffff",
+      "type": "BikeStation",
+      "lon": 6.140288851669215,
+      "lat": 46.20409571331707,
+      "capacity": 6.0,
+      "initial_bikes": 5.0
+    },
+    {
+      "station": "BS-897a8dcac13ffff",
+      "type": "BikeStation",
+      "lon": 6.155959373836157,
+      "lat": 46.197828583563656,
+      "capacity": 6.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dcac17ffff",
+      "type": "BikeStation",
+      "lon": 6.156208924354826,
+      "lat": 46.194841750406326,
+      "capacity": 6.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dc122bffff",
+      "type": "BikeStation",
+      "lon": 6.145595736084297,
+      "lat": 46.2010110183462,
+      "capacity": 6.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_12-2",
+      "type": "TransferStation",
+      "lon": 6.14385671,
+      "lat": 46.20099176,
+      "capacity": 6.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "transfer_PT_10-1",
+      "type": "TransferStation",
+      "lon": 6.14187143,
+      "lat": 46.20234716,
+      "capacity": 6.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_20-2",
+      "type": "TransferStation",
+      "lon": 6.14860879,
+      "lat": 46.19837412,
+      "capacity": 6.0,
+      "initial_bikes": 6.0
+    },
+    {
+      "station": "BS-897a8dcac03ffff",
+      "type": "BikeStation",
+      "lon": 6.158612520792642,
+      "lat": 46.196286305967476,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "BS-897a8dcac8bffff",
+      "type": "BikeStation",
+      "lon": 6.153306178456748,
+      "lat": 46.19937087132921,
+      "capacity": 5.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "BS-897a8dcac0bffff",
+      "type": "BikeStation",
+      "lon": 6.161016001521061,
+      "lat": 46.19773080739921,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "BS-897a8dc1217ffff",
+      "type": "BikeStation",
+      "lon": 6.137635336947155,
+      "lat": 46.20563807604528,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "BS-897a8dcac43ffff",
+      "type": "BikeStation",
+      "lon": 6.163169701399435,
+      "lat": 46.20216185306845,
+      "capacity": 5.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "BS-897a8dc135bffff",
+      "type": "BikeStation",
+      "lon": 6.146094577062467,
+      "lat": 46.195037187051916,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "BS-897a8dcac47ffff",
+      "type": "BikeStation",
+      "lon": 6.163419366535405,
+      "lat": 46.19917525470275,
+      "capacity": 5.0,
+      "initial_bikes": 0.0
+    },
+    {
+      "station": "BS-897a8dc1257ffff",
+      "type": "BikeStation",
+      "lon": 6.1421940756983755,
+      "lat": 46.21151337379703,
+      "capacity": 5.0,
+      "initial_bikes": 3.0
+    },
+    {
+      "station": "BS-897a8dcac1bffff",
+      "type": "BikeStation",
+      "lon": 6.1583629320695445,
+      "lat": 46.19927306086096,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "BS-897a8dc1353ffff",
+      "type": "BikeStation",
+      "lon": 6.143690478547634,
+      "lat": 46.19359251735677,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "BS-897a8dcac83ffff",
+      "type": "BikeStation",
+      "lon": 6.1509024270217285,
+      "lat": 46.19792636403692,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_12-1",
+      "type": "TransferStation",
+      "lon": 6.14304822,
+      "lat": 46.1980881,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_12-7",
+      "type": "TransferStation",
+      "lon": 6.15879569,
+      "lat": 46.20054409,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "transfer_PT_18-2",
+      "type": "TransferStation",
+      "lon": 6.14345246,
+      "lat": 46.20452941,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "transfer_PT_20-3",
+      "type": "TransferStation",
+      "lon": 6.1466864,
+      "lat": 46.20009021,
+      "capacity": 5.0,
+      "initial_bikes": 0.0
+    },
+    {
+      "station": "transfer_PT_2-5",
+      "type": "TransferStation",
+      "lon": 6.15854416,
+      "lat": 46.20410664,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "transfer_PT_3-0",
+      "type": "TransferStation",
+      "lon": 6.14901304,
+      "lat": 46.19459978,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "transfer_PT_7-4",
+      "type": "TransferStation",
+      "lon": 6.15069289,
+      "lat": 46.19940005,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_8-1",
+      "type": "TransferStation",
+      "lon": 6.15543599,
+      "lat": 46.19846117,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_8-3",
+      "type": "TransferStation",
+      "lon": 6.15633431,
+      "lat": 46.19575636,
+      "capacity": 5.0,
+      "initial_bikes": 1.0
+    },
+    {
+      "station": "transfer_PT_92-4",
+      "type": "TransferStation",
+      "lon": 6.15277698,
+      "lat": 46.19841764,
+      "capacity": 5.0,
+      "initial_bikes": 4.0
+    },
+    {
+      "station": "transfer_PT_92-5",
+      "type": "TransferStation",
+      "lon": 6.15171696,
+      "lat": 46.19765907,
+      "capacity": 5.0,
+      "initial_bikes": 2.0
+    },
+    {
+      "station": "transfer_PT_A6-1",
+      "type": "TransferStation",
+      "lon": 6.14615639,
+      "lat": 46.19669529,
+      "capacity": 5.0,
+      "initial_bikes": -0.0
+    }
+  ]
+}
