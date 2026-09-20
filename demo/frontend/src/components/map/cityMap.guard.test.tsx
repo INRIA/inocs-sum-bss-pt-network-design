@@ -10,6 +10,8 @@
 import { describe, expect, it } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import CityMap, { type MapKind } from '../CityMap';
 import MapPanel from '../MapPanel';
 import { loadGameData } from '../../lib/data';
@@ -36,6 +38,17 @@ const DEFAULT_LAYERS: Layers = {
   inventory: false,
 };
 
+/**
+ * Assert against the pinned file. When GUARD_ACTUAL_DIR is set (scripts/guard-diff.mjs), the
+ * actual markup is also written there, so a mismatch can be inspected by offset instead of
+ * letting the runner print a 250 KB single-line diff.
+ */
+async function pin(html: string, name: string) {
+  const dir = process.env.GUARD_ACTUAL_DIR;
+  if (dir) writeFileSync(join(dir, name), html);
+  await expect(html).toMatchFileSnapshot(`./__guard__/${name}`);
+}
+
 const dummyRef = { current: null };
 
 const baseProps = {
@@ -60,28 +73,24 @@ function renderMap(kind: MapKind, overrides: Partial<typeof baseProps> = {}) {
 
 describe('CityMap static markup guard', () => {
   it('kind=city', async () => {
-    await expect(renderMap('city')).toMatchFileSnapshot('./__guard__/citymap-city.html');
+    await pin(renderMap('city'), 'citymap-city.html');
   });
 
   it('kind=live', async () => {
-    await expect(renderMap('live')).toMatchFileSnapshot('./__guard__/citymap-live.html');
+    await pin(renderMap('live'), 'citymap-live.html');
   });
 
   it('kind=network', async () => {
-    await expect(renderMap('network')).toMatchFileSnapshot('./__guard__/citymap-network.html');
+    await pin(renderMap('network'), 'citymap-network.html');
   });
 
   it('kind=network, inventory on / capacity off', async () => {
     const layers: Layers = { ...DEFAULT_LAYERS, capacity: false, inventory: true };
-    await expect(renderMap('network', { layers })).toMatchFileSnapshot(
-      './__guard__/citymap-network-inventory.html'
-    );
+    await pin(renderMap('network', { layers }), 'citymap-network-inventory.html');
   });
 
   it('kind=network, unitPx=0.5 (micro-dot + hidden labels)', async () => {
-    await expect(renderMap('network', { unitPx: 0.5 })).toMatchFileSnapshot(
-      './__guard__/citymap-network-micro.html'
-    );
+    await pin(renderMap('network', { unitPx: 0.5 }), 'citymap-network-micro.html');
   });
 });
 
@@ -103,6 +112,6 @@ describe('MapPanel static markup guard', () => {
         dropKey: 0,
       })
     );
-    await expect(html).toMatchFileSnapshot('./__guard__/mappanel-network.html');
+    await pin(html, 'mappanel-network.html');
   });
 });
