@@ -57,6 +57,24 @@ DEMO_TESTS_FAST=1 python3 -m unittest discover -s demo/experiments/tests -t .
   a real regression was introduced. Do not edit the test to match; investigate and report the
   discrepancy instead.
 
+- **`test_fixed_design.py`** -- pins `demo/experiments/fixed_design.py` (the normative
+  "evaluate a visitor's station layout" reference) and the planner-game payload
+  `demo/experiments/game_export.py` writes under `results/shared/game/`:
+  - **fidelity**: on each of the 21 committed designs the fixed-design LP reproduces that
+    run's published `kpis.json` `paper` block -- served within 2 %, PT-assisted share within
+    0.015 absolute. Measured range today: 0.9998x to 1.0157x on served flow.
+  - **trucks off**: the `ops_000` design solved with `trucks=False` reproduces that run's own
+    published served flow within 1 %.
+  - **golden**: every `results/shared/game/golden/<scenario>.json` is reproduced by the current
+    code (parsed JSON, 1e-6 tolerance on floats), and no absolute path or timestamp leaked
+    into the payload.
+  - **degenerate layouts**: no station, every candidate at 20 000 EUR (exactly the boundary --
+    feasible, zero bikes, zero served), a budget below that (infeasible, `feasible: false`,
+    served 0, no exception), and transfer stations only.
+  Every solving test is `skipIf`-ed when scipy is missing, so the stdlib-only run still passes.
+  The TypeScript engine in `demo/frontend/src/domain/evaluation/` is pinned against the same
+  golden vectors by `npm test` in `demo/frontend/`.
+
 - **`test_src_parity.py`** -- pins the values the demo mirrors from the
   frozen upstream model in `network-design-bss/src/` (unit costs, walk
   catchment, ride speed, truck capacity, the haversine formula), which is
@@ -116,7 +134,18 @@ python3 -m demo.experiments.run_model --write-scenarios --overwrite             
 python3 -m demo.experiments.run_model <scenario_id>...                             # stations/metrics/instance/model_plan.json (Gurobi; the notebook is the supported way)
 python3 -m demo.experiments.simulate --stations <result_dir>/stations.json --day monday   # sim_monday.json (the stress test)
 python3 -m demo.experiments.evaluate <scenario_dir>...                             # kpis.json
+python3 -m demo.experiments.game_export                                            # results/shared/game/** (+ golden/)
 ```
+
+`game_export.py` is the only step that needs the **uncommitted** k-shortest-path cache
+(`network-design-bss/src/data/shortest_paths_result/shortest_paths_cache_size7_k3_[...]_after.pkl`,
+written by the first model run and kept out of git by `network-design-bss/src/.gitignore:21`).
+It fails with an explicit message when that file is missing. Everything downstream --
+`fixed_design.py`, this test suite and the front-end engine -- reads the **committed**
+`results/shared/game/paths.json` instead and never touches the pickle. Regenerating the payload
+rewrites all 21 golden vectors, so do it only for an intentional change and review the diff.
+After regenerating, re-run `npm test` in `demo/frontend/` as well: the TypeScript engine is
+pinned against those same vectors.
 
 There is no `baseline.py` regeneration command and no `--compare-day` flag any more (`evaluate.py`
 takes `--compare`, not a day argument -- the `paper` block already covers every period) -- review
