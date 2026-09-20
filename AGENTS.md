@@ -37,6 +37,30 @@ Public demo: `https://inria.github.io/inocs-sum-bss-pt-network-design/`.
    constants. Trade-off to flag rather than decide silently: importing `util.util` pulls in
    osmnx/geopandas/h3 and needs `compat.bootstrap()`, while `simulate.py`/`evaluate.py` are
    stdlib-only by design.
+
+   **Declared, reviewed exception — the planner game's browser engine.** The LP in
+   `demo/frontend/src/domain/evaluation/` (`lpModel.ts`, `kpis.ts`, `losses.ts`) is a
+   TypeScript TRANSCRIPTION of `demo/experiments/fixed_design.py`, which is itself the
+   normative "evaluate a visitor's station layout" reference — the frozen model's
+   operational sub-problem with the station set `y` fixed, reproduced as an LP (constants
+   read from `network-design-bss/src/` at runtime, never copied; see `fixed_design.py`'s
+   module docstring for the constraint-by-constraint mapping to `model/constraints.py` and
+   `model/objective.py`). A transcription is unavoidable: nothing in `src/` or the SDK runs
+   in a browser. It is kept honest three ways: (a) constants flow one way, Python ->
+   `results/shared/game/constants.json` -> TypeScript, never hand-copied; (b) every KPI line
+   in both `fixed_design.py`'s `_read_kpis()` and the TS `kpis.ts`/`losses.ts` carries a
+   `mirrors <file>:<lines>` comment pointing at the same upstream definition; (c) 21 golden
+   vectors under `results/shared/game/golden/` are written by `game_export.py` from the
+   Python LP and reproduced independently by both suites — `demo/experiments/tests/
+   test_fixed_design.py`'s `GoldenVectorTests` (Python vs the committed file, 1e-6 float
+   tolerance) and `demo/frontend/src/domain/evaluation/engine.test.ts` (HiGHS-in-node vs
+   the same golden file, 0.5% relative on served flow and 0.005 absolute on PT share — tight
+   because the two solve the identical program, so a wider gap is a transcription bug, not
+   numerical noise). `fixed_design.py` in turn reproduces the frozen model's own published
+   `kpis.json` within its own, looser tolerance (served within 2%, measured 0.9998x-1.0157x;
+   PT share within 0.015 absolute) — that gap is the LP relaxation (integer `x`/`w`/`v`/`r`/`n`
+   made continuous), not transcription error. Do not tighten or loosen either tolerance to
+   make a test pass; a drift means investigate first.
 3. **Generated, do not hand-edit:** `Pipfile` `[packages]` (regenerate with
    `python network-design-bss/sdk-builder/sync_requirements.py`), everything in
    `network-design-bss/sdk/` (`build_package.py` / `build_docs.py`), and
@@ -47,6 +71,29 @@ Public demo: `https://inria.github.io/inocs-sum-bss-pt-network-design/`.
    make it pass: the artefacts are the data contract the front-end and notebooks read. Regenerate
    only for an intentional change, review the diff, and say so in the commit message.
    `tests/README.md` has the per-artefact regeneration commands.
+   `demo/experiments/results/shared/game/**` (including `golden/`, 21 vectors) is both
+   generated (rule 3) and golden-pinned (this rule): the only regeneration command is
+   `python3 -m demo.experiments.game_export`, which additionally needs the **uncommitted**
+   k-shortest-path pickle under `network-design-bss/src/data/shortest_paths_result/`
+   (`game_export.py`'s module docstring names the exact file and the error it raises when
+   the pickle is missing). Regenerating rewrites all 21 golden vectors; review the diff and
+   re-run both `python3 -m unittest demo.experiments.tests.test_fixed_design` and
+   (`cd demo/frontend &&`) `npm test`, since the TypeScript engine is pinned against the
+   same vectors.
+
+   A second, unrelated pin lives beside it: `demo/frontend/src/components/map/__guard__/`
+   fixes the full demo's `CityMap`/`MapPanel` markup byte for byte (single-line HTML
+   snapshots, ~250 KB each, via vitest's `toMatchFileSnapshot`) so the map-layer refactor
+   the game needed could not silently change what the existing demo renders. Check it with
+   `node demo/frontend/scripts/guard-diff.mjs` (never `cat` a snapshot or let the test
+   runner print its own diff — both flood a terminal; the script reports only the first
+   differing offset). Never regenerate these files to make a refactor pass. Regenerate them
+   only when the committed results or the full demo's map markup legitimately changed:
+   delete the files under `__guard__/` and run
+   `npx vitest run src/components/map/cityMap.guard.test.tsx` once from `demo/frontend/` —
+   `toMatchFileSnapshot` writes a fresh snapshot when the file it names does not exist, and
+   compares against it otherwise, so a clean delete-then-run is how this suite's guard is
+   deliberately updated.
 5. `.specs/` is **gitignored, local-only** design history. Never link to it from committed docs.
 6. Commit only when asked. Attribution trailer rules arrive in the session, follow them.
 
@@ -75,12 +122,45 @@ demo/
                            simulate.py (replay only, live), evaluate.py (paper/technical/stress_test),
                            pipeline/, tests/, kpi_config.json
                            baseline.py, pipeline/instance.py  DEPRECATED, see below
+                           fixed_design.py (normative LP: evaluate a visitor's station layout,
+                           the paper's operational sub-problem with y fixed), game_export.py
+                           (writes results/shared/game/, needs the uncommitted k-shortest-path
+                           pickle), tests/test_fixed_design.py
                            data/  (the layer's own copy of the sample + observed layers)
                            results/<scenario>/ (stations, metrics [full evaluator row], model_plan,
                            instance, sim_monday/sim_sunday [stress test], kpis [schema kpis-v3]) +
-                           results/shared/bike_arcs.json
-  frontend/                Astro + React static site (the public demo), v3: five header-tab steps +
-                           advanced toggle. scripts/prepare-data.mjs = the only data bridge
+                           results/shared/bike_arcs.json, results/shared/game/ (+ golden/,
+                           21 vectors) [see "Hard rules" exception below]
+  frontend/                Astro + React static site. TWO pages: index.astro is the public demo
+                           (five header-tab steps, no advanced toggle); play.astro is the
+                           "planner game" (/play, six tracked steps behind one entry screen).
+                           scripts/prepare-data.mjs = the only data bridge (copies
+                           results/shared/game/ verbatim, plus highs.wasm, into public/data/game/).
+                           src/domain/          pure TS, no React/DOM/fetch: evaluation/ (the LP
+                                                 port, transcribes fixed_design.py), placement/
+                                                 (hit test, budget, assistant, reach), trips/
+                                                 (run-animation sprites), game/ (session, steps,
+                                                 predictions, ticket, results — the game's own
+                                                 application logic; see its own README.md)
+                           src/infra/           evaluator.worker.ts + highsEvaluator.ts (exact,
+                                                 HiGHS/wasm), estimateEvaluator.ts (fallback),
+                                                 gameData.ts (payload loader), sessionStore.ts
+                                                 (localStorage, try/catch everywhere)
+                           src/hooks/           useGameSession, useHashStep, usePlacement,
+                                                 useEvaluation, useViewport (thin; logic in the
+                                                 pure hashStep.ts/viewport.ts/evaluationPair.ts)
+                           src/components/map/  MapCanvas + layers/ (composable: BaseLayer,
+                                                 PtLinesLayer, StationsLayer, CandidatesLayer,
+                                                 TripsLayer, ...), frame/MapFrame.tsx (camera,
+                                                 zoom, four slots; parent composes the content),
+                                                 AdvancedLayers.tsx (view kind + toggles -> layer
+                                                 props, shared by MapPanel and CityMap),
+                                                 __guard__/ (pinned CityMap/MapPanel markup,
+                                                 byte-for-byte; never hand-edit, see Hard rules)
+                           src/components/play/ the six /play screens, StepShell (responsive
+                                                 frame), Tracker, Ticket
+                           e2e/                 Playwright smoke test for /play (desktop + phone)
+                           scripts/guard-diff.mjs   safe (non-flooding) diff for the map guard
 notebooks/                 gva_demo.ipynb (pipeline walkthrough), simulation_demo.ipynb (reference values),
                            demo_scenarios.ipynb (generate the 18-scenario grid, run it one
                            scenario at a time, stress-test replay, evaluate, compare)
@@ -111,9 +191,21 @@ python3 -m demo.experiments.evaluate demo/experiments/results/budget_060k demo/e
 DEMO_TESTS_FAST=1 python3 -m unittest discover -s demo/experiments/tests -t .   # ~0.3 s, skips the 112-day replay
 pytest                                                                          # full suite
 
+# game payload (needs the uncommitted k-shortest-path pickle; see Hard rule 4)
+python3 -m demo.experiments.game_export                                        # results/shared/game/** (+ golden/)
+python3 -m unittest demo.experiments.tests.test_fixed_design -v                # fidelity, golden, degenerate-layout tests
+
 # front-end
 cd demo/frontend && npm install && npm run dev        # http://localhost:4321/inocs-sum-bss-pt-network-design/
 npm run build                                          # prebuild regenerates public/data from demo/experiments
+npm run check < /dev/null                              # astro check (type-check); needs @astrojs/check (devDependency).
+                                                         #   Redirect stdin: without it, a missing @astrojs/check prompts
+                                                         #   to install and hangs forever if stdin is a TTY.
+npm test                                                # vitest run: domain/infra unit tests + the golden-vector
+                                                         #   engine.test.ts + the map markup guard
+npx playwright install chromium                         # once, before the first npm run e2e
+npm run build && npm run e2e                            # Playwright smoke test for /play (desktop + phone); builds
+                                                         #   dist/ first and serves it under the real base path
 
 # packaging (writes network-design-bss/sdk/)
 pipenv run python network-design-bss/sdk-builder/build_package.py
@@ -148,6 +240,48 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   `model_plan.json` + `metrics.json`), `technical` (the full evaluator row + solver stats),
   `stress_test` (the replay, labelled as a demo-side check). `evaluate_day_legacy` is DEPRECATED.
   Pure dict → dict; no coefficient from `kpi_config.json` reaches `paper` or `technical`.
+- `demo.experiments.fixed_design.evaluate(instance, station_ids, budget, ops_budget=None,
+  epsilon=None, trucks=True)` — the normative "evaluate a visitor's layout" LP (scipy
+  `linprog`, `method="highs"`); `Instance.for_game()` / `.from_export(demand=scenario_id)`
+  builds the instance from the committed `results/shared/game/*.json`. Never raises for an
+  infeasible or empty layout — `result["feasible"]` says so, `served` is 0, `note` explains
+  why. `summary(result)` drops the bulky `flows` list and wall-clock timing for golden
+  vectors. Importable and its pure helpers (`max_stations`, `reach_options`,
+  `assistant_order`) usable without scipy; only `evaluate()` needs it.
+- `demo.experiments.game_export` — `python3 -m demo.experiments.game_export [--out DIR]
+  [--quiet]` writes the browser payload under `results/shared/game/`: `candidates.json`,
+  `cells.json`, `paths.json` (candidate paths with explicit bike legs — a path's
+  de-duplicated station list is NOT its legs, see the module docstring's "trap"),
+  `arcs.json`, `demand_reference.json`, `coverage.json`, `constants.json`,
+  `references.json` (per-budget optimiser/random/demand-rule comparisons) and 21
+  `golden/<scenario>.json` vectors. Needs the uncommitted k-shortest-path pickle (Hard
+  rule 4); everything downstream reads the committed JSON instead.
+- `demo/frontend/src/domain/evaluation/` — the TypeScript port of `fixed_design.py` (see
+  Hard rule 2's declared exception). `lpModel.buildLp(data, options)` builds the LP,
+  `kpis.readEvaluation(...)` / `emptyEvaluation(...)` turn a solved (or empty) LP into an
+  `Evaluation` (`ports.ts`): `quality: 'exact' | 'estimate'`, `feasible`, `served`,
+  `servedByPeriod`, `ptShare`, `docks`, `bikes`, `losses` (`noStation`/`noStock`/
+  `unreachable`), `flows`. The `Evaluator` interface (`evaluate(layout, budgetEur,
+  { trucks })`) is implemented by `infra/highsEvaluator.ts` (exact, HiGHS wasm, in a
+  worker in the browser) and `infra/estimateEvaluator.ts` (fallback: `served ≈
+  withinReach(layout) * factor(budget)`, `flows` empty, tens-of-percent accuracy —
+  never used to rank layouts).
+- `demo/frontend/src/hooks/useGameSession.ts` — `useGameSession(store, env, options)`
+  wraps `domain/game/session.ts`'s reducer: renders the empty session first (server and
+  client match), restores the stored one in an effect after mount, exposes `hydrated`
+  so a screen can hold back a decision until restoration is known to be done.
+- `demo/frontend/src/components/map/frame/MapFrame.tsx` — owns the camera (pan/zoom,
+  `controlsRef`), the zoom buttons and four slots (`top`, `bottom`, `overlay`, `popover`);
+  a slot is fixed content or a `(view: { unitPx }) => ReactNode` render prop. The parent
+  composes what is drawn — `MapPanel`/`CityMap` render `AdvancedLayers` inside it,
+  `StepShell` (the game) renders the game's own layers — the frame itself draws nothing
+  domain-specific. `onTap` fires on a pointer-up that was a tap, not a drag.
+- `demo/frontend/src/lib/usePanZoom.ts`'s `onTap` — the camera captures the pointer for
+  pan/zoom/pinch, so a click handler on an individual map element is not reliable
+  (plan-technical §C.1). The game's placement flow is therefore `onTap` (map units) →
+  `domain/placement/hitTest.ts` (pure) → `usePlacement`'s decision (`placed` / `removed`
+  / `ambiguous` — zooms in and places nothing / `miss` / `refused`), never a per-station
+  `onClick`.
 
 ## Data contracts
 
@@ -175,6 +309,18 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   flagged `legacy: true`, until the paper grid is run and validated.
 - `evaluate.py` CLI: `python -m demo.experiments.evaluate <result_dir>... [--compare] [--out FILE]`
   writes/reads `kpis.json`; `--compare` renders the cross-scenario markdown table.
+- `demo/experiments/results/shared/game/` (generated + golden-pinned, Hard rule 4). Every
+  file carries a `method` block. Approximate uncompressed sizes:
+  `candidates.json` (~4.6K, 100 rows: `[id, type_index, lon, lat]`), `cells.json` (~2.9K,
+  56 rows: `[id, lon, lat, buildable]`), `paths.json` (~69K, one row per candidate path of
+  a demanded OD pair with explicit bike legs), `arcs.json` (~68K, the ride network:
+  `[from, to, km]`), `demand_reference.json` (~12K, the game's own per-period OD demand),
+  `coverage.json` (~32K, per-candidate walk-catchment cells + potential flow + the reach
+  table), `constants.json` (~2K, unit costs + behavioural constants read live from
+  `network-design-bss/src/`, plus the four game budgets), `references.json` (~11K,
+  per-budget optimiser/random/demand-rule comparisons). `golden/*.json` (21 files, ~156K
+  total, **not shipped to the browser**): per committed design, its station ids and the
+  engine's own evaluation with and without trucks.
 
 ## Gotchas
 
@@ -195,6 +341,26 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   `build_docs.py --serve`.
 - No git remote is configured in this checkout and history starts here (files staged, no commit
   yet at the time of writing): `git diff HEAD` fails until the first commit.
+- `demo/frontend/astro.config.mjs` sets `vite: { worker: { format: 'es' } }`: Vite's default
+  IIFE worker output cannot be code-split, and the game's solver (`infra/evaluator.worker.ts`)
+  lazy-imports the ~1.2 MB `highs` package so nothing downloads until a layout is frozen —
+  that lazy import needs an ES module worker.
+- The HiGHS wasm binary is served under the site's base path, not guessed: `prepare-data.mjs`
+  copies it to `public/data/game/solver/highs-<version>.wasm`, and
+  `infra/highsEvaluator.ts`/`workerEvaluator.ts` take the URL as an explicit option — under
+  the GitHub Pages project path a relative guess resolves to the wrong place.
+- `useHashStep` must not run before the session is restored: the session always renders EMPTY
+  first (server and client must match) and is hydrated in an effect after mount; resolving
+  `#/step/<id>` against that still-empty session would demote the visitor to the entry step
+  and then persist the demotion. `useHashStep` therefore takes a `ready` flag and does nothing
+  in either direction until it is true (fixed by `bcb4605` after the Playwright smoke test
+  caught the reload-persistence bug it describes).
+- The LP's truck figures (`bikes_rebalanced`, `dispatches_relaxed`) are relaxed — continuous
+  `n = r / CAPACITY_REBALANCING_VEHICLE` buys fractional truck runs, so the reported dispatch
+  count runs 18-31% high on the 21 committed designs. They are reported for the OPTIMISER's
+  own layout (`OptimiserRun` in `domain/evaluation/types.ts`) but never for a visitor's: the
+  UI shows "trips that depend on trucks" (`servedWithTrucks - servedWithoutTrucks`) instead of
+  a truck count.
 
 ## Deprecated (to remove after the paper-grid runs are validated)
 
@@ -234,8 +400,19 @@ Tracked in the demo layer's findings (local `.specs/`, summarised here so they s
 6. Dispatch cost is computed twice: once inside the frozen evaluator's `experiment_row`
    (`dispatch_cost`, written into `metrics.json` → `kpis.json`'s `technical` block) and again by
    `demo/experiments/pipeline/model_plan.py` (`summary.dispatch_cost_eur`, read into `kpis.json`'s
-   `paper` block) from the same `r`/`n` decisions. The two should be numerically identical; to be
-   confirmed equal once the paper-grid runs exist.
+   `paper` block) from the same `r`/`n` decisions. **Checked equal**: `paper.dispatch_cost_eur`
+   and `technical.dispatch_cost` agree (within the 2-decimal rounding of the `paper` block) on
+   every one of the 18 committed paper-grid `results/*/kpis.json` files (verified 2026-09-20 with
+   a one-off script; the three legacy `S1`/`S2`/`S3` runs predate the `technical.dispatch_cost`
+   field and were not part of the check).
+7. `CAPACITY_UB = 30` docks per station (`network-design-bss/src/util/util.py:71`) caps served
+   flow once the budget stops binding, independent of money: with all 100 stations open and both
+   budgets unlimited, the fixed-design LP serves 1,321 of 1,453 trips (0.909) — of the 132
+   unserved, ~60 have no candidate path at all (issue 3) and the other ~72 are blocked by the
+   30-dock cap; raising the cap to 50 docks reaches 1,393 (0.959), the path-coverage ceiling
+   (unaffected by the cap beyond that point). So the served-flow curve's flattening near 91% as
+   budget grows is partly this modelling parameter, not purely diminishing economic returns —
+   worth stating wherever that flattening is discussed.
 
 ## Documentation map
 
@@ -250,6 +427,9 @@ Tracked in the demo layer's findings (local `.specs/`, summarised here so they s
 | Running a scenario against the model | `demo/experiments/scenarios/README.md` |
 | Test suite and artefact regeneration policy | `demo/experiments/tests/README.md` |
 | Front-end data flow, i18n, deployment | `demo/frontend/README.md` |
+| The planner game (`/play`): visitor steps, layered architecture, map composition, running its tests | `demo/frontend/README.md` §"Planner game (/play)" |
+| The planner game's application logic (session, steps, predictions, ticket, results view-models) | `demo/frontend/src/domain/game/README.md` |
+| The fixed-design LP (normative layout evaluation) and the game data export | `demo/experiments/README.md`, `demo/experiments/METHODS.md` (both have a short section); source of truth is `demo/experiments/fixed_design.py` and `game_export.py`'s own docstrings |
 | Model internals stage by stage, executable | `notebooks/gva_demo.ipynb` |
 | Upstream research notes (ALNS, scale tests) | `network-design-bss/src/docs/*.md` |
 
