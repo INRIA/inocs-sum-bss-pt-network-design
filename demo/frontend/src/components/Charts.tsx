@@ -96,10 +96,21 @@ export interface LadderPoint {
   label: string;
 }
 
+/** One extra point on a ladder that is not part of the family — the game's "you are here". */
+export interface LadderMark {
+  x: number;
+  value: number;
+  label: string;
+}
+
 /**
  * A family axis: solid SUM-blue line + dots for the runs that exist, a dashed line with square
  * markers for legacy runs (a different parameter regime), and hollow red ticks on the axis for the
  * runs still pending.
+ *
+ * `mark` is additive and optional: the planner game drops the visitor's own network on the same
+ * axis as a green diamond, so the ladder reads as "where you are", never as a rank. Without it the
+ * chart renders exactly the markup it always did.
  */
 export function LadderChart({
   points,
@@ -107,12 +118,14 @@ export function LadderChart({
   yTick,
   pendingLabel,
   alt,
+  mark,
 }: {
   points: LadderPoint[];
   ymax: number;
   yTick: (v: number) => string;
   pendingLabel: string;
   alt: string;
+  mark?: LadderMark | null;
 }) {
   const W = 360;
   const H = 146;
@@ -188,6 +201,19 @@ export function LadderChart({
             </text>
           </g>
         )
+      )}
+      {mark && (
+        <g className="laddermark">
+          <path
+            d={`M${X(mark.x).toFixed(1)} ${(Y(mark.value) - 5.5).toFixed(1)}l5.5 5.5l-5.5 5.5l-5.5 -5.5Z`}
+            fill="#6b9410"
+            stroke="#fff"
+            strokeWidth={1.6}
+          />
+          <text className="dl" x={X(mark.x)} y={Y(mark.value) + 17} textAnchor="middle" fill="#4d6b0b">
+            {mark.label}
+          </text>
+        </g>
       )}
     </svg>
   );

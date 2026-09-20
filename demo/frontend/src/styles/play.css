@@ -542,3 +542,308 @@
     transition: none;
   }
 }
+
+/* ============================================================
+   Steps 4 to 6 — results, the optimiser, conclusions.
+
+   Same tokens, same idioms as above: the hero is one number and
+   one sentence, the tiles are the existing `.card .fact` block
+   with the visitor's own guess under it, and the comparison is
+   the demo's `.tw` table. Nothing here is a score, so nothing is
+   coloured as a verdict: the tone line is ink-2, never green or
+   red (plan.md §2, no win or lose).
+   ============================================================ */
+
+/* ---------- the run bar ---------- */
+.playrunbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.playrunbar .ghostbtn {
+  min-height: 44px;
+}
+.playrunbar .playperiod {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green-ink);
+}
+.playperiods button {
+  min-height: 36px;
+}
+.playtag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.playest {
+  background: var(--red-tint);
+  color: var(--red-ink);
+}
+
+/* ---------- hero + the three marks ---------- */
+.playhero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 10px 0 4px;
+}
+.playhero b {
+  font-size: 34px;
+  line-height: 1;
+  color: var(--blue);
+}
+.playhero span {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.playmarks {
+  margin: 14px 0 18px;
+}
+.playmarkrail {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-2);
+  margin-bottom: 34px;
+}
+.playmark {
+  position: absolute;
+  top: -5px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90px;
+  text-align: center;
+}
+.playmark i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--line);
+  border: 2px solid var(--surface);
+}
+.playmark b {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  line-height: 1.15;
+}
+.playmark em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-2);
+}
+.playmark-you i {
+  background: var(--green);
+}
+.playmark-you b,
+.playmark-you em {
+  color: var(--green-ink);
+}
+.playmark-optimiser i {
+  background: var(--blue);
+}
+
+/* ---------- tiles ---------- */
+.playtiles {
+  gap: 8px;
+}
+.playtile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+}
+.playtilelab {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.playtile b {
+  font-size: 20px;
+  color: var(--blue);
+}
+.playtilesub {
+  font-size: 11px;
+  color: var(--ink-2);
+  line-height: 1.3;
+}
+.playguess {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--line);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+.playswitch {
+  margin: 8px 0;
+  align-self: flex-start;
+}
+
+/* ---------- losses, chart, method ---------- */
+.playlosses {
+  margin: 12px 0;
+}
+.playlosses ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+}
+.playlosses li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.playlosses li b {
+  min-width: 4ch;
+  text-align: right;
+  color: var(--red-ink);
+}
+.playlosses li span {
+  flex: 1;
+}
+.playlosses li em {
+  font-style: normal;
+  color: var(--ink-2);
+}
+.playchart {
+  margin: 12px 0;
+}
+.playmethod {
+  margin: 10px 0;
+}
+.playmethodbody,
+.playdeeperbody {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--tint-2);
+}
+
+/* ---------- step 5 ---------- */
+.playcontrib {
+  font-size: 14px;
+  line-height: 1.45;
+}
+.playcompare {
+  margin: 10px 0 4px;
+}
+.playpaper {
+  margin-top: 4px;
+}
+.playpoll {
+  margin: 16px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.playreveal {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--blue);
+  background: var(--blue-tint);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13.5px;
+}
+.playreveal p {
+  margin: 0 0 4px;
+}
+.playchips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin: 10px 0;
+}
+.playchip {
+  flex: none;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.playchip[aria-pressed='true'] {
+  border-color: var(--blue);
+  background: var(--blue-tint);
+  color: var(--blue-d);
+}
+
+/* ---------- step 6 ---------- */
+.playfullticket {
+  margin-bottom: 14px;
+}
+.playrecap {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+.playrecap h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.playsaid,
+.playmodel {
+  margin: 2px 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.playsaid b,
+.playmodel b {
+  color: var(--ink-2);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.playtone {
+  margin-top: 4px;
+  font-style: italic;
+}
+.playrecap .proof {
+  margin-top: 8px;
+}
+.playrushproof .tw {
+  margin-bottom: 6px;
+}
+.playclosing {
+  margin: 18px 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.playcta {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+.playdeeper {
+  margin: 14px 0 4px;
+}
+
+@media (max-width: 980px) {
+  .playtiles {
+    grid-template-columns: 1fr;
+  }
+}

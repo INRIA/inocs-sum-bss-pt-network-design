@@ -67,3 +67,25 @@
     opacity: 0.6;
   }
 }
+
+/*
+ * The run animation (step 4) asks for the static route under the sprites: the
+ * ride as a faint line, and the tram or bus leg of a bike + PT trip dashed and
+ * lighter, so the public-transport half of the network is visible while the day
+ * plays. The city pulse leaves `routes` off and keeps the markup it had.
+ */
+.trips-routes .tripline {
+  display: inline;
+  fill: none;
+  stroke-width: 0.35;
+  opacity: 0.28;
+}
+.trips-routes .tripline.trip-pt {
+  stroke-dasharray: 1.6 1.4;
+  opacity: 0.45;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trips-routes .tripline {
+    opacity: 0.6;
+  }
+}

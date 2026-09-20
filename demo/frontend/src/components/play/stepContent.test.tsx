@@ -24,6 +24,7 @@ import {
   type Session,
 } from '../../domain/game/session';
 import { ALL_STEPS, type GameStep } from '../../domain/game/steps';
+import { fakeEvaluation } from '../../domain/game/testSupport';
 import type { UseEvaluation } from '../../hooks/useEvaluation';
 import { makeT } from '../../lib/i18n';
 import type { MapControls } from '../map/frame/MapFrame';
@@ -87,6 +88,37 @@ describe.skipIf(!ready)('useStepContent', async () => {
     }
     return { ...session, step, visited: [...ALL_STEPS] };
   };
+
+  /** A session that has been solved: the three last steps have something to show. */
+  const solved = (step: GameStep): Session => {
+    const base = at(step, [3, 7, 11]);
+    const withTrucks = fakeEvaluation({ served: 1000 });
+    const withoutTrucks = fakeEvaluation({ served: 940 });
+    return {
+      ...base,
+      trucks: true,
+      layoutHash: 'test',
+      evaluation: { withTrucks, withoutTrucks },
+      predictions: { served: '70to90', pt: '4in10', rush: 'bit', trucks: 'few', rhythm: 'same' },
+    };
+  };
+
+  it('renders the three last steps against a solved session', () => {
+    const run = render(solved('run'));
+    expect(run).toContain(t('play.trucks.with'));
+    expect(run).toContain(t('play.loss.h'));
+
+    const optimiser = render(solved('optimiser'));
+    expect(optimiser).toContain(t('play.compare.stations'));
+    expect(optimiser).toContain(t('play.compare.truckRuns'));
+    // the optimiser's own network is drawn, with the visitor's underneath in
+    // grey: the ghost variant is the only layer rendered at 0.6 opacity
+    expect(optimiser).toContain('opacity="0.6"');
+
+    const conclusions = render(solved('conclusions'));
+    expect(conclusions.split('class="playrecap').length - 1).toBe(5);
+    expect(conclusions).toContain(t('play.conclusions.closing'));
+  });
 
   it('renders every step with one map and one primary action', () => {
     for (const step of ALL_STEPS) {

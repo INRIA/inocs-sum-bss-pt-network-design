@@ -10,7 +10,18 @@ import type { T } from '../../lib/i18n';
  * untouched, and `LegendGroup` is generic over them. The convention of §B.4
  * holds — public transport on top, bikes at the bottom, every item a toggle.
  */
-export type PlayLayerKey = 'tram' | 'bus' | 'rail' | 'stops' | 'pulse' | 'candidates' | 'mine';
+export type PlayLayerKey =
+  | 'tram'
+  | 'bus'
+  | 'rail'
+  | 'stops'
+  | 'pulse'
+  | 'candidates'
+  | 'mine'
+  /** Step 5: the optimiser's own network. */
+  | 'plan'
+  /** Step 5: the visitor's stations, kept underneath in grey. */
+  | 'ghost';
 export type PlayLayers = Record<PlayLayerKey, boolean>;
 
 export const DEFAULT_PLAY_LAYERS: PlayLayers = {
@@ -21,7 +32,12 @@ export const DEFAULT_PLAY_LAYERS: PlayLayers = {
   pulse: true,
   candidates: true,
   mine: true,
+  plan: true,
+  ghost: true,
 };
+
+/** Which bike items the bottom legend offers. One per step that draws bikes. */
+export type BikeLegendMode = 'build' | 'run' | 'optimiser';
 
 export function PtLegend({
   map,
@@ -53,16 +69,31 @@ export function PtLegend({
 export function BikeLegend({
   layers,
   onToggle,
-  showCandidates,
+  mode,
   t,
 }: {
   layers: PlayLayers;
   onToggle: (key: PlayLayerKey) => void;
-  showCandidates: boolean;
+  mode: BikeLegendMode;
   t: T;
 }) {
   const items: LegendItem<PlayLayerKey>[] = [];
-  if (showCandidates) {
+  if (mode === 'optimiser') {
+    items.push({
+      key: 'plan',
+      label: t('play.legend.plan'),
+      swatch: <BikeSwatch color={C_REGULAR} />,
+      pressed: layers.plan,
+    });
+    items.push({
+      key: 'ghost',
+      label: t('play.legend.ghost'),
+      swatch: <BikeSwatch color={C_EXISTING} />,
+      pressed: layers.ghost,
+    });
+    return <LegendGroup items={items} onToggle={onToggle} />;
+  }
+  if (mode === 'build') {
     items.push({
       key: 'candidates',
       label: t('play.legend.candidates'),
@@ -78,7 +109,7 @@ export function BikeLegend({
   });
   items.push({
     key: 'pulse',
-    label: t('play.legend.pulse'),
+    label: mode === 'run' ? t('play.legend.run') : t('play.legend.pulse'),
     swatch: <i style={{ background: C_EXISTING, borderRadius: '50%' }} />,
     pressed: layers.pulse,
   });

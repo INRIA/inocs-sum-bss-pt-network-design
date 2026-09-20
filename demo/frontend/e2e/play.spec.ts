@@ -217,30 +217,43 @@ test.describe('play: evaluation', () => {
 
     const t0 = Date.now();
     await page.getByRole('button', { name: 'Run a day on my network' }).click();
-    await expect(page.locator('.playstatus')).toBeVisible();
 
-    // Poll .playstatus until it says ready/estimate/error (not running), up to 30s.
-    let finalStatusText = '';
+    // The results screen of step 4: the hero appears as soon as a solve has
+    // landed, exact or estimate. Before that the step only says that the city
+    // is getting ready, and a failed solve shows the retry line instead.
+    const hero = page.locator('.playhero b');
+    const failure = page.locator('.playstatus.playwarn');
     const deadline = Date.now() + 30_000;
+    let landed = false;
     while (Date.now() < deadline) {
-      finalStatusText = (await page.locator('.playstatus b').textContent()) ?? '';
-      if (!/getting ready/i.test(finalStatusText)) break;
+      if ((await hero.count()) > 0 && (await hero.first().isVisible())) {
+        landed = true;
+        break;
+      }
+      if ((await failure.count()) > 0) break;
       await page.waitForTimeout(300);
     }
     const wallMs = Date.now() - t0;
+    const heroText = landed ? ((await hero.first().textContent()) ?? '') : '';
+    const estimated = (await page.locator('.playest').count()) > 0;
 
     test.info().annotations.push({ type: 'eval-wall-ms', description: String(wallMs) });
-    test.info().annotations.push({ type: 'final-status', description: finalStatusText });
+    test.info().annotations.push({ type: 'hero', description: `${heroText}${estimated ? ' (estimate)' : ''}` });
     test.info().annotations.push({ type: 'solver-requests', description: JSON.stringify(requests) });
     test.info().annotations.push({ type: 'worker-console-errors', description: JSON.stringify(workerErrors) });
 
-    expect(finalStatusText).not.toBe('');
-    expect(finalStatusText.toLowerCase()).not.toContain('getting ready');
+    expect(landed, 'the run step showed a hero number').toBe(true);
+    expect(heroText).toMatch(/\d/);
 
-    if (/ready|estimate/i.test(finalStatusText)) {
-      const heroServed = page.locator('.fact').first();
-      await expect(heroServed).toBeVisible({ timeout: 5000 });
-    }
+    // The three tiles of plan.md section 5, each carrying the visitor's own guess.
+    await expect(page.locator('.playtile')).toHaveCount(3);
+    await expect(page.locator('.playguess')).toHaveCount(3);
+    // The trucks switch, the three marks of the served line and the losses strip.
+    await expect(page.getByRole('button', { name: 'With service trucks' })).toBeVisible();
+    await expect(page.locator('.playmark')).toHaveCount(3);
+    await expect(page.locator('.playlosses')).toBeVisible();
+    // No unfilled copy placeholder ever reaches the screen.
+    expect(await page.locator('.playstep').innerText()).not.toMatch(/[{}]/);
   });
 });
 

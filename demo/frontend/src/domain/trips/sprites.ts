@@ -37,6 +37,12 @@ export interface Sprite {
   readonly delayMs: number;
   readonly durationMs: number;
   readonly status: SpriteStatus;
+  /**
+   * The trip combines a bike with a tram or bus (`GamePath.cat === 1`), so the
+   * run animation can draw its public-transport leg apart from the ride.
+   * Always false for potential demand: nothing is assigned to a path yet.
+   */
+  readonly pt: boolean;
 }
 
 /** Longitude/latitude to the map's own units. Injected, never imported. */
@@ -81,6 +87,7 @@ interface Draft {
   readonly weight: number;
   readonly via: readonly number[];
   readonly status: SpriteStatus;
+  readonly pt: boolean;
 }
 
 /**
@@ -157,6 +164,7 @@ function build(
         delayMs: Math.round(draft.period * periodMs + random() * periodMs * 0.9),
         durationMs,
         status: draft.status,
+        pt: draft.pt,
       });
     }
   }
@@ -192,14 +200,22 @@ export function flowSprites(
       if (via[via.length - 1] !== start) via.push(start);
       via.push(end);
     }
-    drafts.push({ o: path.o, d: path.d, period, weight: flow, via, status: 'served' });
+    drafts.push({
+      o: path.o,
+      d: path.d,
+      period,
+      weight: flow,
+      via,
+      status: 'served',
+      pt: path.cat === 1,
+    });
   }
   for (const [o, d, period, flow] of demand) {
     const left = flow - (servedByKey.get(`${o}:${d}:${period}`) ?? 0);
     if (left <= 1e-6) continue;
     const status = unservedStatus(o, d, period);
     if (!status) continue;
-    drafts.push({ o, d, period, weight: left, via: [], status });
+    drafts.push({ o, d, period, weight: left, via: [], status, pt: false });
   }
   return build(drafts, cells, candidates, project, options);
 }
@@ -226,6 +242,7 @@ export function demandSprites(
       weight: flow,
       via: [] as number[],
       status: (isReached(o, d, period) ? 'reached' : 'potential') as SpriteStatus,
+      pt: false,
     }));
   return build(drafts, cells, candidates, project, options);
 }

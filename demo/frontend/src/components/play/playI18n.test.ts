@@ -66,8 +66,22 @@ function domainKeys(): string[] {
   for (const status of ['idle', 'running', 'ready', 'estimate', 'error']) {
     keys.push(`play.status.${status}`);
   }
+  // The families the VIEW-MODELS name: a loss cause, a comparison row, a mark
+  // of the served line and the tone of a reveal are all keys the domain builds
+  // by template, so they are enumerated from the domain's own unions.
+  for (const cause of ['noStation', 'noStock', 'unreachable']) keys.push(`play.loss.${cause}`);
+  for (const row of ['stations', 'docks', 'bikes', 'truckRuns', 'served']) {
+    keys.push(`play.compare.${row}`);
+  }
+  for (const mark of ['random', 'you', 'optimiser']) keys.push(`play.mark.${mark}`);
+  for (const tone of ['close', 'other']) keys.push(`play.tone.${tone}`);
+  // The reveal sentences of step 6: read off `reveal.ts` itself, the same way
+  // the guard reasons are read off `steps.ts`, so a new branch fails here
+  // until both dictionaries carry its sentence.
+  const reveal = readFileSync(join(SRC, 'components/play/reveal.ts'), 'utf8');
+  for (const match of reveal.matchAll(/'(play\.[a-zA-Z0-9._-]+)'/g)) keys.push(match[1]!);
   for (const step of ['run', 'optimiser', 'conclusions']) {
-    for (const field of ['eyebrow', 'title', 'lede', 'soon', 'cta']) keys.push(`play.${step}.${field}`);
+    for (const field of ['eyebrow', 'title', 'lede', 'cta']) keys.push(`play.${step}.${field}`);
   }
   return [...new Set(keys)].sort();
 }
