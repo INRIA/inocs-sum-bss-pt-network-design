@@ -127,6 +127,40 @@ export interface GameData {
   readonly references: References;
 }
 
+/**
+ * One same-engine run of the optimiser's own layout, as `references.json`
+ * stores it: every KPI `fixed_design.py` reports, for one truck state.
+ *
+ * It is the full row, not a summary, so the "You \u00b7 Optimiser" column of
+ * steps 4 and 5 can be built from the SAME fields as the visitor's own
+ * evaluation (plan-technical \u00a7A.1, decision 4) instead of a subset.
+ */
+export interface OptimiserRun {
+  readonly feasible: boolean;
+  readonly served: number;
+  readonly servedRatio: number;
+  readonly demandTotal: number;
+  readonly demandByPeriod: readonly number[];
+  readonly servedByPeriod: readonly number[];
+  readonly bikeOnlyByPeriod: readonly number[];
+  readonly bikePtByPeriod: readonly number[];
+  readonly ptShare: number;
+  readonly docks: number;
+  readonly bikes: number;
+  readonly capexEur: number;
+  readonly nStations: number;
+  readonly nTransfer: number;
+  /** The relaxed LP's own truck figures. Shown for the OPTIMISER only. */
+  readonly bikesRebalanced: number;
+  readonly dispatchesRelaxed: number;
+  readonly dispatchCostEur: number;
+  readonly losses: {
+    readonly noStation: number;
+    readonly noStock: number;
+    readonly unreachable: number;
+  };
+}
+
 /** What the game compares a visitor to, per budget. From `references.json`. */
 export interface BudgetReference {
   readonly scenario: string;
@@ -144,6 +178,22 @@ export interface BudgetReference {
   readonly demandRuleServed: number;
   /** served / within-reach on the optimiser's layout: the estimate factor. */
   readonly reachCalibration: number;
+  readonly opsBudgetEur: number;
+  readonly epsilon: number;
+  /** The published (Gurobi) ratio beside the engine's own, for the proof popup. */
+  readonly publishedServedRatio: number;
+  readonly randomServedRatioMedian: number;
+  readonly randomServedMin: number;
+  readonly randomServedMax: number;
+  readonly randomLayouts: number;
+  readonly demandRuleServedRatio: number;
+  readonly demandRulePtShare: number;
+  /** Demand within reach of the optimiser's layout, the calibration's numerator. */
+  readonly reachCalibrationReach: number;
+  readonly reachCalibrationServed: number;
+  /** The whole same-engine row, per truck state. */
+  readonly optimiserWithTrucks: OptimiserRun;
+  readonly optimiserWithoutTrucks: OptimiserRun;
 }
 
 export interface References {

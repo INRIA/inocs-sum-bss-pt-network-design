@@ -39,7 +39,7 @@ const description =
     <meta property="og:type" content="website" />
   </head>
   <body>
-    <Game data={data} client:load />
+    <Game data={data} baseUrl={base} client:load />
     <noscript>
       <div style="max-width:640px;margin:0 auto;padding:24px 16px">
         <p class="note">

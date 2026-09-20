@@ -191,6 +191,9 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>, opts?: UsePanZo
     viewBox: `${vb.x.toFixed(1)} ${vb.y.toFixed(1)} ${vb.w.toFixed(1)} ${vb.h.toFixed(1)}`,
     unitPx,
     zoomStep,
+    // zoom about a point in MAP units — the game's ambiguous-tap rule (ux B.3)
+    // zooms in on the tap and places nothing, so the second tap is unambiguous
+    zoomAt,
     reset,
     toMap,
   };

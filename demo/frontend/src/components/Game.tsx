@@ -38,7 +38,7 @@ const DEFAULT_LAYERS: Layers = {
   inventory: false,
 };
 
-export default function Game({ data }: { data: GameData }) {
+export default function Game({ data, baseUrl = '/' }: { data: GameData; baseUrl?: string }) {
   const [lang, setLang] = useState<Lang>('en');
   const [step, setStep] = useState(0);
   const [visited, setVisited] = useState<number[]>([0]);
@@ -155,6 +155,9 @@ export default function Game({ data }: { data: GameData }) {
             </span>
           </span>
           <span className="team">INOCS · Inria</span>
+          <a className="playlink" href={`${baseUrl}play/`}>
+            {t('play.nav.enter')}
+          </a>
           <span className="lang" role="group" aria-label={t('lang.aria')}>
             <button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
               EN

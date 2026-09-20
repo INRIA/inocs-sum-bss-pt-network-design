@@ -25,6 +25,7 @@ import type {
   References,
   RideArc,
   BudgetReference,
+  OptimiserRun,
 } from '../domain/evaluation/types';
 
 /** The eight files the engine needs. `golden/` is a test fixture and is not shipped. */
@@ -161,6 +162,45 @@ export function decodeCoverage(raw: unknown): Coverage {
   };
 }
 
+/**
+ * One `with_trucks` / `without_trucks` block of references.json.
+ *
+ * `fixed_design.py` writes every KPI it computes here, so the decoder reads
+ * them all: dropping them would force the "You \u00b7 Optimiser" column to mix
+ * this engine's numbers for the visitor with the published run's for the
+ * optimiser, which is exactly what decision 4 forbids.
+ */
+function decodeOptimiserRun(raw: unknown, what: string): OptimiserRun {
+  const block = asRecord(raw, what);
+  const losses = asRecord(block.losses, `${what}.losses`);
+  const series = (key: string): number[] =>
+    asArray(block[key] ?? [], `${what}.${key}`).map(Number);
+  return {
+    feasible: block.feasible !== false,
+    served: Number(block.served),
+    servedRatio: Number(block.served_ratio),
+    demandTotal: Number(block.demand_total),
+    demandByPeriod: series('demand_by_period'),
+    servedByPeriod: series('served_by_period'),
+    bikeOnlyByPeriod: series('bike_only_by_period'),
+    bikePtByPeriod: series('bike_pt_by_period'),
+    ptShare: Number(block.pt_share),
+    docks: Number(block.docks),
+    bikes: Number(block.bikes),
+    capexEur: Number(block.capex_eur),
+    nStations: Number(block.n_stations),
+    nTransfer: Number(block.n_transfer),
+    bikesRebalanced: Number(block.bikes_rebalanced ?? 0),
+    dispatchesRelaxed: Number(block.dispatches_relaxed ?? 0),
+    dispatchCostEur: Number(block.dispatch_cost_eur ?? 0),
+    losses: {
+      noStation: Number(losses.no_station ?? 0),
+      noStock: Number(losses.no_stock ?? 0),
+      unreachable: Number(losses.unreachable ?? 0),
+    },
+  };
+}
+
 export function decodeReferences(raw: unknown): References {
   const file = asRecord(raw, 'references.json');
   const byBudget = new Map<number, BudgetReference>();
@@ -173,6 +213,8 @@ export function decodeReferences(raw: unknown): References {
     const rule = asRecord(block.demand_rule, 'references.demand_rule');
     const calibration = asRecord(block.reach_calibration, 'references.reach_calibration');
     const budgetEur = Number(block.budget_eur);
+    const runWith = decodeOptimiserRun(withTrucks, 'references.with_trucks');
+    const runWithout = decodeOptimiserRun(without, 'references.without_trucks');
     byBudget.set(budgetEur, {
       scenario: String(block.scenario),
       budgetEur,
@@ -187,6 +229,19 @@ export function decodeReferences(raw: unknown): References {
       demandRuleStations: rule.stations as number[],
       demandRuleServed: Number(rule.served),
       reachCalibration: Number(calibration.factor),
+      opsBudgetEur: Number(block.ops_budget_eur),
+      epsilon: Number(block.epsilon),
+      publishedServedRatio: Number(optimiser.published_served_ratio),
+      randomServedRatioMedian: Number(random.served_ratio_median),
+      randomServedMin: Number(random.served_min),
+      randomServedMax: Number(random.served_max),
+      randomLayouts: Number(random.layouts),
+      demandRuleServedRatio: Number(rule.served_ratio),
+      demandRulePtShare: Number(rule.pt_share),
+      reachCalibrationReach: Number(calibration.reach),
+      reachCalibrationServed: Number(calibration.served),
+      optimiserWithTrucks: runWith,
+      optimiserWithoutTrucks: runWithout,
     });
   }
   return { byBudget };
