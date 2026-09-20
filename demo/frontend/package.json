@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "SUM / INOCS (Inria) Geneva living lab — bike-sharing network design decision game (static Astro site).",
+  "description": "SUM / INOCS (Inria) Geneva living lab \u2014 bike-sharing network design decision game (static Astro site).",
   "scripts": {
     "predev": "node scripts/prepare-data.mjs",
     "dev": "astro dev",
@@ -14,7 +14,8 @@
     "fetch-basemap": "node scripts/fetch-basemap.mjs",
     "check": "astro check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.0.14",
     "@types/node": "^24.13.6",
     "@types/react": "^19.0.10",
