@@ -1,0 +1,69 @@
+/*
+ * TripsLayer animation (plan-technical.md §C.3, §C.5): sprites move by CSS only, driven by
+ * per-element --dx/--dy custom properties (destination minus origin, in map units) plus an
+ * animation-delay/duration React sets inline. No per-frame React state.
+ *
+ * prefers-reduced-motion swaps the moving circle for a static line along the same path.
+ */
+.trip {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: trip-move;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+.tripline {
+  display: none;
+}
+
+@keyframes trip-move {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+.trip-served,
+.trip-reached {
+  fill: #6b9410;
+  stroke: #6b9410;
+}
+
+.trip-potential {
+  fill: #949c93;
+  stroke: #949c93;
+}
+
+.trip-lost-no-station,
+.trip-lost-no-stock {
+  fill: #ff3514;
+  stroke: #ff3514;
+}
+
+.trip-unreachable {
+  fill: #5b5f5a;
+  stroke: #5b5f5a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trip {
+    display: none;
+  }
+  .tripline {
+    display: inline;
+    stroke-width: 0.4;
+    opacity: 0.6;
+  }
+}

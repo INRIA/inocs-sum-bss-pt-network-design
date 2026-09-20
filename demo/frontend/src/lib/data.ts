@@ -201,7 +201,14 @@ function buildScenario(entry: any, project: Project, periodBounds: number[][]): 
     periods = num(plan.periods, periods);
     stations = (plan.stations ?? []).map((s: any) => {
       const [x, y] = project(num(s.lon), num(s.lat));
-      return { x, y, transfer: s.type === 'TransferStation', capacity: num(s.capacity), inventory: arr(s.inventory) };
+      return {
+        id: String(s.id),
+        x,
+        y,
+        transfer: s.type === 'TransferStation',
+        capacity: num(s.capacity),
+        inventory: arr(s.inventory),
+      };
     });
   }
 

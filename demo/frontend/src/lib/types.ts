@@ -63,6 +63,7 @@ export interface MapData {
 
 /** One built station of a plan: projected once, carrying the model's own per-period inventory. */
 export interface StationMarker {
+  id: string;
   x: number;
   y: number;
   transfer: boolean;

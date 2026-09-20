@@ -1,16 +1,12 @@
 import type { RefObject } from 'react';
 import type { Lang, Layers, MapData, StationMarker, Weekday } from '../lib/types';
 import type { T } from '../lib/i18n';
-import { C_EXISTING } from './glyphs';
 import MapCanvas from './map/MapCanvas';
-import BaseLayer from './map/layers/BaseLayer';
-import PtLinesLayer from './map/layers/PtLinesLayer';
-import ExistingBikesLayer from './map/layers/ExistingBikesLayer';
-import PtDemandLayer, { bubbleR } from './map/layers/PtDemandLayer';
-import StationsLayer, { stationR } from './map/layers/StationsLayer';
-import PoiLayer from './map/layers/PoiLayer';
+import { bubbleR } from './map/layers/PtDemandLayer';
+import { stationR } from './map/layers/StationsLayer';
+import { AdvancedLayers, AdvancedPois, type MapKind } from './map/AdvancedLayers';
 
-export type MapKind = 'city' | 'live' | 'network';
+export type { MapKind };
 export { bubbleR, stationR };
 
 interface Props {
@@ -55,9 +51,7 @@ export default function CityMap({
   viewBox,
   unitPx,
 }: Props) {
-  const faint = kind === 'network';
   const clip = `${id}-clip`;
-  const poiScale = kind === 'network' ? 0.82 : 1;
 
   return (
     <MapCanvas
@@ -66,34 +60,19 @@ export default function CityMap({
       ariaLabel={t(`map.alt.${kind}`)}
       clipId={clip}
       unitPx={unitPx}
-      unclipped={layers.poi && <PoiLayer pois={map.pois} scale={poiScale} lang={lang} t={t} />}
+      unclipped={<AdvancedPois map={map} kind={kind} layers={layers} lang={lang} t={t} />}
     >
-      <BaseLayer map={map} gridOpacity={faint ? 0.35 : 0.5} />
-
-      <PtLinesLayer lines={map.ptLines} visible={layers} opacity={faint ? 0.7 : 1} t={t} />
-
-      {layers.bike && <ExistingBikesLayer dots={map.bikeDots} color={C_EXISTING} opacity={faint ? 0.45 : 0.75} />}
-
-      {(kind === 'live' || kind === 'network') && layers.stops && (
-        <PtDemandLayer
-          stops={map.stops}
-          weekday={weekday}
-          hour={hour}
-          scale={kind === 'network' ? 0.8 : 1}
-          opacity={kind === 'network' ? 0.25 : 0.8}
-        />
-      )}
-
-      {kind === 'network' && stations && (
-        <StationsLayer
-          variant="plan"
-          stations={stations}
-          show={{ transfer: layers.transfer, regular: layers.regular, capacity: layers.capacity, inventory: layers.inventory }}
-          period={period}
-          dropKey={dropKey}
-          t={t}
-        />
-      )}
+      <AdvancedLayers
+        map={map}
+        kind={kind}
+        t={t}
+        weekday={weekday}
+        hour={hour}
+        layers={layers}
+        stations={stations}
+        period={period}
+        dropKey={dropKey}
+      />
     </MapCanvas>
   );
 }

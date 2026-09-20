@@ -1,13 +1,16 @@
-import { useRef, useState } from 'react';
-import CityMap, { type MapKind, stationR } from './CityMap';
+import { useState } from 'react';
+import MapFrame, { type FrameView } from './map/frame/MapFrame';
+import { stationR } from './map/layers/StationsLayer';
+import { AdvancedLayers, AdvancedPois, type MapKind } from './map/AdvancedLayers';
 import { LayerToggles } from './Legend';
 import NetFacts from './NetFacts';
 import { C_TRANSFER } from './glyphs';
 import type { GameData, Lang, LayerKey, Layers, ScenarioData, Weekday } from '../lib/types';
 import type { T } from '../lib/i18n';
-import { usePanZoom } from '../lib/usePanZoom';
 import { fmtEur, hlabel } from '../lib/format';
 import { scenName } from '../lib/scen';
+
+export { stationR };
 
 /**
  * The right column (ux-plan-v2 sections 4 and 6): ONE map instance for the whole game, framed by
@@ -20,6 +23,11 @@ import { scenName } from '../lib/scen';
  *
  * This component is mounted once at Game level and never unmounted, which is what makes the
  * pan/zoom camera, the layer state and the box state survive every step change.
+ *
+ * Built on `MapFrame` (plan-technical.md §C.3), which owns the SVG ref, the pan/zoom camera and
+ * the zoom buttons: this component only decides what fills the frame's slots and layers, the same
+ * composition `CityMap` used to own. Byte-identical to the pre-refactor markup — pinned by
+ * `cityMap.guard.test.tsx`'s `mappanel-network` snapshot.
  */
 export default function MapPanel({
   data,
@@ -48,9 +56,6 @@ export default function MapPanel({
   onPeriod: (p: number) => void;
   dropKey: number;
 }) {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const { viewBox, unitPx, zoomStep, reset } = usePanZoom(svgRef);
-  const [popOpen, setPopOpen] = useState(false);
   const [resOpen, setResOpen] = useState(true);
 
   const toggles = (group: 'pt' | 'bike' | 'readouts') => (
@@ -90,92 +95,89 @@ export default function MapPanel({
         : layers.inventory
           ? t('map.label.inv')
           : null;
-  const tooSmall = 4.2 * unitPx < 6;
+
 
   return (
-    <div className="mapcard">
-      <div className="maplegend maptop">
-        <b className="leghead">{t('leg.pt.h')}</b>
-        {toggles('pt')}
-        {kind === 'city' && (
-          <span className="legcap">
-            {t('map.cap')} · {t('map.cap2', { zones: data.city.gridCells, stops: data.city.ptStops })}
-          </span>
-        )}
-      </div>
-
-      <div className="mapwrap">
-        <CityMap
-          id="map"
-          map={data.map}
-          kind={kind}
-          t={t}
-          lang={lang}
-          weekday={weekday}
-          hour={hour}
-          layers={layers}
-          stations={scenario?.stations}
-          period={period}
-          dropKey={dropKey}
-          svgRef={svgRef}
-          viewBox={viewBox}
-          unitPx={unitPx}
-        />
-
-        {showNet && scenario && (
-          <>
-            <button
-              className="resbtn"
-              onClick={() => setResOpen((o) => !o)}
-              aria-expanded={resOpen}
-              aria-controls="respanel"
-            >
-              <span>{t('map.results.h')}</span>
-              <b aria-hidden="true">{resOpen ? '▾' : '▴'}</b>
-            </button>
-
-            {resOpen && (
-              <section className="respanel" id="respanel" aria-label={t('map.results.h')}>
-                <div className="reshead">
-                  <b>{t('map.results.h')}</b>
-                  <button className="resclose" onClick={() => setResOpen(false)} aria-label={t('map.results.hide')}>
-                    ×
+    <MapFrame
+      id="map"
+      ariaLabel={t(`map.alt.${kind}`)}
+      t={t}
+      unclipped={<AdvancedPois map={data.map} kind={kind} layers={layers} lang={lang} t={t} />}
+      top={
+        <>
+          <b className="leghead">{t('leg.pt.h')}</b>
+          {toggles('pt')}
+          {kind === 'city' && (
+            <span className="legcap">
+              {t('map.cap')} · {t('map.cap2', { zones: data.city.gridCells, stops: data.city.ptStops })}
+            </span>
+          )}
+        </>
+      }
+      bottom={
+        <>
+          <b className="leghead">{t('leg.bike.h')}</b>
+          {toggles('bike')}
+        </>
+      }
+      overlay={
+        showNet && scenario
+          ? (view: FrameView) => {
+              const tooSmall = 4.2 * view.unitPx < 6;
+              return (
+                <>
+                  <button
+                    className="resbtn"
+                    onClick={() => setResOpen((o) => !o)}
+                    aria-expanded={resOpen}
+                    aria-controls="respanel"
+                  >
+                    <span>{t('map.results.h')}</span>
+                    <b aria-hidden="true">{resOpen ? '▾' : '▴'}</b>
                   </button>
-                </div>
-                <div className="resname">{scenName(scenario, t)}</div>
 
-                <NetFacts sc={scenario} t={t} className="resfacts" />
-                <p className="note">
-                  {t('map.capex.short', {
-                    spent: fmtEur(scenario.paper?.capexUsedEur ?? scenario.capexBudget),
-                    budget: fmtEur(scenario.capexBudget),
-                  })}
-                  {scenario.ranAt && <span className="mono"> · {scenario.ranAt.slice(0, 10)}</span>}
-                </p>
+                  {resOpen && (
+                    <section className="respanel" id="respanel" aria-label={t('map.results.h')}>
+                      <div className="reshead">
+                        <b>{t('map.results.h')}</b>
+                        <button className="resclose" onClick={() => setResOpen(false)} aria-label={t('map.results.hide')}>
+                          ×
+                        </button>
+                      </div>
+                      <div className="resname">{scenName(scenario, t)}</div>
 
-                <b className="leghead">{t('map.readouts')}</b>
-                <div className="resleg">{toggles('readouts')}</div>
-                <SizeKey stations={scenario.stations} fill={layers.inventory} t={t} />
-                {labelNote && <p className="note">{tooSmall ? t('map.label.zoom') : labelNote}</p>}
+                      <NetFacts sc={scenario} t={t} className="resfacts" />
+                      <p className="note">
+                        {t('map.capex.short', {
+                          spent: fmtEur(scenario.paper?.capexUsedEur ?? scenario.capexBudget),
+                          budget: fmtEur(scenario.capexBudget),
+                        })}
+                        {scenario.ranAt && <span className="mono"> · {scenario.ranAt.slice(0, 10)}</span>}
+                      </p>
 
-                {snapshots > 1 && (
-                  <>
-                    <b className="leghead">{t('map.period')}</b>
-                    {periodSeg}
-                    <p className="note">{layers.inventory ? t('map.period.stock', { h: plabel(period) }) : t('map.period.cap')}</p>
-                  </>
-                )}
-              </section>
-            )}
-          </>
-        )}
-      </div>
+                      <b className="leghead">{t('map.readouts')}</b>
+                      <div className="resleg">{toggles('readouts')}</div>
+                      <SizeKey stations={scenario.stations} fill={layers.inventory} t={t} />
+                      {labelNote && <p className="note">{tooSmall ? t('map.label.zoom') : labelNote}</p>}
 
-      <button className="layerchip" onClick={() => setPopOpen((o) => !o)} aria-expanded={popOpen}>
-        ◉ <span>{t('map.layers')}</span>
-      </button>
-      {popOpen && (
-        <div className="layerpop">
+                      {snapshots > 1 && (
+                        <>
+                          <b className="leghead">{t('map.period')}</b>
+                          {periodSeg}
+                          <p className="note">
+                            {layers.inventory ? t('map.period.stock', { h: plabel(period) }) : t('map.period.cap')}
+                          </p>
+                        </>
+                      )}
+                    </section>
+                  )}
+                </>
+              );
+            }
+          : null
+      }
+      popover={
+        <>
           <b className="leghead">{t('leg.pt.h')}</b>
           {toggles('pt')}
           <b className="leghead" style={{ marginTop: 6 }}>
@@ -199,26 +201,21 @@ export default function MapPanel({
             </>
           )}
           <p className="note">{t('map.attrib')}</p>
-        </div>
-      )}
-
-      <div className="mapzoom">
-        <button onClick={() => zoomStep(1.35)} aria-label={t('map.zin')}>
-          +
-        </button>
-        <button onClick={() => zoomStep(1 / 1.35)} aria-label={t('map.zout')}>
-          −
-        </button>
-        <button onClick={reset} aria-label={t('map.zreset')}>
-          ⌂
-        </button>
-      </div>
-
-      <div className="maplegend mapbot">
-        <b className="leghead">{t('leg.bike.h')}</b>
-        {toggles('bike')}
-      </div>
-    </div>
+        </>
+      }
+    >
+      <AdvancedLayers
+        map={data.map}
+        kind={kind}
+        t={t}
+        weekday={weekday}
+        hour={hour}
+        layers={layers}
+        stations={scenario?.stations}
+        period={period}
+        dropKey={dropKey}
+      />
+    </MapFrame>
   );
 }
 
