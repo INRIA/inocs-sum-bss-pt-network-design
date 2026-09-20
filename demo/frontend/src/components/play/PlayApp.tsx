@@ -65,8 +65,11 @@ export default function PlayApp({
     [play],
   );
 
-  const { session, actions } = useGameSession(store, env);
-  useHashStep(session.step, actions.go);
+  const { session, actions, hydrated } = useGameSession(store, env);
+  // The hash is resolved only once the stored session is back: before that the
+  // session is still EMPTY, and a deep link past Budget would be refused by its
+  // own guard and rewritten to the entry step.
+  useHashStep(session.step, actions.go, hydrated);
   const { viewport } = useViewport();
 
   // The exact engine: one worker for the page's whole life. Created after
@@ -86,12 +89,17 @@ export default function PlayApp({
   // The fallback needs the full payload (paths and arcs included), so it is
   // fetched — never shipped as island props (plan-technical §C.5).
   const [fallback, setFallback] = useState<EstimateEvaluator | null>(null);
+  // The same payload feeds the run animation: only a solved path catalogue can
+  // say where a trip goes (`runSprites.ts`), so it is kept, not just wrapped.
+  const [engine, setEngine] = useState<EngineData | null>(null);
   useEffect(() => {
     if (!play.available) return;
     let alive = true;
     loadGameData(fetchGameFile(base))
       .then((engineData: EngineData) => {
-        if (alive) setFallback(new EstimateEvaluator(engineData));
+        if (!alive) return;
+        setEngine(engineData);
+        setFallback(new EstimateEvaluator(engineData));
       })
       .catch(() => {
         // No fallback is a legitimate state: `useEvaluation` then reports the
@@ -113,11 +121,13 @@ export default function PlayApp({
     play,
     data,
     evaluation,
+    engine,
     references,
     controls,
     unitPx,
     t,
     lang,
+    baseUrl: base,
   });
 
   const back = prevStep(session.step);

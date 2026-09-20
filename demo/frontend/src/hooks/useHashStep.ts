@@ -17,8 +17,12 @@ export type GoToStep = (step: GameStep) => StepGuard;
 /**
  * @param step the step the session is on; written to the hash when it changes.
  * @param go   the session's guarded navigation; its guard decides the fallback.
+ * @param ready false until the stored session has been restored. The session renders EMPTY first
+ *             and is restored in an effect after mount; resolving the hash against that empty
+ *             session would walk the visitor back to the entry step and persist the demotion, so
+ *             neither direction runs before `ready`.
  */
-export function useHashStep(step: GameStep, go: GoToStep): void {
+export function useHashStep(step: GameStep, go: GoToStep, ready = true): void {
   const goRef = useRef(go);
   goRef.current = go;
   const stepRef = useRef(step);
@@ -26,7 +30,7 @@ export function useHashStep(step: GameStep, go: GoToStep): void {
 
   // hash -> session, on mount and on every back/forward.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !ready) return;
     const apply = (): void => {
       const requested = parseStepHash(window.location.hash);
       if (!requested) {
@@ -46,13 +50,13 @@ export function useHashStep(step: GameStep, go: GoToStep): void {
     apply();
     window.addEventListener('hashchange', apply);
     return () => window.removeEventListener('hashchange', apply);
-  }, []);
+  }, [ready]);
 
   // session -> hash. `location.hash =` pushes an entry, which is what makes
   // back and forward walk the route.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !ready) return;
     const wanted = stepHash(step);
     if (window.location.hash !== wanted) window.location.hash = wanted;
-  }, [step]);
+  }, [step, ready]);
 }
