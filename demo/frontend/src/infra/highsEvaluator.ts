@@ -190,35 +190,19 @@ export class HighsEvaluator implements Evaluator {
 }
 
 /**
- * Where `highs.wasm` is served from in the browser.
+ * Where `highs.wasm` comes from, and why nothing sets it in the browser.
  *
- * The binary is shipped as a PLAIN PUBLIC ASSET, copied by
- * `scripts/prepare-data.mjs` from `node_modules/highs/` and named after the
- * package version, rather than imported through the bundler. Two bundler routes
- * were tried and both were rejected:
+ * The `highs` glue asks for its binary through `new URL('highs.wasm', …)`,
+ * which the bundler rewrites at build time to its OWN emitted asset, already
+ * prefixed with the site base (`/<base>/assets/highs-<hash>.wasm`) and already
+ * cache-busted by that hash. So the browser passes no `wasmUrl` at all: the
+ * default resolution is correct, and the site ships ONE copy of the 3.5 MB
+ * binary instead of two (a bundled one nothing loaded, and a hand-copied
+ * public one that `locateFile` pointed at).
  *
- *   `import 'highs/build/highs.wasm?url'` — the path is not in the package's
- *       `exports` map, so the build fails outright.
- *   `import 'highs/runtime?url'`          — the build SUCCEEDS but emits no
- *       asset at all, which would leave `locateFile` returning `undefined` and
- *       the solver failing only in the browser. A silent failure is worse than
- *       a loud one.
- *
- * A public asset resolves under the GitHub Pages project path like every other
- * data file, is visible in `dist/` after `npm run build`, and carries the
- * solver version in its name so a package bump busts the cache.
- *
- * In node this is never called: `loadHighs()` finds `highs.wasm` beside its own
- * module.
- *
- * @param baseUrl      `import.meta.env.BASE_URL`.
- * @param solverPath   `manifest.game.solver.path`, e.g.
- *                     `game/solver/highs-1.15.3.wasm`.
+ * `wasmUrl` remains an option for callers with no bundler — node, and the
+ * tests, which hand it the path inside `node_modules/highs/`.
  */
-export function solverWasmUrl(baseUrl: string, solverPath: string): string {
-  const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-  return `${base}data/${solverPath}`;
-}
 
 /**
  * The main-thread side of `evaluator.worker.ts`.

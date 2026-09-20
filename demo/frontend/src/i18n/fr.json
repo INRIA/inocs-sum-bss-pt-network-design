@@ -166,7 +166,7 @@
   "s5.per.0": "matin",
   "s5.per.1": "midi",
   "s5.per.2": "soir",
-  "s5.q1.concl": "De {b1} à {b2}, la demande servie passe de {p1} à {p2}. Les {b3} suivants n'ajoutent que {pts} points. Chaque trajet servi quotidien coûte {c1} d'investissement, puis {c2}, puis {c3}.",
+  "s5.q1.concl": "De {b1} à {b2}, la demande servie passe de {p1} à {p2}. Les {b3} suivants n'ajoutent que {pts} points. Chaque trajet servi quotidien coûte {c1} d'investissement, puis {c2}, puis {c3}. Une partie de cet aplatissement est une limite de modélisation : une station ne peut pas dépasser 30 bornes, ce qui bloque environ 72 trajets quel que soit le budget.",
   "s5.q2.concl": "À {b1} le système est pour l'essentiel « vélo seul » : {s1} des trajets servis touchent les transports publics. À {b2}, ils sont {s2}. La bascule se situe quelque part entre les deux.",
   "s5.q1.alt": "Part de la demande potentielle servie, en fonction du budget d'investissement",
   "s5.q1.axis": "Trajets servis, en % de la demande potentielle, selon l'investissement",
@@ -375,7 +375,7 @@
   "play.build.stations": "stations",
   "play.build.onstations": "dépensés en stations",
   "play.build.leftfor": "restent pour les bornes et les vélos",
-  "play.build.lowwarn": "Il reste peu pour les bornes et les vélos : plus de stations, c'est des stations plus vides.",
+  "play.build.lowwarn": "Beaucoup de stations, peu de vélos : chaque station n'aurait qu'environ {each}.",
   "play.build.overwarn": "Ce plan coûte plus que le budget. Retirez une station ou deux.",
   "play.build.reach": "des {total} trajets du jour sont à portée ({pct})",
   "play.build.reachnote": "À portée n'est pas desservi : on compte les trajets qui ont une station aux deux bouts, avant d'acheter le moindre vélo.",
@@ -549,5 +549,14 @@
   "play.conclusions.again": "Rejouer",
   "play.deeper.open": "Aller plus loin",
   "play.deeper.cap": "Le modèle ne met jamais plus de 30 bornes à une station, ce qui explique en partie l'aplatissement de la courbe au-delà de 80 000 €.",
-  "play.deeper.weekend": "Aucun calcul ne contient de demande de week-end : le jeu ne dit donc jamais dimanche, il dit un rythme plus lent."
+  "play.deeper.weekend": "Aucun calcul ne contient de demande de week-end : le jeu ne dit donc jamais dimanche, il dit un rythme plus lent.",
+  "play.build.peekleft": "restants",
+  "play.build.peekreach": "à portée",
+  "play.build.reachcap": "Votre réseau ne peut pas servir plus de trajets qu'il n'en atteint.",
+  "play.build.assistpreview": "Porterait la portée à {pct}.",
+  "play.compare.ptShare": "Part avec tram ou bus",
+  "play.compare.rushGap": "Milieu de journée moins heures de pointe",
+  "play.compare.plateau": "Au-delà de 100 000 €, le budget n'est plus la contrainte : les nombres de bornes ne sont pas comparables, comparez les trajets servis.",
+  "play.marks.trucks": "Les trois repères lisent la même journée, exploitée avec les camions de service.",
+  "play.scale.aria": "Taille du texte"
 }

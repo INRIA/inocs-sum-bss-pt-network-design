@@ -4,7 +4,7 @@ import type { CompareRow } from '../../../domain/game/results';
 import type { PredictionQuestion } from '../../../domain/game/predictions';
 import type { BudgetId } from '../../../domain/game/session';
 import { LadderChart, type LadderPoint } from '../../Charts';
-import { fmtEur, fmtInt, fmtPct } from '../../../lib/format';
+import { fmtEur, fmtInt, fmtNum, fmtPct } from '../../../lib/format';
 import type { T } from '../../../lib/i18n';
 import type { Lang } from '../../../lib/types';
 import type { BudgetRung, ContributionFacts } from '../optimiserFacts';
@@ -47,11 +47,29 @@ export interface OptimiserProps {
   t: T;
 }
 
+/**
+ * Above 100 k€ the capital budget is no longer what binds (plan.md §3, known
+ * limits): the dock cap is. Docks and bikes are then not comparable between
+ * the two columns, and the footnote says so rather than leaving the reader to
+ * read a plateau as a price.
+ */
+export const PLATEAU_EUR = 100000;
+
+/** One cell of the compare table, printed the way its row asks. */
+function cell(lang: Lang, value: number | null, format: CompareRow['format']): string {
+  if (value == null) return '—';
+  if (format === 'share') return fmtPct(lang, value, 0);
+  if (format === 'points') return `${fmtNum(lang, value, 1)} pts`;
+  return fmtInt(value);
+}
+
 export default function Optimiser(props: OptimiserProps) {
   const { contribution, rows, lang, t } = props;
   const [paper, setPaper] = useState(false);
   const [chips, setChips] = useState(false);
   const answered = Boolean(props.answer);
+  const browsedEur = props.budgets.find((budget) => budget.id === props.browsing)?.eur ?? 0;
+  const plateau = Math.max(browsedEur, props.visitorBudgetEur) >= PLATEAU_EUR;
 
   const points: LadderPoint[] = props.rungs.map((rung) => ({
     id: rung.id,
@@ -100,14 +118,15 @@ export default function Optimiser(props: OptimiserProps) {
             {rows.map((row) => (
               <tr key={row.key}>
                 <td>{t(row.labelKey)}</td>
-                <td className="n">{row.you == null ? '—' : fmtInt(row.you)}</td>
-                <td className="n">{row.optimiser == null ? '—' : fmtInt(row.optimiser)}</td>
+                <td className="n">{cell(lang, row.you, row.format)}</td>
+                <td className="n">{cell(lang, row.optimiser, row.format)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <p className="note">{t('play.compare.note')}</p>
+      {plateau && <p className="note playplateau">{t('play.compare.plateau')}</p>}
       <p className="note">
         {t('play.compare.overlap', { shared: fmtInt(props.shared), mine: fmtInt(props.mine) })}
       </p>
@@ -140,7 +159,9 @@ export default function Optimiser(props: OptimiserProps) {
         {props.reveal && (
           <div className="playreveal">
             <p>{t(props.reveal.key, props.reveal.vars)}</p>
-            {props.reveal.noteKey && <p className="note">{t(props.reveal.noteKey)}</p>}
+            {props.reveal.noteKey && (
+              <p className="note">{t(props.reveal.noteKey, props.reveal.vars)}</p>
+            )}
           </div>
         )}
       </section>

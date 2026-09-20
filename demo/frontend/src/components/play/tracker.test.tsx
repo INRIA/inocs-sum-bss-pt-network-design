@@ -16,7 +16,7 @@ const t = makeT('en');
 
 const render = (session: Session, compact = false): string =>
   renderToStaticMarkup(
-    <Tracker session={session} onGo={() => {}} onBack={null} demoUrl="/base/" compact={compact} t={t} />,
+    <Tracker session={session} onGo={() => {}} onBack={null} compact={compact} t={t} />,
   );
 
 const withBudget = reduce(EMPTY_SESSION, { type: 'chooseBudget', budgetId: '080k' });
@@ -76,7 +76,7 @@ describe('Tracker', () => {
     expect(html).not.toContain('trackroute');
   });
 
-  it('always offers the off-ramps', () => {
+  it('offers Back as its only off-ramp: the full demo lives in the header', () => {
     const html = renderToStaticMarkup(
       <Tracker
         session={reduce(building, {
@@ -87,13 +87,13 @@ describe('Tracker', () => {
         })}
         onGo={() => {}}
         onBack={() => {}}
-        demoUrl="/base/"
         compact={false}
         t={t}
       />,
     );
     expect(html).toContain(t('play.nav.back'));
-    expect(html).toContain(t('play.nav.demo'));
-    expect(html).toContain('href="/base/"');
+    // the duplicate exit is gone: no second "Full demo" under the header's own
+    expect(html).not.toContain(t('play.nav.demo'));
+    expect(html).not.toContain('<a ');
   });
 });

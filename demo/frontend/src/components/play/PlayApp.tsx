@@ -32,6 +32,22 @@ import { useStepContent } from './useStepContent';
  * Nothing touches the network or a worker during the server render, and the
  * session hydrates after mount, so the first client markup matches the server's.
  */
+/** The root type scale of guided mode, and where it is remembered. */
+export type PlayScale = 'normal' | 'large';
+const SCALE_KEY = 'sum.play.scale';
+
+/**
+ * Elements that own the arrow and space keys themselves: typing, choosing in a
+ * select, dragging a slider, or moving between the map's candidate sites.
+ */
+export function ownsKeys(element: Element | null): boolean {
+  if (!element) return false;
+  const tag = element.tagName.toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return true;
+  if ((element as HTMLElement).isContentEditable) return true;
+  return element.closest('.candidates') != null;
+}
+
 export default function PlayApp({
   data,
   play,
@@ -65,6 +81,27 @@ export default function PlayApp({
     [play],
   );
 
+  // Guided / projector mode (plan-technical §B.1, last row): one root type
+  // scale, remembered per device. Storage is a convenience, never a
+  // requirement — a private window or blocked site data simply forgets it.
+  const [scale, setScale] = useState<PlayScale>('normal');
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(SCALE_KEY);
+      if (stored === 'large' || stored === 'normal') setScale(stored);
+    } catch {
+      /* no storage: the default scale stands */
+    }
+  }, []);
+  const chooseScale = (next: PlayScale): void => {
+    setScale(next);
+    try {
+      window.localStorage.setItem(SCALE_KEY, next);
+    } catch {
+      /* nothing to do: the scale still applies for this visit */
+    }
+  };
+
   const { session, actions, hydrated } = useGameSession(store, env);
   // The hash is resolved only once the stored session is back: before that the
   // session is still EMPTY, and a deep link past Budget would be refused by its
@@ -76,15 +113,13 @@ export default function PlayApp({
   // mount (there is no `Worker` on the server) and torn down with the page.
   const [worker, setWorker] = useState<WorkerEvaluator | null>(null);
   useEffect(() => {
-    if (!play.available || !play.solverPath) return;
-    const instance = createWorkerEvaluator({
-      baseUrl: base,
-      wasmUrl: new URL(`${base}data/${play.solverPath}`, window.location.href).href,
-      timeLimitSeconds: 8,
-    });
+    if (!play.available || !play.solverVersion) return;
+    // No `wasmUrl`: the bundler emits `highs.wasm` itself, base-prefixed and
+    // hashed, and the package's glue resolves it (infra/highsEvaluator.ts).
+    const instance = createWorkerEvaluator({ baseUrl: base, timeLimitSeconds: 8 });
     setWorker(instance);
     return () => instance?.dispose();
-  }, [base, play.available, play.solverPath]);
+  }, [base, play.available, play.solverVersion]);
 
   // The fallback needs the full payload (paths and arcs included), so it is
   // fetched — never shipped as island props (plan-technical §C.5).
@@ -128,12 +163,41 @@ export default function PlayApp({
     t,
     lang,
     baseUrl: base,
+    compact: viewport === 'phone' || viewport === 'tablet',
   });
 
   const back = prevStep(session.step);
 
+  // Keyboard, for a projector with no mouse: ArrowRight is the step's primary
+  // action, ArrowLeft goes back, Space is whatever the step animates. Ignored
+  // while the focus is in a control that owns those keys itself — a text
+  // field, a select, a slider, or a candidate site on the map.
+  const primary = view.primary;
+  const onSpace = view.onSpace;
+  useEffect(() => {
+    const handler = (event: KeyboardEvent): void => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      if (ownsKeys(document.activeElement)) return;
+      if (event.key === 'ArrowRight') {
+        if (!primary || primary.disabled) return;
+        event.preventDefault();
+        primary.onClick();
+      } else if (event.key === 'ArrowLeft') {
+        if (!back) return;
+        event.preventDefault();
+        actions.go(back);
+      } else if (event.key === ' ' || event.code === 'Space') {
+        if (!onSpace) return;
+        event.preventDefault();
+        onSpace();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [primary, back, actions, onSpace]);
+
   return (
-    <div className="app playapp" data-scale="normal">
+    <div className="app playapp" data-scale={scale}>
       <header className="top playtop">
         <div className="toprow">
           <span className="brand">
@@ -144,6 +208,14 @@ export default function PlayApp({
           <a className="playdemolink" href={base}>
             {t('play.nav.demo')}
           </a>
+          <span className="playscale" role="group" aria-label={t('play.scale.aria')}>
+            <button aria-pressed={scale === 'normal'} onClick={() => chooseScale('normal')}>
+              A
+            </button>
+            <button aria-pressed={scale === 'large'} onClick={() => chooseScale('large')}>
+              A+
+            </button>
+          </span>
           <span className="lang" role="group" aria-label={t('lang.aria')}>
             <button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
               EN
@@ -159,7 +231,6 @@ export default function PlayApp({
         session={session}
         onGo={(target) => actions.go(target)}
         onBack={back ? () => actions.go(back) : null}
-        demoUrl={base}
         compact={viewport === 'phone' || viewport === 'phone-landscape' || viewport === 'tablet'}
         t={t}
       />

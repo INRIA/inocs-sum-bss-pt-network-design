@@ -847,3 +847,192 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   Fix-and-polish pass (review of the 1366x768 / 390x844 shots).
+   Only rules; no new palette, no new layout system.
+   ============================================================ */
+
+/* ---------- the optimiser's network must land at once ----------
+   `StationsLayer` staggers its drop animation by 14 ms per station. That
+   reads well for a handful of stations in the full demo; for the 83 the
+   optimiser opens it means the layer takes 1.2 s to finish arriving, and
+   a visitor stepping onto step 5 sees an empty map. Inside the game the
+   stagger is dropped (the inline `animation-delay` needs `!important`). */
+/* The full demo's `drop` keyframes animate `transform: scale()`. On an SVG group positioned by a
+   `transform="translate(x,y)"` attribute that REPLACES the translation, so every station is drawn
+   at the map's origin for the length of its (staggered) animation: the optimiser's 83 stations
+   were effectively absent for about 1.6 s after each mount. The full demo is left as it is; the
+   game uses an opacity-only fade with no stagger so the network lands at once. */
+.playapp .mapcard .drop {
+  animation-name: playfade !important;
+  animation-delay: 0s !important;
+}
+@keyframes playfade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- tables inside the step card ----------
+   `.tw` scrolls horizontally, which gives a flex item an automatic minimum
+   size of 0: in the column-flex step card the "You · Optimiser" table was
+   collapsing to zero height. Tables never shrink here. */
+.playstep .tw {
+  flex: none;
+}
+.playplateau {
+  margin-top: 4px;
+}
+
+/* ---------- the three marks ----------
+   Two of the three labels wrap to two lines, so the rail needs real room
+   under it; `--tiers` is the number of extra rows `MarksLine` had to use
+   to keep near-coincident labels apart. */
+.playmarkrail {
+  margin-bottom: calc(52px + var(--tiers, 0) * 26px);
+}
+.playmark b,
+.playmark em {
+  transform: translate(calc(var(--nudge, 0) * 1px), calc(var(--tier, 0) * 26px));
+}
+.playmark i {
+  z-index: 1;
+}
+
+/* ---------- guided / projector mode (plan-technical §B.1, last row) ---------- */
+.playscale {
+  display: inline-flex;
+  flex: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.playscale button {
+  min-width: 34px;
+  min-height: 28px;
+  padding: 3px 9px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+}
+.playscale button[aria-pressed='true'] {
+  background: var(--green);
+  color: #22300a;
+}
+.playapp[data-scale='large'] .playstep h2 {
+  font-size: 22px;
+}
+.playapp[data-scale='large'] .playhero b {
+  font-size: 30px;
+}
+.playapp[data-scale='large'] .tracker {
+  padding: 4px 14px;
+}
+
+/* ---------- build: the trade-off before the choice (plan.md §2bis) ---------- */
+.playreachbar {
+  position: relative;
+  height: 8px;
+  margin: 4px 0 6px;
+  border-radius: 999px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.playreachbar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 0.25s ease;
+}
+.playreachcap {
+  margin: 0 0 8px;
+}
+.playassistpreview {
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--green-ink);
+  font-size: 13px;
+}
+
+/* ---------- build on a phone: one meter line and the chips at `peek` ---------- */
+.playpeekbar {
+  display: none;
+}
+@media (max-width: 980px) {
+  /* First in the card, so it is exactly what the `peek` area shows. NOT
+     sticky: at `peek` it would then cover the whole scroll window and put
+     everything below the fold out of reach, for a finger as much as for a
+     test. Dragging the sheet up scrolls it away and reveals the full panel. */
+  .playapp .step-build .playpeekbar {
+    display: block;
+    margin: 0 -14px 8px;
+    padding: 2px 14px 8px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .playpeekline {
+    margin: 0 0 6px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .playpeekline b {
+    color: var(--blue);
+  }
+  .playpeekchips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .playpeekchips .ghostbtn {
+    min-height: 40px;
+    padding: 6px 12px;
+  }
+  /* everything the peek line already says is repeated below, for the full sheet */
+  .playapp .step-build .playbrief {
+    display: none;
+  }
+  /* the circular map is centred in what is actually visible above the sheet */
+  .playapp .mapwrap {
+    align-items: center;
+    padding-bottom: var(--mapinset, 0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playreachbar i {
+    transition: none;
+  }
+}
+
+/* the last step's primary action is a link, not a button */
+a.playprimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.playagain {
+  margin-top: 8px;
+}
+
+/* A phone header has room for the brand, the way out and the language, and
+   nothing more; guided mode is a desktop and projector affair anyway. */
+@media (max-width: 639px) {
+  .playscale {
+    display: none;
+  }
+}
+
+/* On a phone the sheet covers the map when it is open; the map's own controls
+   must go behind it rather than float over the step's text. */
+@media (max-width: 980px) {
+  .playapp .mapzoom,
+  .playapp .layerchip {
+    z-index: 19;
+  }
+}

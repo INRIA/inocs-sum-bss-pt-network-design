@@ -22,7 +22,7 @@ import { buildTicket } from '../../domain/game/ticket';
 import { translate } from '../../lib/i18n';
 import { makeT } from '../../lib/i18n';
 import { budgetLadder, doublePair, planFacts, planOf } from './optimiserFacts';
-import { rhythmFacts, sharpMorning } from './steps/conclusionsStep';
+import { RHYTHM_SHARP, RHYTHM_SLOW, rhythmFacts, sharpMorning } from './steps/conclusionsStep';
 import { revealOf } from './reveal';
 import Conclusions from './screens/Conclusions';
 
@@ -51,7 +51,7 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     withoutTrucks: asSummary(reference.optimiserWithoutTrucks),
     trucks: true,
     optimiserDispatches: facts.dispatches,
-    rhythm: rhythmFacts(data, 80000),
+    rhythm: rhythmFacts(data),
     double: {
       lowBudgetEur: pair.low.budgetEur,
       highBudgetEur: pair.high.budgetEur,
@@ -105,7 +105,6 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
         periods={[]}
         optimiserPeriods={null}
         sharpMorning={sharpMorning(data)}
-        demoUrl="/demo/"
         onRestart={() => {}}
         lang="en"
         t={t}
@@ -115,8 +114,10 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     expect(html).toContain(t('play.ticket.yousaid'));
     expect(html).toContain(t('play.ticket.modelsays'));
     expect(html).toContain(t('play.conclusions.closing'));
-    // one primary call to action, the deeper layer collapsed
-    expect(html.split('class="cta go playcta"').length - 1).toBe(1);
+    // the one primary call to action is the shell's bar, so the card itself
+    // carries no `cta`: only the secondary "play again" and the deeper layer
+    expect(html).not.toContain('class="cta');
+    expect(html).toContain(t('play.conclusions.again'));
     expect(html).not.toContain(t('play.deeper.cap'));
     // No score, in any form. "Points" is allowed only as the unit of a
     // percentage-point gap, so every occurrence must follow a number.
@@ -149,5 +150,22 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     const rhythm = resolveAll(answers, inputs).find((entry) => entry.predictionId === 'rhythm')!;
     expect(['same', 'move']).toContain(rhythm.actual);
     expect(revealOf(rhythm, 'en').noteKey).toBe('play.reveal.rhythm.note');
+  });
+
+  it('compares the busy weekday with the SLOWER rhythm, not with the budget ladder', () => {
+    // Owner's decision: "weekday, busy day" is rhythm_sharp and "a slower,
+    // week-end-like rhythm" is rhythm_uniform. The counts are read off the
+    // committed runs, so this fails if the resolver is pointed elsewhere.
+    const sharp = data.scenarios.find((sc) => sc.id === RHYTHM_SHARP)!;
+    const slow = data.scenarios.find((sc) => sc.id === RHYTHM_SLOW)!;
+    const facts = rhythmFacts(data);
+    expect(facts.sharpStations.length).toBe(sharp.stations.length);
+    expect(facts.referenceStations.length).toBe(slow.stations.length);
+    // and NOT the reference plan of the visitor's own budget
+    const ladderPlan = data.scenarios.find((sc) => sc.id === 'budget_080k')!;
+    expect(facts.referenceStations.length).not.toBe(ladderPlan.stations.length);
+    // the sentence then quotes the slower plan's own total
+    const rhythm = resolveAll(answers, inputs).find((entry) => entry.predictionId === 'rhythm')!;
+    expect(rhythm.facts.referenceTotal).toBe(slow.stations.length);
   });
 });

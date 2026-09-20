@@ -18,19 +18,20 @@ import type { T } from '../../lib/i18n';
  *
  * On a phone the whole thing collapses to "2 of 6 · Build" over a thin bar
  * (plan-technical §B.1); tapping it opens the full route as a list.
+ *
+ * The only off-ramp here is Back: the way out to the full demo is the header's
+ * link, and one exit is enough.
  */
 export default function Tracker({
   session,
   onGo,
   onBack,
-  demoUrl,
   compact,
   t,
 }: {
   session: Session;
   onGo: (step: GameStep) => void;
   onBack: (() => void) | null;
-  demoUrl: string;
   compact: boolean;
   t: T;
 }) {
@@ -48,18 +49,16 @@ export default function Tracker({
     return { step, index, guard, state: state(index) };
   });
 
-  const offramps = (
+  // One off-ramp only. "Full demo" lives in the blue header, where it is on
+  // every step and every viewport; repeating it here cost a phone the width it
+  // needs for the route control, and gave the visitor two identical exits.
+  const offramps = onBack ? (
     <div className="playoff">
-      {onBack && (
-        <button className="playoffbtn" onClick={onBack}>
-          ← {t('play.nav.back')}
-        </button>
-      )}
-      <a className="playoffbtn" href={demoUrl}>
-        {t('play.nav.demo')}
-      </a>
+      <button className="playoffbtn" onClick={onBack}>
+        ← {t('play.nav.back')}
+      </button>
     </div>
-  );
+  ) : null;
 
   if (compact) {
     return (

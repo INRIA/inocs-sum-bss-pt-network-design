@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { HighsEvaluator, createHighsLoader, solverWasmUrl } from './highsEvaluator';
+import { HighsEvaluator, createHighsLoader } from './highsEvaluator';
 import { loadFixtureGameData, loadGolden } from './gameFixtures';
 import { buildLp } from '../domain/evaluation/lpModel';
 import { solveWith } from './highsEvaluator';
@@ -79,15 +79,6 @@ describe('HighsEvaluator', () => {
     },
     LONG,
   );
-
-  it('builds the solver URL under the site base path', () => {
-    // The GitHub Pages project page: every asset must resolve under `base`.
-    expect(
-      solverWasmUrl('/inocs-sum-bss-pt-network-design/', 'game/solver/highs-1.15.3.wasm'),
-    ).toBe('/inocs-sum-bss-pt-network-design/data/game/solver/highs-1.15.3.wasm');
-    // A base without its trailing slash must not swallow the separator.
-    expect(solverWasmUrl('/play', 'game/solver/x.wasm')).toBe('/play/data/game/solver/x.wasm');
-  });
 
   it(
     'honours an explicit wasm location through locateFile',

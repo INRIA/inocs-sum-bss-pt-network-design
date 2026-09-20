@@ -1,9 +1,10 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import MapFrame, { type MapControls } from '../map/frame/MapFrame';
-import { useBottomSheet, type Snap } from '../../lib/useBottomSheet';
+import { SNAP_HEIGHT, useBottomSheet, type Snap } from '../../lib/useBottomSheet';
 import type { GameStep } from '../../domain/game/steps';
 import type { Viewport } from '../../hooks/viewport';
 import type { T } from '../../lib/i18n';
+import { onSnapRequest } from './sheetBus';
 import type { StepView } from './stepView';
 
 /**
@@ -30,6 +31,20 @@ const SNAP: Record<GameStep, Snap> = {
   conclusions: 'full',
 };
 
+/**
+ * How much of the map the sheet hides at each snap.
+ *
+ * The circular study area is centred in what is LEFT above the sheet rather
+ * than pinned to the top of a screen-tall box, which left a phone with the map
+ * glued under the tracker and a blank band below it. At `full` the map is not
+ * visible at all, so nothing is reserved.
+ */
+const MAP_INSET: Record<Snap, string> = {
+  peek: SNAP_HEIGHT.peek,
+  half: SNAP_HEIGHT.half,
+  full: '0px',
+};
+
 export default function StepShell({
   step,
   view,
@@ -46,24 +61,50 @@ export default function StepShell({
   onUnitPx: (unitPx: number) => void;
 }) {
   const sheetRef = useRef<HTMLElement | null>(null);
+  const cardRef = useRef<HTMLElement | null>(null);
   const handleRef = useRef<HTMLDivElement | null>(null);
   const snapTo = useBottomSheet(sheetRef, handleRef);
+  const [snap, setSnap] = useState<Snap>(SNAP[step] ?? 'half');
 
-  // The per-step snap of §B.2. On a desktop the sheet CSS is inert, so setting
-  // the variable there is harmless and the rule stays in one place.
+  // The per-step snap of §B.2, overridden while a step asks for something else
+  // (Run rises to `full` when the day has finished playing). On a desktop the
+  // sheet CSS is inert, so setting the variable there is harmless.
+  const wanted = view.snap ?? SNAP[step] ?? 'half';
   useEffect(() => {
-    snapTo(SNAP[step] ?? 'half');
-  }, [step, snapTo]);
+    setSnap(wanted);
+    snapTo(wanted);
+  }, [wanted, snapTo]);
+
+  // A control inside the card may ask for room (the "Help me" chip on a phone).
+  useEffect(
+    () =>
+      onSnapRequest((requested) => {
+        setSnap(requested);
+        snapTo(requested);
+      }),
+    [snapTo],
+  );
+
+  // `.stepcard` is ONE scroll container, reused by all six steps: without this
+  // a visitor arriving on a step lands wherever the previous one was left —
+  // the conclusions opening halfway down its own ticket, for instance.
+  useEffect(() => {
+    if (cardRef.current) cardRef.current.scrollTop = 0;
+    if (sheetRef.current) sheetRef.current.scrollTop = 0;
+  }, [step]);
 
   const primary = view.primary;
 
   return (
-    <main className={`cols playcols vp-${viewport}`}>
+    <main
+      className={`cols playcols vp-${viewport}`}
+      style={{ '--mapinset': MAP_INSET[snap] } as CSSProperties}
+    >
       <section className="leftcol playsheet" ref={sheetRef}>
         <div className="sheethandle" ref={handleRef}>
           <span />
         </div>
-        <article className={`stepcard playstep step-${step}`}>
+        <article className={`stepcard playstep step-${step}`} ref={cardRef}>
           <p className="playbrief">
             <span className="playrhythm">{view.rhythm}</span>
             <span>{view.brief}</span>
@@ -72,13 +113,19 @@ export default function StepShell({
         </article>
         {primary && (
           <div className="playbar">
-            <button
-              className={`cta playprimary${primary.go ? ' go' : ''}`}
-              onClick={primary.onClick}
-              disabled={primary.disabled}
-            >
-              {primary.label}
-            </button>
+            {primary.href ? (
+              <a className={`cta playprimary${primary.go ? ' go' : ''}`} href={primary.href}>
+                {primary.label}
+              </a>
+            ) : (
+              <button
+                className={`cta playprimary${primary.go ? ' go' : ''}`}
+                onClick={primary.onClick}
+                disabled={primary.disabled}
+              >
+                {primary.label}
+              </button>
+            )}
             {primary.note && <span className="playbarnote">{primary.note}</span>}
           </div>
         )}

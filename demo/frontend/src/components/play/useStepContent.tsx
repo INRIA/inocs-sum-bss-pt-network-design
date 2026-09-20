@@ -2,7 +2,7 @@ import { useCallback, type ReactNode, type RefObject } from 'react';
 
 import { canEnter, nextStep, stepDef, type GameStep } from '../../domain/game/steps';
 import { questionsFor } from '../../domain/game/predictions';
-import { BUDGET_EUR, type Session, type SessionActions } from '../../domain/game/session';
+import { BUDGET_EUR, BUDGET_SCENARIO, type Session, type SessionActions } from '../../domain/game/session';
 import type { UseEvaluation } from '../../hooks/useEvaluation';
 import type { PlayData } from '../../lib/playData';
 import type { BudgetReference, GameData as EngineData } from '../../domain/evaluation/types';
@@ -40,6 +40,8 @@ export interface StepContentOptions {
   lang: Lang;
   /** Where the full demo lives, for the closing call to action. */
   baseUrl?: string;
+  /** Phone or tablet portrait: the panels that pin controls in the peek area. */
+  compact?: boolean;
 }
 
 /**
@@ -109,11 +111,14 @@ export function useStepContent(options: StepContentOptions): StepView {
     panel: StepView['panel'],
     primary: StepView['primary'],
     map: Partial<StepView['map']> & { stations?: ReactNode } = {},
+    extra: Pick<StepView, 'snap' | 'onSpace'> = {},
   ): StepView => ({
     brief: t(`play.brief.${step}`),
     rhythm: t(stepDef(step).rhythmKey),
     panel,
     primary,
+    snap: extra.snap,
+    onSpace: extra.onSpace,
     map: {
       children: (
         <>
@@ -124,6 +129,15 @@ export function useStepContent(options: StepContentOptions): StepView {
       ),
       top,
       bottom: map.bottom ?? bottom,
+      // Under 980 px the two legend bars are hidden and the "Layers" chip is
+      // the only way to reach them, so the same items go in its popover —
+      // otherwise a phone can see the layers but never switch one off.
+      popover: (
+        <>
+          {top}
+          {map.bottom ?? bottom}
+        </>
+      ),
       overlay: map.overlay,
       onTap: map.onTap,
       doubleTapZoom: map.doubleTapZoom,
@@ -163,7 +177,16 @@ export function useStepContent(options: StepContentOptions): StepView {
       );
 
     case 'build': {
-      const parts = buildStep({ session, actions, play, scene, periodName, t, lang });
+      const parts = buildStep({
+        session,
+        actions,
+        play,
+        scene,
+        periodName,
+        compact: options.compact ?? false,
+        t,
+        lang,
+      });
       return view(
         parts.panel,
         {
@@ -174,6 +197,7 @@ export function useStepContent(options: StepContentOptions): StepView {
           go: true,
         },
         parts.map,
+        { onSpace: scene.togglePlay },
       );
     }
 
@@ -195,13 +219,23 @@ export function useStepContent(options: StepContentOptions): StepView {
 
     case 'run': {
       const parts = runStep({ session, actions, evaluation, scene, reference, t, lang });
-      return view(parts.panel, {
-        label: t('play.run.cta'),
-        onClick: advance,
-        disabled: !canEnter('optimiser', session).ok,
-        note: nextGuard('optimiser'),
-        go: true,
-      }, parts.map);
+      // §B.2: the sheet peeks while the day plays, then rises by itself so the
+      // results are read without a drag. Under reduced motion nothing animates,
+      // so `playing` is never true and the rise is immediate; coming back to a
+      // step that already has results skips the peek too.
+      const hasResults = Boolean(session.evaluation);
+      return view(
+        parts.panel,
+        {
+          label: t('play.run.cta'),
+          onClick: advance,
+          disabled: !canEnter('optimiser', session).ok,
+          note: nextGuard('optimiser'),
+          go: true,
+        },
+        parts.map,
+        { snap: hasResults && !scene.run.playing ? 'full' : 'peek', onSpace: scene.run.replay },
+      );
     }
 
     case 'optimiser': {
@@ -227,24 +261,34 @@ export function useStepContent(options: StepContentOptions): StepView {
 
     case 'conclusions':
     default: {
+      const base = options.baseUrl ?? '/';
       const parts = conclusionsStep({
         session,
         actions,
         scene,
         data,
         reference,
-        baseUrl: options.baseUrl ?? '/',
         t,
         lang,
       });
-      return view(parts.panel, {
-        label: t('play.conclusions.cta'),
-        onClick: () => {
-          actions.restart();
-          go('entry');
+      // The ONE primary action of the last step is the way on, into the full
+      // demo at the plan the visitor played. "Play again" stays in the card as
+      // the secondary, ghost action.
+      const planLink = session.budgetId
+        ? `${base}?step=4&plan=${encodeURIComponent(BUDGET_SCENARIO[session.budgetId])}`
+        : base;
+      return view(
+        parts.panel,
+        {
+          label: t('play.conclusions.explore'),
+          href: planLink,
+          onClick: () => {
+            window.location.href = planLink;
+          },
+          go: true,
         },
-        go: true,
-      }, parts.map);
+        parts.map,
+      );
     }
   }
 }

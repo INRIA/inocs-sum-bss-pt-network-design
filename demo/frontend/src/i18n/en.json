@@ -166,7 +166,7 @@
   "s5.per.0": "morning",
   "s5.per.1": "midday",
   "s5.per.2": "evening",
-  "s5.q1.concl": "From {b1} to {b2}, served demand jumps from {p1} to {p2}. The next {b3} adds {pts} points. Each daily served trip costs {c1}, then {c2}, then {c3} of investment.",
+  "s5.q1.concl": "From {b1} to {b2}, served demand jumps from {p1} to {p2}. The next {b3} adds {pts} points. Each daily served trip costs {c1}, then {c2}, then {c3} of investment. Part of this flattening is a modelling limit: a station holds at most 30 docks, which blocks about 72 trips at any budget.",
   "s5.q2.concl": "At {b1} the system is essentially bike-only: {s1} of served trips touch public transport. At {b2}, {s2} do. The flip happens somewhere between.",
   "s5.q1.alt": "Share of potential demand served, against the investment budget",
   "s5.q1.axis": "Trips served, % of potential demand, against investment",
@@ -375,7 +375,7 @@
   "play.build.stations": "stations",
   "play.build.onstations": "spent on stations",
   "play.build.leftfor": "left for docks and bikes",
-  "play.build.lowwarn": "Little is left for docks and bikes: more stations now means emptier ones.",
+  "play.build.lowwarn": "Many stations, few bikes: each station would get only about {each}.",
   "play.build.overwarn": "This layout costs more than the budget. Remove a station or two.",
   "play.build.reach": "of {total} trips a day are within reach ({pct})",
   "play.build.reachnote": "Within reach is not served: it counts trips that have a station at both ends, before any bike is bought.",
@@ -549,5 +549,14 @@
   "play.conclusions.again": "Play again",
   "play.deeper.open": "Go deeper",
   "play.deeper.cap": "The model never puts more than 30 docks at one station, which is part of why the curve flattens above 80 000 €.",
-  "play.deeper.weekend": "No run contains week-end demand, so the game never says Sunday: it says a slower rhythm."
+  "play.deeper.weekend": "No run contains week-end demand, so the game never says Sunday: it says a slower rhythm.",
+  "play.build.peekleft": "left",
+  "play.build.peekreach": "within reach",
+  "play.build.reachcap": "Your network cannot serve more trips than it can reach.",
+  "play.build.assistpreview": "Would bring reach to {pct}.",
+  "play.compare.ptShare": "Share using a tram or bus",
+  "play.compare.rushGap": "Midday minus rush hours",
+  "play.compare.plateau": "Above 100 000 € the budget is no longer the limit, so dock counts are not comparable: compare trips served.",
+  "play.marks.trucks": "All three marks read the same day, operated with service trucks.",
+  "play.scale.aria": "Text size"
 }

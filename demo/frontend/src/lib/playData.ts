@@ -88,7 +88,8 @@ export interface PlayData {
   /** The projection's own bounds, so the client can rebuild the same Project. */
   bounds: Bounds;
   /** `data/<path>` of the HiGHS binary, or null when it was not shipped. */
-  solverPath: string | null;
+  /** The HiGHS version the build carries, from the manifest. Null = no solver installed. */
+  solverVersion: string | null;
   warnings: string[];
 }
 
@@ -130,7 +131,7 @@ export function loadPlayData(): PlayData {
       demandByPeriod: [],
       references: [],
       bounds,
-      solverPath: null,
+      solverVersion: null,
       warnings,
     };
     return cached;
@@ -160,8 +161,8 @@ export function loadPlayData(): PlayData {
 
   const manifestPath = join(DATA, 'manifest.json');
   const manifest = existsSync(manifestPath) ? read(manifestPath) : {};
-  const solverPath: string | null = manifest?.game?.solver?.path ?? null;
-  if (!solverPath) {
+  const solverVersion: string | null = manifest?.game?.solver?.version ?? null;
+  if (!solverVersion) {
     warnings.push('no HiGHS binary in the manifest — the game will fall back to its estimate engine');
   }
 
@@ -178,7 +179,7 @@ export function loadPlayData(): PlayData {
     demandByPeriod,
     references: [...decodeReferences(read(join(GAME, 'references.json'))).byBudget.values()],
     bounds,
-    solverPath,
+    solverVersion,
     warnings,
   };
   return cached;

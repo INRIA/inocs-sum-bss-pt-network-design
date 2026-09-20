@@ -15,7 +15,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GameData as EngineData } from '../../domain/evaluation/types';
 import type { Session, SessionActions } from '../../domain/game/session';
 import type { GameStep } from '../../domain/game/steps';
-import { rowIsReachable } from '../../domain/placement/reach';
+import { assistantOrder } from '../../domain/placement/assistant';
+import { reachFlow, rowIsReachable } from '../../domain/placement/reach';
 import { demandSprites, type Project } from '../../domain/trips/sprites';
 import { useDayPlayback } from '../../hooks/useDayPlayback';
 import type { UseEvaluation } from '../../hooks/useEvaluation';
@@ -75,6 +76,13 @@ export interface PlayScene {
   readonly free: readonly FreeCandidate[];
   readonly pulse: readonly TripSprite[];
   readonly run: RunScene;
+  /**
+   * The share of the day's demand the layout would reach if the assistant
+   * added its next `n` stations. The Build panel shows it BEFORE the visitor
+   * commits, which is the whole point of a trade-off (plan.md §2bis); it is
+   * computed with the domain's own rule and reach function, never estimated.
+   */
+  previewAssistShare(n: number): number;
 }
 
 export interface PlaySceneOptions {
@@ -211,6 +219,25 @@ export function usePlayScene(options: PlaySceneOptions): PlayScene {
     [play.candidates, placedIds],
   );
 
+  // Memoised per (layout, n): dragging the slider must not re-run the greedy
+  // rule for a value it has already answered.
+  const previewCache = useRef(new Map<string, number>());
+  const layoutKey = useMemo(() => [...placedIds].sort((a, b) => a - b).join(','), [placedIds]);
+  const previewAssistShare = useCallback(
+    (n: number): number => {
+      const rows = play.coverage?.reach;
+      if (!rows || rows.length === 0 || play.demandTotal <= 0) return 0;
+      const key = `${layoutKey}|${n}`;
+      const cached = previewCache.current.get(key);
+      if (cached != null) return cached;
+      const extra = assistantOrder(rows, play.candidates.length, Math.max(0, n), placedIds);
+      const share = reachFlow(rows, [...placedIds, ...extra]) / play.demandTotal;
+      previewCache.current.set(key, share);
+      return share;
+    },
+    [play.coverage, play.candidates.length, play.demandTotal, layoutKey, placedIds],
+  );
+
   const run = useRunScene({
     step,
     evaluation,
@@ -235,6 +262,7 @@ export function usePlayScene(options: PlaySceneOptions): PlayScene {
     free,
     pulse,
     run,
+    previewAssistShare,
   };
 }
 
@@ -288,6 +316,10 @@ function useRunScene(input: {
     if (armed.current === token) return undefined;
     armed.current = token;
     if (input.reduced) return undefined;
+    // `playing` goes up NOW, not when the sprites start 320 ms later: the
+    // phone's sheet reads this flag to decide whether to stay out of the way,
+    // and a gap here made it rise and drop again before the day even began.
+    setPlaying(true);
     const timer = setTimeout(start, SHEET_SETTLE_MS);
     return () => clearTimeout(timer);
   }, [input.step, current, sprites.length, input.reduced, start]);

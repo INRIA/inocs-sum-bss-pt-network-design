@@ -23,6 +23,8 @@ export interface BuildStepInput {
   readonly play: PlayData;
   readonly scene: PlayScene;
   readonly periodName: string;
+  /** Phone or tablet portrait: the panel pins its meter line and chips at the top. */
+  readonly compact: boolean;
   readonly t: T;
   readonly lang: Lang;
 }
@@ -40,6 +42,9 @@ export function buildStep(input: BuildStepInput): StepParts {
         byAssistant={session.placed.filter((s) => s.by === 'assistant').length}
         canUndo={session.history.length > 0}
         roomLeft={scene.placement.budgetMeter.roomLeft}
+        freeLeft={scene.free.length}
+        previewReach={scene.previewAssistShare}
+        compact={input.compact}
         lastTap={scene.placement.lastTap}
         playing={scene.playing}
         periodName={input.periodName}

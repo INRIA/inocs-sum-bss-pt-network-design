@@ -20,9 +20,11 @@ import { FullTicket, PredictionRow } from '../Ticket';
  * site cannot show. The rhythm question keeps its caveat, and the rush
  * question — which has no card in the full demo — gets its own small proof.
  *
- * One primary call to action, a "play again" beside it, and everything else
- * collapsed under "go deeper" (UX reference §8: the closure layer never sits
- * on the main path).
+ * The ONE primary action — "Explore the full demo", deep-linked to the plan
+ * that was played — is the shell's own primary bar, so this screen carries
+ * only the secondary "play again", the collapsed "go deeper" layer (UX
+ * reference §8: the closure layer never sits on the main path) and the closing
+ * frame sentence, which sits last, directly above that action.
  */
 export interface ConclusionsProps {
   ticket: TicketModel;
@@ -33,7 +35,6 @@ export interface ConclusionsProps {
   optimiserPeriods: readonly PeriodRow[] | null;
   /** The morning served rate of the sharp-peak run, the rush proof's third figure. */
   sharpMorning: number | null;
-  demoUrl: string;
   onRestart: () => void;
   lang: Lang;
   t: T;
@@ -48,7 +49,6 @@ export default function Conclusions(props: ConclusionsProps) {
     setOpen((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]));
 
   const answered = ticket.predictions.filter((resolution) => resolution.chosen != null);
-  const planLink = `${props.demoUrl}?step=4&plan=${encodeURIComponent(ticket.scenario)}`;
 
   return (
     <>
@@ -96,12 +96,7 @@ export default function Conclusions(props: ConclusionsProps) {
         );
       })}
 
-      <p className="playclosing">{t('play.conclusions.closing')}</p>
-
-      <a className="cta go playcta" href={planLink}>
-        {t('play.conclusions.explore')}
-      </a>
-      <button className="ghostbtn" onClick={props.onRestart}>
+      <button className="ghostbtn playagain" onClick={props.onRestart}>
         {t('play.conclusions.again')}
       </button>
 
@@ -119,6 +114,10 @@ export default function Conclusions(props: ConclusionsProps) {
           </div>
         )}
       </div>
+
+      {/* The frame closes right above the one action that carries it on: the
+          shell's primary bar, which opens the full demo at this plan. */}
+      <p className="playclosing">{t('play.conclusions.closing')}</p>
     </>
   );
 }

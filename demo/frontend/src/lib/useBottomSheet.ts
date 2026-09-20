@@ -9,7 +9,9 @@ import { useCallback, useEffect, useRef, type RefObject } from 'react';
  */
 export type Snap = 'peek' | 'half' | 'full';
 
-const CSS: Record<Snap, string> = { peek: '184px', half: '52vh', full: '90vh' };
+/** The sheet's height at each snap. Exported: the map reserves room under it. */
+export const SNAP_HEIGHT: Record<Snap, string> = { peek: '184px', half: '52vh', full: '90vh' };
+const CSS = SNAP_HEIGHT;
 
 export const isMobile = () => typeof window !== 'undefined' && window.matchMedia('(max-width:980px)').matches;
 

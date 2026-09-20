@@ -34,7 +34,7 @@
  *    front-end's vitest suite, never over HTTP. A missing game folder is a WARNING, not a
  *    failure: nothing else on the site depends on it.
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync, statSync, copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -63,12 +63,13 @@ const TOP_STOPS = 40;
 const GAME_SRC = join(EXP, 'results/shared/game');
 const GAME_SKIP_DIRS = ['golden'];
 /**
- * The HiGHS WebAssembly binary the game's engine solves with. It is copied here as a plain
- * public asset instead of being imported through the bundler: `highs/build/highs.wasm?url`
- * is not in the package's `exports` map (the build fails) and `highs/runtime?url` builds but
- * emits no asset at all, which would fail silently in the browser only. The file is named
- * after the installed package version, so upgrading `highs` busts the cache, and the path is
- * recorded in the manifest rather than hard-coded in the front-end.
+ * The HiGHS WebAssembly binary the game's engine solves with is NOT copied here.
+ *
+ * The bundler emits it once, from the `new URL('highs.wasm', …)` inside the package's own
+ * glue, as `assets/highs-<hash>.wasm` already prefixed with the site base. Copying a second
+ * copy into `public/data/` and pointing `locateFile` at it shipped the same 3.5 MB twice.
+ * This step now only READS the package to record its version in the manifest, so an operator
+ * can see which solver a build carries and a missing install is still a loud warning.
  */
 const HIGHS_DIR = resolve(ROOT, 'node_modules/highs');
 
@@ -414,11 +415,8 @@ if (game.available) {
         'Run `npm install` in demo/frontend.'
     );
   } else {
-    const version = String(readJSON(meta).version ?? '0');
-    const rel = `game/solver/highs-${version}.wasm`;
-    mkdirSync(dirname(join(OUT, rel)), { recursive: true });
-    copyFileSync(wasm, join(OUT, rel));
-    game.solver = { path: rel, version, bytes: statSync(join(OUT, rel)).size };
+    // Recorded, not copied: the bundler emits the binary itself (see the note on HIGHS_DIR).
+    game.solver = { version: String(readJSON(meta).version ?? '0'), bytes: statSync(wasm).size, bundled: true };
   }
 }
 

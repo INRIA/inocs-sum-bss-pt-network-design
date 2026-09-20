@@ -85,8 +85,9 @@ export function FullTicket({
           </li>
         )}
       </ul>
-      <MarksLine marks={ticket.marks} lang={lang} t={t} />
       <p className="note">{t('play.marks.note')}</p>
+      <p className="note">{t('play.marks.trucks')}</p>
+      <MarksLine marks={ticket.marks} lang={lang} t={t} />
     </section>
   );
 }
@@ -120,7 +121,7 @@ export function PredictionRow({
         <b>{t('play.ticket.modelsays')}</b> {t(reveal.key, reveal.vars)}
       </p>
       <p className="note playtone">{t(reveal.toneKey)}</p>
-      {reveal.noteKey && <p className="note">{t(reveal.noteKey)}</p>}
+      {reveal.noteKey && <p className="note">{t(reveal.noteKey, reveal.vars)}</p>}
       {children}
     </article>
   );

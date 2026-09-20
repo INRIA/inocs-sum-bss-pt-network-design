@@ -359,3 +359,184 @@ test.describe('play: full demo still works', () => {
     await expect(playLink).toHaveCount(1);
   });
 });
+
+/**
+ * Walk a fresh session all the way to step 5 on the Reference (80 k€) plan.
+ *
+ * The 80 k€ run is the one the review looked at, and the one whose plan the
+ * optimiser step must draw: 83 stations, against 33 at 20 k€. The solve is the
+ * slow part, so the whole walk is done once per test that needs it.
+ */
+async function toOptimiser(page: Page, options: { trucksOff?: boolean } = {}) {
+  await page.goto(PLAY);
+  await page.getByRole('button', { name: 'Take the job' }).click();
+  await page
+    .locator('.scard', { hasText: 'Reference' })
+    .getByRole('button', { name: 'Choose this budget' })
+    .click();
+  await page.getByRole('button', { name: 'Go and place the stations' }).click();
+  await expect(page.locator('.step-build')).toBeVisible();
+  await page.waitForTimeout(350);
+  await page.getByRole('button', { name: 'Place them for me' }).click();
+  await expect(placedCountFromMeter(page)).not.toHaveText('0');
+  await page.getByRole('button', { name: 'I am done placing' }).click();
+  await expect(page.locator('.step-predict')).toBeVisible();
+  const questions = page.locator('.playoption');
+  for (let i = 0; i < 5; i += 1) {
+    await expect(questions.first()).toBeVisible();
+    await questions.first().click();
+    await page.waitForTimeout(50);
+  }
+  await page.getByRole('button', { name: 'Run a day on my network' }).click();
+  await expect(page.locator('.step-run')).toBeVisible();
+  await expect(page.locator('.playhero b').first()).toBeVisible({ timeout: 40_000 });
+  // Read on the run step, with the trucks ON: what the ticket must still show.
+  const optimiserMark = await page.locator('.playmark-optimiser em').innerText();
+  if (options.trucksOff) {
+    await page.getByRole('button', { name: 'Without', exact: true }).click();
+    await page.waitForTimeout(200);
+  }
+  await page
+    .getByRole('button', { name: "See the optimiser’s network" })
+    .or(page.getByRole('button', { name: "See the optimiser's network" }))
+    .click();
+  await expect(page.locator('.step-optimiser')).toBeVisible();
+  // The layer is drawn with a staggered fade; give it its animation.
+  await page.waitForTimeout(700);
+  return { optimiserMark };
+}
+
+/** The optimiser's own stations on the map: one `g.drop` per station it opens. */
+function planStations(page: Page) {
+  return page.locator('.mapcard g.drop');
+}
+
+test.describe('play: the optimiser step draws the optimiser', () => {
+  test('k. the plan is on the map, follows the budget chips, and both layers toggle', async ({
+    page,
+  }) => {
+    await toOptimiser(page);
+
+    // The whole plan of the 80 k€ run is drawn, not a handful of it.
+    await expect(planStations(page)).toHaveCount(83);
+    // The visitor's own sites are kept underneath, in grey.
+    const ghosts = page.locator('.mapcard g[opacity="0.6"]');
+    await expect(ghosts).toHaveCount(1);
+
+    // The compare table: five rows at least, each with two numeric columns.
+    const rows = page.locator('.playcompare tbody tr');
+    expect(await rows.count()).toBeGreaterThanOrEqual(5);
+    await expect(page.locator('.playcompare tbody tr td.n')).toHaveCount((await rows.count()) * 2);
+    // It is actually laid out, not collapsed to nothing by a flex rule.
+    const tableBox = await page.locator('.playcompare').boundingBox();
+    expect(tableBox!.height).toBeGreaterThan(60);
+    // It leads with the sizing and only then with the trips.
+    const order = await page.locator('.playcompare tbody tr td:first-child').allInnerTexts();
+    expect(order.slice(0, 5)).toEqual([
+      'Stations',
+      'Docks',
+      'Bikes',
+      'Truck runs a day',
+      'Trips served',
+    ]);
+
+    // Answering the poll reveals the budget chips; no unfilled placeholder in
+    // the reveal it prints.
+    await page.locator('.playpoll .playoption').first().click();
+    expect(await page.locator('.playstep').innerText()).not.toMatch(/[{}]/);
+    await page.getByRole('button', { name: 'See the network with a different budget' }).click();
+    await page.getByRole('button', { name: /Starter/ }).click();
+    await page.waitForTimeout(700);
+    await expect(planStations(page)).toHaveCount(33);
+
+    // Both bike legend items are toggles, and each hides its own layer. Under
+    // 980 px the legend bars are hidden and the "Layers" chip carries them.
+    const chip = page.getByRole('button', { name: 'Layers' });
+    if (await chip.isVisible()) await chip.click();
+    const planItem = page.getByRole('button', { name: "Optimiser's stations" });
+    const ghostItem = page.getByRole('button', { name: 'Your placed stations' });
+    await planItem.click();
+    await expect(planStations(page)).toHaveCount(0);
+    await expect(ghosts).toHaveCount(1);
+    await planItem.click();
+    await page.waitForTimeout(700);
+    await expect(planStations(page)).toHaveCount(33);
+    await ghostItem.click();
+    await expect(ghosts).toHaveCount(0);
+    await expect(planStations(page)).toHaveCount(33);
+  });
+
+  test('l. the conclusions step fills every placeholder and offers one way on', async ({ page }) => {
+    // Leave the trucks switch OFF on the way through: the ticket must still be
+    // read on ONE evaluation, the with-trucks one, and say so.
+    const { optimiserMark: withTrucksMark } = await toOptimiser(page, { trucksOff: true });
+    await page.locator('.playpoll .playoption').first().click();
+    await page.getByRole('button', { name: 'See what this all says' }).click();
+    await expect(page.locator('.step-conclusions')).toBeVisible();
+    expect(await page.locator('.playstep').innerText()).not.toMatch(/[{}]/);
+
+    // The step opens at the top of its own card, not where the last one was left.
+    expect(await page.locator('.playstep').evaluate((el) => el.scrollTop)).toBe(0);
+
+    // The ticket's three marks read the with-trucks day, whatever the switch
+    // was left on, and one line says so.
+    await expect(page.locator('.playmark')).toHaveCount(3);
+    await expect(page.locator('.playmark-optimiser em')).toHaveText(withTrucksMark);
+    await expect(
+      page.getByText('All three marks read the same day, operated with service trucks.'),
+    ).toBeVisible();
+
+    // One primary action, and it leads into the full demo at the plan played.
+    const primary = page.locator('.playbar .playprimary');
+    await expect(primary).toHaveCount(1);
+    await expect(primary).toHaveText('Explore the full demo');
+    await expect(primary).toHaveAttribute('href', /plan=budget_080k/);
+    // "Play again" is still there, as the secondary action.
+    await expect(page.getByRole('button', { name: 'Play again' })).toBeVisible();
+  });
+});
+
+test.describe('play: phone run sheet', () => {
+  test('m. the results rise into view by themselves after the day has run', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'phone', 'phone-only checks');
+    await toBuild(page);
+    await page.getByRole('button', { name: 'Place them for me' }).click();
+    await expect(placedCountFromMeter(page)).not.toHaveText('0');
+    await page.getByRole('button', { name: 'I am done placing' }).click();
+    const questions = page.locator('.playoption');
+    for (let i = 0; i < 5; i += 1) {
+      await expect(questions.first()).toBeVisible();
+      await questions.first().click();
+      await page.waitForTimeout(50);
+    }
+
+    const entered = Date.now();
+    await page.getByRole('button', { name: 'Run a day on my network' }).click();
+    await expect(page.locator('.step-run')).toBeVisible();
+
+    // Within 9 s of entering the step the hero number must be inside the
+    // viewport: the sheet rises on its own when the day has finished playing.
+    // "Inside the viewport" is not enough on its own — an element clipped by
+    // the sheet's own scroll box can still report a box on screen — so the
+    // sheet must also have grown past its `peek` height.
+    const hero = page.locator('.playhero b').first();
+    const sheet = page.locator('.playsheet');
+    const viewport = page.viewportSize()!;
+    let inside = false;
+    while (Date.now() - entered < 9000) {
+      const sheetBox = await sheet.boundingBox();
+      if ((await hero.count()) > 0 && sheetBox && sheetBox.height > viewport.height * 0.6) {
+        const box = await hero.boundingBox();
+        if (box && box.y >= 0 && box.y + box.height <= viewport.height) {
+          inside = true;
+          break;
+        }
+      }
+      await page.waitForTimeout(200);
+    }
+    testInfo.annotations.push({ type: 'rose-after-ms', description: String(Date.now() - entered) });
+    expect(inside, 'the hero number is inside the viewport within 9 s').toBe(true);
+  });
+});

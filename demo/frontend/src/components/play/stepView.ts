@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { FrameSlot } from '../map/frame/MapFrame';
+import type { Snap } from '../../lib/useBottomSheet';
 
 /**
  * What one step asks the shell to show.
@@ -13,6 +14,12 @@ import type { FrameSlot } from '../map/frame/MapFrame';
 export interface PrimaryAction {
   readonly label: string;
   readonly onClick: () => void;
+  /**
+   * The action is a navigation: the shell renders an anchor instead of a
+   * button, so it opens in a new tab, copies, and reads as a link. `onClick`
+   * stays the keyboard path (ArrowRight in guided mode).
+   */
+  readonly href?: string;
   readonly disabled?: boolean;
   /** A discreet line under the action — a guard reason, or a status. */
   readonly note?: string;
@@ -38,4 +45,13 @@ export interface StepView {
   readonly panel: ReactNode;
   readonly primary: PrimaryAction | null;
   readonly map: StepMap;
+  /**
+   * Where the phone's bottom sheet should sit RIGHT NOW, when that depends on
+   * more than the step: the Run step peeks while the day plays and rises to
+   * `full` as soon as there are results (plan-technical §B.2). Omitted, the
+   * shell keeps the step's own snap.
+   */
+  readonly snap?: Snap;
+  /** What Space does on this step in guided mode: pause the pulse, replay the day. */
+  readonly onSpace?: () => void;
 }

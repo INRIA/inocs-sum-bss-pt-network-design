@@ -287,7 +287,14 @@ export function optimiserView(input: OptimiserInput): OptimiserView {
   };
 }
 
-export type CompareKey = 'stations' | 'docks' | 'bikes' | 'truckRuns' | 'served';
+export type CompareKey =
+  | 'stations'
+  | 'docks'
+  | 'bikes'
+  | 'truckRuns'
+  | 'served'
+  | 'ptShare'
+  | 'rushGap';
 
 export interface CompareRow {
   readonly key: CompareKey;
@@ -297,7 +304,8 @@ export interface CompareRow {
   readonly optimiser: number | null;
   /** True for the row only the optimiser can honestly fill (truck runs). */
   readonly optimiserOnly: boolean;
-  readonly format: 'count' | 'trips';
+  /** How the screen prints the two cells: a count, trips, a share, or points. */
+  readonly format: 'count' | 'trips' | 'share' | 'points';
 }
 
 /**
@@ -313,7 +321,7 @@ export function compare(visitor: ResultsView, optimiser: OptimiserView): Compare
     key: CompareKey,
     you: number | null,
     opt: number | null,
-    format: 'count' | 'trips' = 'count',
+    format: CompareRow['format'] = 'count',
     optimiserOnly = false,
   ): CompareRow => ({ key, labelKey: `play.compare.${key}`, you, optimiser: opt, optimiserOnly, format });
   const built = optimiser.built;
@@ -323,5 +331,12 @@ export function compare(visitor: ResultsView, optimiser: OptimiserView): Compare
     row('bikes', visitor.built.bikes, built ? built.bikes : null),
     row('truckRuns', null, optimiser.trucks.dispatches, 'count', true),
     row('served', visitor.hero.served, optimiser.hero.served, 'trips'),
+    row('ptShare', visitor.pt.share, optimiser.pt.share, 'share'),
+    row(
+      'rushGap',
+      visitor.rush.gapPoints,
+      optimiser.rush ? optimiser.rush.gapPoints : null,
+      'points',
+    ),
   ];
 }

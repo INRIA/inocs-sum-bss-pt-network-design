@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 
 import type { LossRow, PeriodRow, ResultsView } from '../../../domain/game/results';
 import type { TicketMark } from '../../../domain/game/ticket';
@@ -48,16 +48,65 @@ export function Hero({
  * Three marks on ONE line: a planner placing at random · you · the optimiser.
  * Positions, not a score — no ranking word appears here or in the copy.
  */
+/** Two labels closer than this share of the line would overlap: stagger them. */
+export const MARK_MIN_GAP_PCT = 12;
+
+/**
+ * A label centred on a mark near either end hangs off the card (the optimiser
+ * is always the rightmost mark, so it always did). The DOT stays exactly on
+ * its value; only the text is pulled back inside.
+ */
+export function markNudge(left: number): number {
+  if (left > 85) return -22;
+  if (left < 15) return 22;
+  return 0;
+}
+
+/**
+ * Where each mark sits on the line, and on which row its label goes.
+ *
+ * Marks are laid out left to right; a label whose mark is within
+ * `MARK_MIN_GAP_PCT` of the previous one drops to the next row, so two nearly
+ * coincident marks never print on top of each other. Pure: the screen only
+ * turns the result into `left` and a `--tier` custom property.
+ */
+export function markTiers(
+  positions: readonly number[],
+  minGap = MARK_MIN_GAP_PCT,
+): number[] {
+  const order = positions.map((left, index) => ({ left, index })).sort((a, b) => a.left - b.left);
+  const tiers = new Array<number>(positions.length).fill(0);
+  let lastLeft = Number.NEGATIVE_INFINITY;
+  let tier = 0;
+  for (const entry of order) {
+    tier = entry.left - lastLeft < minGap ? tier + 1 : 0;
+    tiers[entry.index] = tier;
+    lastLeft = entry.left;
+  }
+  return tiers;
+}
+
 export function MarksLine({ marks, lang, t }: { marks: readonly TicketMark[]; lang: Lang; t: T }) {
   const max = Math.max(...marks.map((mark) => mark.ratio), 0.05);
+  const lefts = marks.map((mark) => Math.min(98, (mark.ratio / max) * 94 + 2));
+  const tiers = markTiers(lefts);
   return (
     <div className="playmarks" aria-label={t('play.marks.aria')}>
-      <div className="playmarkrail">
-        {marks.map((mark) => (
+      <div
+        className="playmarkrail"
+        style={{ '--tiers': Math.max(0, ...tiers) } as CSSProperties}
+      >
+        {marks.map((mark, index) => (
           <span
             key={mark.key}
             className={`playmark playmark-${mark.key}`}
-            style={{ left: `${Math.min(98, (mark.ratio / max) * 94 + 2)}%` }}
+            style={
+              {
+                left: `${lefts[index]}%`,
+                '--tier': tiers[index],
+                '--nudge': markNudge(lefts[index] ?? 0),
+              } as CSSProperties
+            }
           >
             <i aria-hidden="true" />
             <b>{t(mark.labelKey)}</b>

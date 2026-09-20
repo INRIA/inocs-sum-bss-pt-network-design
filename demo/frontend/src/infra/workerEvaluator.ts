@@ -17,8 +17,11 @@ import type { EvaluatorRequest, EvaluatorResponse } from './evaluator.worker';
 export interface WorkerEvaluatorOptions {
   /** Site base, from `import.meta.env.BASE_URL`: the worker fetches its data under it. */
   readonly baseUrl: string;
-  /** Absolute URL of `highs.wasm`. Never guessed — see the worker's header. */
-  readonly wasmUrl: string;
+  /**
+   * Absolute URL of `highs.wasm`. Omitted in the browser, where the bundler
+   * emits the binary itself and its glue resolves it — see the worker's header.
+   */
+  readonly wasmUrl?: string;
   /** The solver's own limit, inside the worker. */
   readonly timeLimitSeconds?: number;
   /** How long the caller waits before falling back. plan.md §C.5 says 8 s. */

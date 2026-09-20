@@ -147,10 +147,16 @@ describe('compare', () => {
       'bikes',
       'truckRuns',
       'served',
+      'ptShare',
+      'rushGap',
     ]);
     expect(rows[0]).toMatchObject({ you: 60, optimiser: 83, labelKey: 'play.compare.stations' });
     expect(rows[3]).toMatchObject({ you: null, optimiser: 9, optimiserOnly: true });
     expect(rows[4]).toMatchObject({ you: 900, optimiser: 1316, format: 'trips' });
+    // the two rows the screen shows after the sizing, each in its own unit
+    expect(rows[5]).toMatchObject({ key: 'ptShare', format: 'share' });
+    expect(rows[6]).toMatchObject({ key: 'rushGap', format: 'points' });
+    expect(rows[6]!.optimiser).not.toBeNull();
   });
 
   it('falls back to the reference station count when no plan is passed', () => {
@@ -161,5 +167,7 @@ describe('compare', () => {
     expect(rows[0]?.optimiser).toBe(33);
     expect(rows[1]?.optimiser).toBeNull();
     expect(rows[3]?.optimiser).toBeNull();
+    // with no plan there is no per-period split, so no rush gap to compare
+    expect(rows[6]?.optimiser).toBeNull();
   });
 });

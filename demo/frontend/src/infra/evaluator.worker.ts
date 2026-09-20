@@ -8,7 +8,8 @@
  * states — with trucks and without — while they answer the prediction polls, so
  * the Run step never waits.
  *
- * The wasm URL is sent IN from the main thread (`init`). The worker cannot
+ * The wasm URL may be sent in from the main thread (`init`); in the browser it
+ * is not, and the bundler's own emitted asset is used. The worker cannot
  * derive the GitHub Pages base path on its own, and a wrong guess fails at
  * load time with a 404 that is hard to read.
  *
@@ -27,8 +28,14 @@ export type EvaluatorRequest =
       readonly type: 'init';
       /** Site base URL, from `import.meta.env.BASE_URL`. */
       readonly baseUrl: string;
-      /** Where `highs.wasm` is served from, resolved by the bundler. */
-      readonly wasmUrl: string;
+      /**
+       * Where `highs.wasm` is served from. OMITTED in the browser: the bundler
+       * rewrites the reference inside the `highs` glue to its own emitted,
+       * base-prefixed asset, and passing a `locateFile` would only point at a
+       * second copy of the same 3.5 MB binary. Kept for node and for tests,
+       * which have no bundler to do the rewriting.
+       */
+      readonly wasmUrl?: string;
       /** Solve budget in seconds; the caller falls back to an estimate beyond it. */
       readonly timeLimitSeconds?: number;
     }
