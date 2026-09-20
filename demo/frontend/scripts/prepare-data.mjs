@@ -12,6 +12,7 @@
  *   ../experiments/data/geneva_1.5km-radius/*       -> public/data/city/*                (slim)
  *   ../experiments/data/pt_ridership_summary.json   -> public/data/city/pt_summary.json  (copy)
  *   ../experiments/data/profiles.json               -> public/data/city/profiles.json    (copy)
+ *   ../experiments/results/shared/game/*.json       -> public/data/game/*.json           (copy)
  *   (all of the above)                              -> public/data/manifest.json         (index)
  *
  * Rules (demo v3, .specs/demo-v3/implementation.md sections 0.2 and 0.5):
@@ -26,8 +27,14 @@
  *    inventories, are extracted into plan_slim.json.
  *  - The 10 MB ridership.geojson is NEVER shipped: it is aggregated here into a ~30 KB
  *    per-stop hourly profile layer.
+ *  - The planner game's payload (`results/shared/game/`) is copied verbatim: it is already
+ *    interned and compact, and the browser engine must read byte-identical data to the Python
+ *    reference that produced the golden vectors. `golden/` is the ONLY thing left behind --
+ *    it is a test fixture read from the repository by demo/experiments/tests and by the
+ *    front-end's vitest suite, never over HTTP. A missing game folder is a WARNING, not a
+ *    failure: nothing else on the site depends on it.
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync, statSync, copyFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -48,6 +55,22 @@ const COPIED_RESULTS = ['stations.json', 'kpis.json', ...OPTIONAL_RESULTS];
 const SCENARIO_FIELDS = ['family', 'role', 'model_parameters'];
 /** How many PT stops the live map shows (design decision, see ux-plan §2). */
 const TOP_STOPS = 40;
+/**
+ * The planner game's payload, written by `python3 -m demo.experiments.game_export`.
+ * Everything here is fetched by the browser; `golden/` is deliberately excluded (see the
+ * header). Files are discovered, not listed, so adding one to the exporter needs no change here.
+ */
+const GAME_SRC = join(EXP, 'results/shared/game');
+const GAME_SKIP_DIRS = ['golden'];
+/**
+ * The HiGHS WebAssembly binary the game's engine solves with. It is copied here as a plain
+ * public asset instead of being imported through the bundler: `highs/build/highs.wasm?url`
+ * is not in the package's `exports` map (the build fails) and `highs/runtime?url` builds but
+ * emits no asset at all, which would fail silently in the browser only. The file is named
+ * after the installed package version, so upgrading `highs` busts the cache, and the path is
+ * recorded in the manifest rather than hard-coded in the front-end.
+ */
+const HIGHS_DIR = resolve(ROOT, 'node_modules/highs');
 
 const warnings = [];
 const readJSON = (p) => JSON.parse(readFileSync(p, 'utf8'));
@@ -345,12 +368,67 @@ const city = {};
   city.pt_summary = { path: 'city/pt_summary.json', n_stops: src.n_stops };
 }
 
+// ---------------------------------------------------------------- planner game payload
+/**
+ * The game engine solves the paper's operational LP in the browser, so it needs the candidate
+ * paths, the ride network and the model's own constants. All of it is committed under
+ * demo/experiments/results/shared/game/ and copied verbatim.
+ */
+const game = { available: false, files: {} };
+if (!existsSync(GAME_SRC)) {
+  warnings.push(
+    'results/shared/game/ not found - the planner game (/play) will have no data. ' +
+      'Generate it with `python3 -m demo.experiments.game_export`.'
+  );
+} else {
+  const entries = readdirSync(GAME_SRC, { withFileTypes: true });
+  const names = entries
+    .filter((e) => e.isFile() && e.name.endsWith('.json'))
+    .map((e) => e.name)
+    .sort();
+  for (const name of names) {
+    writeJSON(join(OUT, 'game', name), readJSON(join(GAME_SRC, name)));
+    game.files[name.replace(/\.json$/, '')] = `game/${name}`;
+  }
+  game.available = names.length > 0;
+  const skipped = entries.filter((e) => e.isDirectory() && GAME_SKIP_DIRS.includes(e.name)).map((e) => e.name);
+  if (skipped.length) game.not_shipped = skipped;
+  if (!game.available) {
+    warnings.push('results/shared/game/ holds no JSON file - the planner game will have no data');
+  } else {
+    // An incomplete payload is a warning too: the engine would fall back to its estimate, and
+    // the operator should learn that here rather than in the browser.
+    const required = ['constants', 'candidates', 'cells', 'paths', 'arcs', 'demand_reference', 'coverage', 'references'];
+    const missing = required.filter((k) => !(k in game.files));
+    if (missing.length) warnings.push(`game: missing ${missing.join(', ')} - the planner game may not load`);
+  }
+}
+
+// ---------------------------------------------------------------- solver binary
+if (game.available) {
+  const wasm = join(HIGHS_DIR, 'build/highs.wasm');
+  const meta = join(HIGHS_DIR, 'package.json');
+  if (!existsSync(wasm) || !existsSync(meta)) {
+    warnings.push(
+      'node_modules/highs is missing - the planner game will fall back to its estimate engine. ' +
+        'Run `npm install` in demo/frontend.'
+    );
+  } else {
+    const version = String(readJSON(meta).version ?? '0');
+    const rel = `game/solver/highs-${version}.wasm`;
+    mkdirSync(dirname(join(OUT, rel)), { recursive: true });
+    copyFileSync(wasm, join(OUT, rel));
+    game.solver = { path: rel, version, bytes: statSync(join(OUT, rel)).size };
+  }
+}
+
 // ---------------------------------------------------------------- manifest
 const manifest = {
   generated_at: new Date().toISOString(),
   source: 'demo/experiments (scenarios/, results/, data/geneva_1.5km-radius/)',
   scenarios,
   city,
+  game,
   warnings,
 };
 writeJSON(join(OUT, 'manifest.json'), manifest);
@@ -374,4 +452,12 @@ console.log(
     `PT lines ${city.pt_lines.features} · stop profiles ${city.ridership_stops.features} · POIs ${city.pois?.features ?? 0}`
 );
 for (const w of warnings) console.warn(`[prepare-data] WARN ${w}`);
+if (game.available) {
+  const gameBytes = Object.values(game.files).reduce((acc, rel) => acc + statSync(join(OUT, rel)).size, 0);
+  console.log(
+    `[prepare-data] planner game: ${Object.keys(game.files).length} file(s), ${Math.round(gameBytes / 1024)} KB` +
+      (game.not_shipped ? ` (${game.not_shipped.join(', ')} not shipped)` : '') +
+      (game.solver ? ` + solver ${game.solver.version} (${Math.round(game.solver.bytes / 1024)} KB)` : ' + NO SOLVER')
+  );
+}
 console.log(`[prepare-data] wrote public/data (${Math.round(total / 1024)} KB, manifest ${kb(join(OUT, 'manifest.json'))} KB)`);
