@@ -57,6 +57,14 @@
   stroke: #5b5f5a;
 }
 
+/* Trips shown as such in /play (city pulse, run): red. Lost and unreachable trips keep their own colours. */
+.trips-demand .trip-served,
+.trips-demand .trip-reached,
+.trips-demand .trip-potential {
+  fill: #d62828;
+  stroke: #d62828;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trip {
     display: none;

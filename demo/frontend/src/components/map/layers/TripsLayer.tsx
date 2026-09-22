@@ -27,6 +27,8 @@ interface Props {
    * lighter. Off by default, so the city pulse keeps exactly the markup it had.
    */
   routes?: boolean;
+  /** `demand`: served, reached and potential sprites are drawn red; lost and unreachable ones keep their colour. */
+  tone?: 'demand';
 }
 
 /**
@@ -36,9 +38,9 @@ interface Props {
  * unreachable dark grey. A matching, normally-hidden line takes over under
  * prefers-reduced-motion (trips.css).
  */
-export default function TripsLayer({ sprites, loop = false, radius = 1.1, routes = false }: Props) {
+export default function TripsLayer({ sprites, loop = false, radius = 1.1, routes = false, tone }: Props) {
   return (
-    <g className={routes ? 'trips trips-routes' : 'trips'}>
+    <g className={`${routes ? 'trips trips-routes' : 'trips'}${tone === 'demand' ? ' trips-demand' : ''}`}>
       {sprites.map((s) => {
         const dx = s.to[0] - s.from[0];
         const dy = s.to[1] - s.from[1];

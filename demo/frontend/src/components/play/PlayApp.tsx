@@ -104,8 +104,8 @@ export default function PlayApp({
 
   const { session, actions, hydrated } = useGameSession(store, env);
   // The hash is resolved only once the stored session is back: before that the
-  // session is still EMPTY, and a deep link past Budget would be refused by its
-  // own guard and rewritten to the entry step.
+  // session is still EMPTY, and a deep link past the first step would be refused by
+  // its own guard and rewritten to it.
   useHashStep(session.step, actions.go, hydrated);
   const { viewport } = useViewport();
 
@@ -231,6 +231,10 @@ export default function PlayApp({
         session={session}
         onGo={(target) => actions.go(target)}
         onBack={back ? () => actions.go(back) : null}
+        onRestart={() => {
+          // One tap must not wipe a layout the visitor spent minutes on.
+          if (window.confirm(t('play.nav.restartConfirm'))) actions.restart();
+        }}
         compact={viewport === 'phone' || viewport === 'phone-landscape' || viewport === 'tablet'}
         t={t}
       />

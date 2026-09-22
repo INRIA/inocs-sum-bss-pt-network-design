@@ -26,8 +26,6 @@ export default function BuiltBox({
   const rows: [string, string][] = [
     [fmtInt(facts.stations), t('leg.stations')],
     [fmtInt(facts.atPtStops), t('leg.atpt')],
-    [fmtInt(facts.docks), t('leg.docks')],
-    [fmtInt(facts.bikes), t('leg.bikes')],
   ];
   return (
     <>
@@ -56,12 +54,6 @@ export default function BuiltBox({
               </div>
             ))}
           </div>
-          <p className="note">
-            {t('play.built.spent', {
-              spent: fmtEur(facts.capexEur),
-              budget: fmtEur(facts.budgetEur),
-            })}
-          </p>
         </section>
       )}
     </>

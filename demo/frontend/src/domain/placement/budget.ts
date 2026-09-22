@@ -35,6 +35,29 @@ export function maxStations(budgetEur: number, c: ModelConstants): number {
   return floor > 0 ? Math.floor(budgetEur / floor) : 0;
 }
 
+/**
+ * A GAME rule, not a model constant: how many stations a visitor may place at
+ * each budget. They are the optimiser's own station counts rounded to a tidy
+ * number (33, 67, 83 and 90 stations at 20 / 60 / 80 / 120 k EUR), so a bigger
+ * budget visibly lets the city grow while the 100 candidate sites stay more
+ * than any budget fills. Kept here, in the game layer, rather than in the
+ * exported model constants: the frozen model has no such cap and the
+ * golden-pinned game payload is not regenerated for a presentation rule.
+ */
+const GAME_STATION_CAP: Readonly<Record<number, number>> = {
+  20000: 30,
+  60000: 60,
+  80000: 80,
+  120000: 90,
+};
+
+/** Most stations a visitor may place at this budget: the game cap, never above what the money pays for. */
+export function stationLimit(budgetEur: number, c: ModelConstants): number {
+  const cap = GAME_STATION_CAP[budgetEur];
+  const affordable = maxStations(budgetEur, c);
+  return cap === undefined ? affordable : Math.min(cap, affordable);
+}
+
 export interface BudgetState {
   readonly placed: number;
   readonly maxStations: number;
@@ -48,6 +71,8 @@ export interface BudgetState {
   readonly usedFraction: number;
   /** True once the layout costs more than the budget: the LP is infeasible. */
   readonly overBudget: boolean;
+  /** True once more stations are placed than the budget's station limit allows. */
+  readonly overLimit: boolean;
   /** How many more stations still fit. Never negative. */
   readonly roomLeft: number;
 }
@@ -67,7 +92,7 @@ export function budgetState(
   const stationsEur = stationsCostEur(c, placed);
   const minimumDocksEur = c.dock_cost * c.MIN_CAPACITY_IF_BUILT * placed;
   const committed = stationsEur + minimumDocksEur;
-  const limit = maxStations(budgetEur, c);
+  const limit = stationLimit(budgetEur, c);
   return {
     placed,
     maxStations: limit,
@@ -76,6 +101,7 @@ export function budgetState(
     remainingEur: budgetEur - committed,
     usedFraction: budgetEur > 0 ? Math.min(1, Math.max(0, committed / budgetEur)) : 0,
     overBudget: committed > budgetEur,
+    overLimit: placed > limit,
     roomLeft: Math.max(0, limit - placed),
   };
 }

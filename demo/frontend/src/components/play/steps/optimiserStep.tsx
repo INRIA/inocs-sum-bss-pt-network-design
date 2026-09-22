@@ -1,6 +1,5 @@
 import type { BudgetReference } from '../../../domain/evaluation/types';
-import { findQuestion, resolveDouble, type PredictionQuestion } from '../../../domain/game/predictions';
-import { compare, optimiserView } from '../../../domain/game/results';
+import { optimiserView, optimiserResults } from '../../../domain/game/results';
 import {
   BUDGET_EUR,
   BUDGET_IDS,
@@ -23,7 +22,6 @@ import {
   planOf,
 } from '../optimiserFacts';
 import type { PlayScene } from '../playScene';
-import { revealOf } from '../reveal';
 import BuiltBox from '../screens/BuiltBox';
 import Optimiser from '../screens/Optimiser';
 import type { StepParts } from './runStep';
@@ -55,9 +53,6 @@ export interface OptimiserStepInput {
 export const browsingOf = (session: Session): BudgetId =>
   session.compareBudgetId ?? session.budgetId ?? BUDGET_IDS[0]!;
 
-/** The poll asked here, straight from the domain's catalogue — never restated. */
-const question: PredictionQuestion = findQuestion('double')!;
-
 export function optimiserStep(input: OptimiserStepInput): StepParts {
   const { session, actions, scene, data, references, t, lang } = input;
   const browsing = browsingOf(session);
@@ -78,17 +73,16 @@ export function optimiserStep(input: OptimiserStepInput): StepParts {
       })
     : null;
 
-  const rows = view && optimiser ? compare(view, optimiser) : [];
+  // The step-4 view-model, for the optimiser's network at the browsed budget.
+  const results = browsedReference
+    ? optimiserResults(browsedReference, session.trucks, facts)
+    : null;
   const visitorBudgetEur = session.budgetId ? BUDGET_EUR[session.budgetId] : 0;
-  const resolution = resolveDouble(
-    session.predictions.double ?? null,
-    doubleFacts(ladder, visitorBudgetEur),
-  );
 
   const panel = (
     <Optimiser
       contribution={contributionFacts(data, BUDGET_EUR[browsing])}
-      rows={rows}
+      view={results}
       published={optimiser ? optimiser.published : { served: 0, ratio: 0 }}
       mine={session.placed.length}
       shared={overlapCount(
@@ -96,11 +90,6 @@ export function optimiserStep(input: OptimiserStepInput): StepParts {
         input.reference?.optimiserStations ?? [],
       )}
       trucks={session.trucks}
-      onTrucks={actions.setTrucks}
-      question={question}
-      answer={session.predictions.double}
-      onAnswer={(optionId) => actions.answer('double', optionId)}
-      reveal={session.predictions.double ? revealOf(resolution, lang) : null}
       budgets={BUDGET_IDS.map((id) => ({
         id,
         eur: BUDGET_EUR[id],
@@ -135,8 +124,8 @@ export function optimiserStep(input: OptimiserStepInput): StepParts {
           <StationsLayer variant="ghost" stations={scene.mine.map((s) => ({ x: s.x, y: s.y }))} />
         ) : null,
       overlay:
-        optimiser?.built != null ? (
-          <BuiltBox facts={optimiser.built} title={t('play.built.optimiser')} t={t} />
+        results != null ? (
+          <BuiltBox facts={results.built} title={t('play.built.optimiser')} t={t} />
         ) : undefined,
     },
   };

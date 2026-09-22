@@ -142,28 +142,6 @@ export function GuessTile({
   );
 }
 
-/** "With service trucks / Without" — the switch of plan-technical §A.1. */
-export function TrucksSwitch({
-  trucks,
-  onChange,
-  t,
-}: {
-  trucks: boolean;
-  onChange: (value: boolean) => void;
-  t: T;
-}) {
-  return (
-    <div className="playswitch seg" role="group" aria-label={t('play.trucks.h')}>
-      <button aria-pressed={trucks} onClick={() => onChange(true)}>
-        {t('play.trucks.with')}
-      </button>
-      <button aria-pressed={!trucks} onClick={() => onChange(false)}>
-        {t('play.trucks.without')}
-      </button>
-    </div>
-  );
-}
-
 /** "Trips lost, and why" — the only strip that tells the visitor what to fix. */
 export function LossStrip({
   losses,
@@ -257,3 +235,187 @@ export const twoRates = (lang: Lang, a: number, b: number): string =>
 /** A signed gap in percentage points, for the rush tile's sub-line. */
 export const gapLabel = (lang: Lang, points: number, t: T): string =>
   t('play.tile.rush.gap', { gap: fmtNum(lang, Math.abs(points), 1) });
+
+/** The five ways a potential trip ends, in the order the pie and its legend list them. */
+export type TripFate = 'bikeOnly' | 'bikePt' | 'noStation' | 'noStock' | 'unreachable';
+
+export const FATE_COLORS: Record<TripFate, string> = {
+  bikeOnly: '#6b9410',
+  bikePt: '#8ec5f0',
+  noStation: '#d62828',
+  noStock: '#f28c28',
+  unreachable: '#949c93',
+};
+
+export interface FateSlice {
+  readonly fate: TripFate;
+  readonly trips: number;
+  /** Share of the day's trips, 0..1. */
+  readonly share: number;
+  /** Running total of the shares up to and including this slice. */
+  readonly accumulated: number;
+}
+
+/**
+ * Where the day's potential trips ended, every share taken from the day's
+ * TOTAL number of trips (`hero.demand`), so it matches the cards:
+ * bike only = served - connected to public transport; bike + PT = the trips
+ * the "connected to public transport" card counts; the three losses are their
+ * flow over the total. Pure, so the pie and its legend can never disagree.
+ */
+export function fateSlices(view: Pick<ResultsView, 'hero' | 'pt' | 'losses'>): FateSlice[] {
+  const lost = (cause: LossRow['cause']): number =>
+    view.losses.find((row) => row.cause === cause)?.flow ?? 0;
+  const total = view.hero.demand;
+  const bikePt = Math.min(view.pt.trips, view.hero.served);
+  const trips: Record<TripFate, number> = {
+    bikeOnly: Math.max(0, view.hero.served - bikePt),
+    bikePt,
+    noStation: lost('noStation'),
+    noStock: lost('noStock'),
+    unreachable: lost('unreachable'),
+  };
+  const order: TripFate[] = ['bikeOnly', 'bikePt', 'noStation', 'noStock', 'unreachable'];
+  let running = 0;
+  return order.map((fate) => {
+    const share = total > 0 ? trips[fate] / total : 0;
+    running += share;
+    return { fate, trips: trips[fate], share, accumulated: Math.min(1, running) };
+  });
+}
+
+const arcPath = (from: number, to: number, r: number): string => {
+  const point = (share: number): string =>
+    `${(50 + r * Math.sin(share * 2 * Math.PI)).toFixed(3)} ${(50 - r * Math.cos(share * 2 * Math.PI)).toFixed(3)}`;
+  return `M50 50 L${point(from)} A${r} ${r} 0 ${to - from > 0.5 ? 1 : 0} 1 ${point(to)} Z`;
+};
+
+/** "Where the day's trips went": a pie, with each share and the running total beside it. */
+export function TripsPie({ view, lang, t }: { view: Pick<ResultsView, 'hero' | 'pt' | 'losses'>; lang: Lang; t: T }) {
+  const slices = fateSlices(view);
+  const shown = slices.filter((slice) => slice.share > 0);
+  let start = 0;
+  return (
+    <div className="playpie">
+      <p className="decklab">{t('play.pie.h')}</p>
+      <div className="playpiebody">
+        <svg viewBox="0 0 100 100" role="img" aria-label={t('play.pie.alt')} className="playpiesvg">
+          {shown.length === 0 && <circle cx="50" cy="50" r="46" fill="var(--line)" />}
+          {shown.length === 1 && <circle cx="50" cy="50" r="46" fill={FATE_COLORS[shown[0]!.fate]} />}
+          {shown.length > 1 &&
+            shown.map((slice) => {
+              const from = start;
+              start += slice.share;
+              return (
+                <path
+                  key={slice.fate}
+                  d={arcPath(from, start, 46)}
+                  fill={FATE_COLORS[slice.fate]}
+                  stroke="var(--surface)"
+                  strokeWidth="0.8"
+                />
+              );
+            })}
+        </svg>
+        <ul className="playpieleg">
+          {slices.map((slice) => (
+            <li key={slice.fate}>
+              <i style={{ background: FATE_COLORS[slice.fate] }} aria-hidden="true" />
+              <span>{t(`play.pie.${slice.fate}`)}</span>
+              <b className="mono">{fmtPct(lang, slice.share, 0)}</b>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/** Service rate per period, as bars labelled with the percentage only. */
+export function PeriodBars({ periods, lang, t }: { periods: readonly PeriodRow[]; lang: Lang; t: T }) {
+  return (
+    <div className="playbars">
+      <p className="decklab">{t('play.bars.h')}</p>
+      <ul>
+        {periods.map((row) => {
+          const rate = row.demand > 0 ? row.served / row.demand : 0;
+          return (
+            <li key={row.period}>
+              <span>{t(`s5.per.${row.period}`)}</span>
+              <div className="playbartrack" aria-hidden="true">
+                <div className="playbarfill" style={{ width: `${Math.round(rate * 100)}%` }} />
+              </div>
+              <b className="mono">{fmtPct(lang, rate, 0)}</b>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * The tiles, the trip-fate pie and the period bars of steps 4 and 5, in one
+ * place so the visitor's network and the optimiser's are always read the same way.
+ * `guess` is only passed on step 4, where a tile answers a step-3 prediction.
+ */
+export function ResultsBlock({
+  view,
+  guess,
+  nothingToRebalance,
+  trucksSub,
+  lang,
+  t,
+}: {
+  view: ResultsView;
+  guess?: (id: 'served' | 'pt' | 'trucks') => string | null;
+  nothingToRebalance: boolean;
+  /** Overrides the trucks tile's sub-line (the optimiser knows its own run count). */
+  trucksSub?: string;
+  lang: Lang;
+  t: T;
+}) {
+  const ask = guess ?? (() => null);
+  return (
+    <>
+      <div className="facts playtiles">
+        <GuessTile
+          label={t('play.kpi.service')}
+          value={fmtPct(lang, view.hero.ratio, 0)}
+          sub={t('play.hero.line', { served: fmtInt(view.hero.served), total: fmtInt(view.hero.demand) })}
+          guess={ask('served')}
+          t={t}
+        />
+        <GuessTile
+          label={t('play.tile.pt')}
+          value={fmtPct(lang, view.pt.share, 0)}
+          sub={t('play.tile.pt.sub', { trips: fmtInt(view.pt.trips) })}
+          guess={ask('pt')}
+          t={t}
+        />
+        <GuessTile
+          label={t('play.kpi.trucks')}
+          value={fmtInt(view.trucks.dependOnTrucks)}
+          sub={
+            nothingToRebalance
+              ? t('play.tile.trucks.nothing')
+              : (trucksSub ?? t('play.kpi.trucks.sub'))
+          }
+          guess={ask('trucks')}
+          t={t}
+        />
+        <GuessTile
+          label={t('play.kpi.stations')}
+          value={fmtInt(view.built.stations)}
+          sub={t('play.kpi.stations.sub', { n: fmtInt(view.built.atPtStops) })}
+          guess={null}
+          t={t}
+        />
+      </div>
+      <div className="playcharts">
+        <TripsPie view={view} lang={lang} t={t} />
+        <PeriodBars periods={view.periods} lang={lang} t={t} />
+      </div>
+    </>
+  );
+}

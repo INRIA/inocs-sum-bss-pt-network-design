@@ -51,7 +51,8 @@ describe('StepShell', () => {
     const html = render('build');
     expect(html.indexOf('playrhythm')).toBeLessThan(html.indexOf('PANEL-MARK'));
     expect(html).toContain(t('play.rhythm.build'));
-    expect(html).toContain(t('play.brief.build'));
+    // The server render escapes apostrophes, so compare the escaped copy.
+    expect(html).toContain(t('play.brief.build').replace(/'/g, '&#x27;'));
   });
 
   it('mounts the map once, with the step layers inside it', () => {

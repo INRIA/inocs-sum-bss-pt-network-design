@@ -68,16 +68,15 @@ const asEvaluation = (scenario: string) => {
 const BUDGETS = ['budget_020k', 'budget_060k', 'budget_080k', 'budget_120k'] as const;
 
 describe('the question set', () => {
-  it('asks five polls in step 3 and one in step 5', () => {
+  it('asks four polls in step 3 and one in step 5', () => {
     expect(questionsFor('predict').map((q) => q.id)).toEqual([
       'served',
       'pt',
-      'rush',
       'trucks',
       'rhythm',
     ]);
     expect(questionsFor('optimiser').map((q) => q.id)).toEqual(['double']);
-    expect(PREDICTIONS).toHaveLength(6);
+    expect(PREDICTIONS).toHaveLength(5);
   });
 
   it('carries i18n keys and a conclusion card for each question', () => {
@@ -89,11 +88,8 @@ describe('the question set', () => {
       }
       expect(['q1', 'q2', 'q3', 'q4', 'new']).toContain(question.card);
     }
-    // The rush question is the one the full demo has no card for (plan.md §4).
-    expect(findQuestion('rush')?.card).toBe('new');
+    expect(findQuestion('rush')).toBeNull();
     expect(findQuestion('trucks')?.card).toBe('q3');
-    expect(isOptionOf('rush', 'much')).toBe(true);
-    expect(isOptionOf('rush', 'none')).toBe(false);
   });
 
   it('knows when a step is fully answered', () => {
@@ -102,7 +98,6 @@ describe('the question set', () => {
       allAnswered('predict', {
         served: 'gt90',
         pt: '4in10',
-        rush: 'bit',
         trucks: 'few',
         rhythm: 'same',
       }),
@@ -324,13 +319,12 @@ describe('resolveAll', () => {
     expect(resolved.map((entry) => entry.predictionId)).toEqual([
       'served',
       'pt',
-      'rush',
       'trucks',
       'rhythm',
       'double',
     ]);
     expect(resolved[0]).toMatchObject({ chosen: 'gt90', matched: true });
-    expect(resolved[5]).toMatchObject({ chosen: 'none', actual: 'none', matched: true });
-    expect(resolved[3]?.facts.dependOnTrucks).toBe(37);
+    expect(resolved[4]).toMatchObject({ chosen: 'none', actual: 'none', matched: true });
+    expect(resolved[2]?.facts.dependOnTrucks).toBe(37);
   });
 });

@@ -14,10 +14,10 @@ evaluator, the reach table and the hit test without a lookup.
 
 ## `steps.ts` — the route
 
-The six tracker steps (`budget`, `build`, `predict`, `run`, `optimiser`,
-`conclusions`) behind one untracked `entry`, each with a label key and the
+The five tracker steps (`build`, `predict`, `run`, `optimiser`,
+`conclusions`) each with a label key and the
 rhythm verb of plan.md §2. `canEnter(step, session)` returns `{ ok }` or
-`{ ok: false, reasonKey }`: build needs a budget, predict a station, run the
+`{ ok: false, reasonKey }`: build (which holds the budget choice and the placement) is always open, predict needs a budget and a station, run the
 five step-3 answers, optimiser an evaluation, conclusions a visit to the
 optimiser. `furthestAllowed` is where an invalid deep link lands, and
 `progress(session)` gives the tracker its index plus the fraction inside the

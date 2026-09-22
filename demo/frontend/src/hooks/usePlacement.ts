@@ -128,6 +128,7 @@ export function usePlacement(options: UsePlacementOptions): UsePlacement {
             remainingEur: budgetEur,
             usedFraction: 0,
             overBudget: false,
+            overLimit: false,
             roomLeft: 0,
           },
     [constants, budgetEur, session.placed.length],

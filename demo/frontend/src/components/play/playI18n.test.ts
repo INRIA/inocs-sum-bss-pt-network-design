@@ -56,12 +56,7 @@ function domainKeys(): string[] {
   }
   for (const id of PREDICTION_IDS) keys.push(`play.short.${id}`);
   for (const id of BUDGET_IDS) {
-    keys.push(
-      `play.budget.name.${id}`,
-      `play.budget.pitch.${id}`,
-      `play.budget.plus.${id}`,
-      `play.budget.minus.${id}`,
-    );
+    keys.push(`play.budget.name.${id}`);
   }
   for (const status of ['idle', 'running', 'ready', 'estimate', 'error']) {
     keys.push(`play.status.${status}`);

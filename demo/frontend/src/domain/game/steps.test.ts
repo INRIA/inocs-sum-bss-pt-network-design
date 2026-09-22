@@ -38,7 +38,6 @@ const withAnswers = (): Session =>
     withStation(),
     { type: 'answer', predictionId: 'served', optionId: 'gt90' },
     { type: 'answer', predictionId: 'pt', optionId: '4in10' },
-    { type: 'answer', predictionId: 'rush', optionId: 'bit' },
     { type: 'answer', predictionId: 'trucks', optionId: 'few' },
     { type: 'answer', predictionId: 'rhythm', optionId: 'same' },
   );
@@ -53,40 +52,36 @@ const withEvaluation = (): Session => {
 };
 
 describe('the route', () => {
-  it('is the six tracker steps behind one untracked entry', () => {
-    expect(STEPS).toEqual(['budget', 'build', 'predict', 'run', 'optimiser', 'conclusions']);
-    expect(ALL_STEPS[0]).toBe('entry');
-    expect(stepDef('entry').tracked).toBe(false);
+  it('is the five tracker steps, opening on the first', () => {
+    expect(STEPS).toEqual(['build', 'predict', 'run', 'optimiser', 'conclusions']);
+    expect(ALL_STEPS[0]).toBe('build');
+    expect(isGameStep('entry')).toBe(false);
     expect(stepDef('build')).toMatchObject({
-      index: 1,
+      index: 0,
       labelKey: 'play.step.build',
       rhythmKey: 'play.rhythm.build',
-      tracked: true,
     });
     expect(isGameStep('build')).toBe(true);
     expect(isGameStep('nowhere')).toBe(false);
   });
 
   it('walks forward and back', () => {
-    expect(nextStep('entry')).toBe('budget');
+    expect(nextStep('build')).toBe('predict');
     expect(nextStep('conclusions')).toBeNull();
-    expect(prevStep('budget')).toBe('entry');
-    expect(prevStep('entry')).toBeNull();
+    expect(prevStep('predict')).toBe('build');
+    expect(prevStep('build')).toBeNull();
   });
 });
 
 describe('the guards', () => {
   it('names what is missing, one decision at a time', () => {
-    expect(canEnter('budget', EMPTY_SESSION).ok).toBe(true);
-    expect(canEnter('build', EMPTY_SESSION)).toEqual({ ok: false, reasonKey: 'play.guard.budget' });
+    expect(canEnter('build', EMPTY_SESSION).ok).toBe(true);
+    expect(canEnter('predict', EMPTY_SESSION)).toEqual({ ok: false, reasonKey: 'play.guard.budget' });
     expect(canEnter('predict', withBudget())).toEqual({
       ok: false,
       reasonKey: 'play.guard.station',
     });
-    expect(canEnter('run', withStation())).toEqual({
-      ok: false,
-      reasonKey: 'play.guard.predictions',
-    });
+    expect(canEnter('run', withStation()).ok).toBe(true);
     expect(canEnter('optimiser', withAnswers())).toEqual({
       ok: false,
       reasonKey: 'play.guard.evaluation',
@@ -102,15 +97,13 @@ describe('the guards', () => {
     expect(canEnter('conclusions', session).ok).toBe(true);
   });
 
-  it('answering only four of the five polls still locks the run', () => {
-    const session = run(
-      withStation(),
-      { type: 'answer', predictionId: 'served', optionId: 'gt90' },
-      { type: 'answer', predictionId: 'pt', optionId: '4in10' },
-      { type: 'answer', predictionId: 'rush', optionId: 'bit' },
-      { type: 'answer', predictionId: 'trucks', optionId: 'few' },
-    );
-    expect(canEnter('run', session).ok).toBe(false);
+  it('the polls are optional: the run opens with none answered', () => {
+    expect(canEnter('run', withStation()).ok).toBe(true);
+  });
+
+  it('an answer can be taken back', () => {
+    const answered = reduce(withStation(), { type: 'answer', predictionId: 'served', optionId: 'gt90' });
+    expect(reduce(answered, { type: 'clearAnswer', predictionId: 'served' }).predictions).toEqual({});
   });
 
   it('the step asked in the optimiser screen is not a gate on the run', () => {
@@ -120,9 +113,9 @@ describe('the guards', () => {
 
 describe('furthestAllowed', () => {
   it('follows the session forward', () => {
-    expect(furthestAllowed(EMPTY_SESSION)).toBe('budget');
+    expect(furthestAllowed(EMPTY_SESSION)).toBe('build');
     expect(furthestAllowed(withBudget())).toBe('build');
-    expect(furthestAllowed(withStation())).toBe('predict');
+    expect(furthestAllowed(withStation())).toBe('run');
     expect(furthestAllowed(withAnswers())).toBe('run');
     expect(furthestAllowed(withEvaluation())).toBe('optimiser');
     expect(furthestAllowed(reduce(withEvaluation(), { type: 'go', step: 'optimiser' }))).toBe(
@@ -133,20 +126,22 @@ describe('furthestAllowed', () => {
 
 describe('progress', () => {
   it('is the step index plus the fraction inside it', () => {
-    const entry = progress(EMPTY_SESSION);
-    expect(entry).toMatchObject({ index: -1, count: 6, within: 0, overall: 0 });
+    const first = progress(EMPTY_SESSION);
+    expect(first).toMatchObject({ index: 0, count: 5, within: 0, overall: 0 });
 
-    const budget = progress(reduce(withBudget(), { type: 'go', step: 'budget' }));
+    const budget = progress(reduce(withBudget(), { type: 'go', step: 'build' }));
     expect(budget.index).toBe(0);
-    expect(budget.within).toBe(1);
-    expect(budget.overall).toBeCloseTo(1 / 6, 6);
+    expect(budget.within).toBeGreaterThan(0);
+    expect(budget.within).toBeLessThan(1);
+    expect(budget.overall).toBeCloseTo(budget.within / 5, 6);
   });
 
   it('counts stations against a soft target while building', () => {
     let session = reduce(withBudget(), { type: 'go', step: 'build' });
     session = reduce(session, { type: 'assist', ids: [1, 2, 3, 4, 5] });
-    expect(progress(session).within).toBeCloseTo(5 / BUILD_SOFT_TARGET, 6);
-    expect(progress(session, { buildTarget: 10 }).within).toBeCloseTo(0.5, 6);
+    // The budget choice is the first fifth of the step, the stations the rest.
+    expect(progress(session).within).toBeCloseTo(0.2 + 0.8 * (5 / BUILD_SOFT_TARGET), 6);
+    expect(progress(session, { buildTarget: 10 }).within).toBeCloseTo(0.6, 6);
     // A layout beyond the target never pushes the bike past the next step.
     const many = reduce(session, { type: 'assist', ids: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25] });
     expect(progress(many).within).toBe(1);
@@ -158,6 +153,6 @@ describe('progress', () => {
       { type: 'answer', predictionId: 'served', optionId: 'gt90' },
       { type: 'answer', predictionId: 'pt', optionId: '4in10' },
     );
-    expect(progress(session).within).toBeCloseTo(2 / 5, 6);
+    expect(progress(session).within).toBeCloseTo(2 / 4, 6);
   });
 });

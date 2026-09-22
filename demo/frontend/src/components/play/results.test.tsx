@@ -9,16 +9,14 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { compare, optimiserView, resultsView, type ResultsView } from '../../domain/game/results';
-import { marksFor } from '../../domain/game/ticket';
+import { optimiserView, resultsView, type ResultsView } from '../../domain/game/results';
 import { fakeEvaluation } from '../../domain/game/testSupport';
-import { findQuestion, resolveAll } from '../../domain/game/predictions';
 import type { BudgetReference } from '../../domain/evaluation/types';
 import { makeT } from '../../lib/i18n';
 import en from '../../i18n/en.json';
 import Run from './screens/Run';
+import { fateSlices } from './screens/ResultBits';
 import Optimiser from './screens/Optimiser';
-import { revealOf } from './reveal';
 
 const t = makeT('en');
 const dict = en as Record<string, string>;
@@ -73,15 +71,17 @@ const runMarkup = (quality: 'exact' | 'estimate' = 'exact'): string => {
     <Run
       status={quality === 'estimate' ? 'estimate' : 'ready'}
       view={results}
-      marks={marksFor(reference, results.hero.served, results.hero.demand, true)}
       answers={{ pt: '4in10', rush: 'bit', trucks: 'few' }}
       trucks
-      onTrucks={() => {}}
       onReplay={() => {}}
       periodName="morning"
       reduced={false}
       period={0}
       onPeriod={() => {}}
+      playing={false}
+      hour={8}
+      onSeekHour={() => {}}
+      onTogglePlay={() => {}}
       periods={3}
       nothingToRebalance={false}
       onRetry={() => {}}
@@ -92,48 +92,47 @@ const runMarkup = (quality: 'exact' | 'estimate' = 'exact'): string => {
 };
 
 describe('the results screen', () => {
-  it('shows the hero, the three marks, the three tiles, the losses and the trucks switch', () => {
+  it('shows five KPI cards, the trips pie and the period bars', () => {
     const html = runMarkup();
-    expect(html).toContain(t('play.hero.line', { served: '1 000', total: '1 453' }));
-    for (const label of ['play.tile.pt', 'play.tile.rush', 'play.tile.trucks']) {
+    for (const label of ['play.kpi.service', 'play.tile.pt', 'play.kpi.trucks', 'play.kpi.stations']) {
       expect(html, label).toContain(esc(t(label)));
     }
-    expect(html).toContain(t('play.loss.h'));
-    expect(html).toContain(esc(t('play.loss.noStation')));
-    expect(html).toContain(t('play.trucks.with'));
-    expect(html).toContain(t('play.trucks.without'));
-    // the three marks of the served line, in one line and with no ranking word
-    expect(html).toContain(t('play.mark.random'));
-    expect(html).toContain(t('play.mark.optimiser'));
+    expect(html).toContain(esc(t('play.pie.h')));
+    for (const fate of ['bikeOnly', 'bikePt', 'noStation', 'noStock', 'unreachable']) {
+      expect(html, fate).toContain(esc(t(`play.pie.${fate}`)));
+    }
+    expect(html).toContain(t('play.bars.h'));
+    // the old strips are gone: hero, marks line, rush tile, losses list, stacked chart
+    for (const gone of ['play.tile.rush', 'play.loss.h', 'play.chart.h']) {
+      expect(html, gone).not.toContain(esc(t(gone)));
+    }
   });
 
-  it('puts the visitor own guess next to every tile', () => {
+  it('puts the visitor own guess next to the cards that answer one', () => {
     const html = runMarkup();
     expect(html).toContain(t('play.tile.guess', { answer: t('play.q.pt.4in10') }));
-    expect(html).toContain(t('play.tile.guess', { answer: t('play.q.rush.bit') }));
     expect(html).toContain(t('play.tile.guess', { answer: t('play.q.trucks.few') }));
   });
 
-  it('flags the estimate engine and drops the bike / bike + PT split', () => {
-    const html = runMarkup('estimate');
-    expect(html).toContain(t('play.estimate.tag'));
-    expect(html).toContain(esc(t('play.chart.nosplit')));
-    expect(html).not.toContain(esc(t('play.chart.note')));
+  it('takes every pie share from the total number of trips', () => {
+    const results = view();
+    const slices = fateSlices(results);
+    const total = results.hero.demand;
+    expect(slices).toHaveLength(5);
+    expect(slices[0]!.share).toBeCloseTo((results.hero.served - results.pt.trips) / total, 9);
+    expect(slices[1]!.share).toBeCloseTo(results.pt.trips / total, 9);
+    for (const [index, cause] of (['noStation', 'noStock', 'unreachable'] as const).entries()) {
+      const flow = results.losses.find((row) => row.cause === cause)!.flow;
+      expect(slices[index + 2]!.share).toBeCloseTo(flow / total, 9);
+    }
+    const sum = slices.reduce((acc, slice) => acc + slice.share, 0);
+    expect(slices[4]!.accumulated).toBeCloseTo(sum, 9);
   });
 });
 
-const optimiserMarkup = (answer: string | undefined): string => {
+const optimiserMarkup = (): string => {
   const results = view();
   const optimiser = optimiserView({ reference, trucks: true, demandTotal: results.hero.demand });
-  const question = findQuestion('double')!;
-  const resolution = resolveAll(answer ? { double: answer } : {}, {
-    withTrucks,
-    withoutTrucks,
-    trucks: true,
-    optimiserDispatches: 9,
-    rhythm: { sharpStations: ['a'], referenceStations: ['a'] },
-    double: { lowBudgetEur: 60000, highBudgetEur: 120000, lowServed: 1161, highServed: 1321 },
-  }).find((entry) => entry.predictionId === 'double')!;
   return renderToStaticMarkup(
     <Optimiser
       contribution={{
@@ -147,16 +146,11 @@ const optimiserMarkup = (answer: string | undefined): string => {
         nextBudgetStepEur: 20000,
         nextTrips: 13,
       }}
-      rows={compare(results, optimiser)}
+      view={results}
       published={optimiser.published}
       mine={41}
       shared={38}
       trucks
-      onTrucks={() => {}}
-      question={question}
-      answer={answer}
-      onAnswer={() => {}}
-      reveal={answer ? revealOf(resolution, 'en') : null}
       budgets={[{ id: '080k', eur: 80000, label: 'Reference · 80 000 €' }]}
       browsing="080k"
       onBrowse={() => {}}
@@ -171,25 +165,21 @@ const optimiserMarkup = (answer: string | undefined): string => {
 };
 
 describe('the optimiser screen', () => {
-  it('leads the comparison with the sizing, in the order plan.md 2bis asks for', () => {
-    const html = optimiserMarkup(undefined);
-    const order = ['stations', 'docks', 'bikes', 'truckRuns', 'served'].map((key) =>
-      html.indexOf(esc(t(`play.compare.${key}`))),
-    );
-    expect(order.every((position) => position >= 0)).toBe(true);
-    expect([...order].sort((a, b) => a - b)).toEqual(order);
+  it('prints the step-4 tiles and charts for the browsed budget', () => {
+    const html = optimiserMarkup();
+    for (const key of ['play.kpi.service', 'play.tile.pt', 'play.kpi.trucks', 'play.kpi.stations', 'play.pie.h', 'play.bars.h']) {
+      expect(html).toContain(esc(t(key)));
+    }
   });
 
-  it('hides the budget chips until the double-the-budget poll is answered', () => {
-    expect(optimiserMarkup(undefined)).not.toContain(esc(t('play.optimiser.browse')));
-    const answered = optimiserMarkup('none');
-    expect(answered).toContain(t('play.optimiser.browse'));
-    // the reveal carries the 30-dock caveat the plan asks for
-    expect(answered).toContain('30 docks');
+  it('always offers the budget chips and no longer asks the double-budget poll', () => {
+    const html = optimiserMarkup();
+    expect(html).toContain('Reference · 80 000 €');
+    expect(html).not.toContain(esc(t('play.q.double')));
   });
 
   it('keeps the published figure one tap away, never in place of the engine', () => {
-    const html = optimiserMarkup(undefined);
+    const html = optimiserMarkup();
     expect(html).toContain(esc(t('play.compare.paper.open')));
     expect(html).toContain(esc(t('play.compare.overlap', { shared: '38', mine: '41' })));
   });

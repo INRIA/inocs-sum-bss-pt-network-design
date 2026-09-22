@@ -11,8 +11,8 @@ import { MarksLine } from './screens/ResultBits';
 /**
  * The ticket — the reward loop of UX reference §8.
  *
- * Step 3 stamps the answers as they are given (`Ticket`, the default export),
- * and step 6 replays the whole thing (`FullTicket` + `PredictionRow`): what
+ * Step 2 stamps the answers as they are given (`Ticket`, the default export),
+ * and step 5 replays the whole thing (`FullTicket` + `PredictionRow`): what
  * the visitor said, then what the model found, in the SAME order the questions
  * were asked.
  *

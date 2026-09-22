@@ -1,6 +1,5 @@
 /**
- * One question per screen, with "n of 5" dots and every option a full-width
- * button (plan-technical §B.2). The poll shows no verdict of any kind: the
+ * The four polls of step 3, all on screen and all optional. The poll shows no verdict of any kind: the
  * reveal belongs to step 4.
  */
 import { describe, expect, it } from 'vitest';
@@ -15,7 +14,7 @@ const questions = questionsFor('predict');
 
 const render = (answers: Record<string, string> = {}): string =>
   renderToStaticMarkup(
-    <Predict questions={questions} answers={answers} onAnswer={() => {}} t={t} />,
+    <Predict questions={questions} answers={answers} onAnswer={() => {}} onClear={() => {}} t={t} />,
   );
 
 const count = (html: string, needle: string): number => html.split(needle).length - 1;
@@ -24,37 +23,33 @@ const esc = (text: string): string => text.replace(/'/g, '&#x27;').replace(/"/g,
 const dots = (html: string): number => (html.match(/class="playdot[ "]/g) ?? []).length;
 
 describe('Predict', () => {
-  it('asks the five step-3 polls, one screen at a time', () => {
-    expect(questions).toHaveLength(5);
+  it('asks the four step-3 polls, all on screen', () => {
+    expect(questions).toHaveLength(4);
     const html = render();
-    const first = questions[0]!;
-    expect(html).toContain(esc(t(first.questionKey)));
-    for (const other of questions.slice(1)) expect(html).not.toContain(esc(t(other.questionKey)));
+    for (const question of questions) expect(html).toContain(esc(t(question.questionKey)));
+    expect(html).not.toContain(esc(t('play.q.rush')));
+    expect(count(html, 'class="playpoll"')).toBe(4);
   });
 
-  it('draws one dot per question and says where the visitor is', () => {
+  it('says the polls are optional and draws no dots or ticket', () => {
     const html = render();
-    expect(dots(html)).toBe(questions.length);
-    expect(html).toContain(t('play.predict.progress', { n: 1, total: questions.length }));
-    expect(html).toContain('playdot cur');
+    expect(html).toContain(t('play.predict.optional'));
+    expect(html).not.toContain('playdot ');
+    expect(html).not.toContain('playticket');
   });
 
-  it('renders every option of the current question as its own button', () => {
+  it('renders every option of every question as its own button', () => {
     const html = render();
-    const first = questions[0]!;
-    expect(count(html, 'class="playoption"')).toBe(first.options.length);
-    for (const option of first.options) expect(html).toContain(esc(t(option.labelKey)));
+    const total = questions.reduce((sum, question) => sum + question.options.length, 0);
+    expect(count(html, 'class="playoption"')).toBe(total);
+    for (const question of questions) {
+      for (const option of question.options) expect(html).toContain(esc(t(option.labelKey)));
+    }
   });
 
-  it('promises no right answer, and stamps what has been answered on the ticket', () => {
+  it('promises no right answer and presses the chosen option', () => {
     const html = render({ served: 'lt40' });
     expect(html).toContain(t('play.predict.noright'));
-    expect(html).toContain(t('play.short.served'));
-    expect(html).toContain(t('play.q.served.lt40'));
-    expect(html).toContain('aria-pressed="true"');
-  });
-
-  it('shows an empty ticket before anything is answered', () => {
-    expect(render()).toContain(t('play.ticket.empty'));
+    expect(count(html, 'aria-pressed="true"')).toBe(1);
   });
 });

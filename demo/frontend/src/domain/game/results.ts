@@ -12,7 +12,7 @@
  *
  * Pure domain: no React, no DOM, no fetch, no node imports.
  */
-import type { BudgetReference } from '../evaluation/types';
+import type { BudgetReference, OptimiserRun } from '../evaluation/types';
 import type { EvaluationSummary } from './session';
 
 export interface HeroView {
@@ -284,6 +284,58 @@ export function optimiserView(input: OptimiserInput): OptimiserView {
       ratio: rate(reference.publishedServedTotal, input.demandTotal),
     },
     nStations: reference.nStations,
+  };
+}
+
+/**
+ * The optimiser's network as the SAME view-model the visitor's results use, so
+ * step 5 can print the step-4 tiles and charts unchanged for any budget.
+ *
+ * Read from the reference's same-engine run (with or without trucks, as the
+ * switch says), not from the published plan, so a rounding artefact can never
+ * make one column look better. `trucks.dispatches` carries the exact run count,
+ * which only the optimiser's plan can honestly show (the LP's relaxed count
+ * overstates it, so it is read from the committed plan, never from the run).
+ */
+export function optimiserResults(
+  reference: BudgetReference,
+  trucks: boolean,
+  plan: OptimiserPlanFacts | null = null,
+): ResultsView | null {
+  const run: OptimiserRun | undefined = trucks
+    ? reference.optimiserWithTrucks
+    : reference.optimiserWithoutTrucks;
+  if (!run || !Array.isArray(run.demandByPeriod)) return null;
+  const rows: PeriodRow[] = run.demandByPeriod.map((demand, period) => ({
+    period,
+    demand,
+    served: run.servedByPeriod[period] ?? 0,
+    bikeOnly: run.bikeOnlyByPeriod[period] ?? 0,
+    bikePt: run.bikePtByPeriod[period] ?? 0,
+  }));
+  return {
+    quality: 'exact',
+    feasible: run.feasible,
+    hero: { served: run.served, demand: run.demandTotal, ratio: run.servedRatio },
+    pt: { share: run.ptShare, trips: Math.round(run.ptShare * run.served) },
+    rush: rushOf(run),
+    trucks: {
+      dependOnTrucks: Math.max(
+        0,
+        Math.round(reference.optimiserWithTrucks.served - reference.optimiserWithoutTrucks.served),
+      ),
+      dispatches: trucks && plan ? plan.dispatches : null,
+    },
+    periods: rows,
+    losses: lossesOf({ demandTotal: run.demandTotal, losses: run.losses } as EvaluationSummary),
+    built: {
+      stations: run.nStations,
+      atPtStops: run.nTransfer,
+      docks: run.docks,
+      bikes: run.bikes,
+      capexEur: run.capexEur,
+      budgetEur: reference.budgetEur,
+    },
   };
 }
 

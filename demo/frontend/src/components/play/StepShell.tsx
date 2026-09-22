@@ -22,8 +22,6 @@ import type { StepView } from './stepView';
  * draw, through `view.map`.
  */
 const SNAP: Record<GameStep, Snap> = {
-  entry: 'full',
-  budget: 'full',
   build: 'peek',
   predict: 'full',
   run: 'peek',
@@ -85,7 +83,7 @@ export default function StepShell({
     [snapTo],
   );
 
-  // `.stepcard` is ONE scroll container, reused by all six steps: without this
+  // `.stepcard` is ONE scroll container, reused by all five steps: without this
   // a visitor arriving on a step lands wherever the previous one was left —
   // the conclusions opening halfway down its own ticket, for instance.
   useEffect(() => {

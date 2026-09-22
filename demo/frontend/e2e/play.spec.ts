@@ -1,8 +1,9 @@
 import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
 
 /**
- * Smoke tests for /play/, the six-step decision game (entry -> budget -> build
- * -> predict -> run -> optimiser -> conclusions; run/optimiser/conclusions are
+ * Smoke tests for /play/, the five-step decision game (build, which
+ * holds the budget choice and the placement -> predict -> run -> optimiser ->
+ * conclusions; run/optimiser/conclusions are
  * placeholders). Each test starts from a fresh browser context (Playwright's
  * default), so localStorage/hash state never leaks between tests.
  *
@@ -28,12 +29,10 @@ function collectPageErrors(page: Page) {
   return { pageErrors, consoleErrors };
 }
 
-/** Entry -> pick the 20 k€ plan -> Next. Leaves the session on `build`. */
+/** Open the game -> pick the 20 k€ plan. Leaves the session on `build`. */
 async function toBuild(page: Page) {
   await page.goto(PLAY);
-  await page.getByRole('button', { name: 'Take the job' }).click();
-  await page.locator('.scard', { hasText: 'Starter' }).getByRole('button', { name: 'Choose this budget' }).click();
-  await page.getByRole('button', { name: 'Go and place the stations' }).click();
+  await page.locator('.scard', { hasText: 'Starter' }).click();
   await expect(page.locator('.step-build')).toBeVisible();
   // The bottom sheet (phone/tablet) re-snaps per step with a 250ms CSS
   // transition (useBottomSheet.ts SNAP); settle before interacting so a tap
@@ -55,7 +54,7 @@ test.describe('play: load and console health', () => {
     const response = await page.goto(PLAY);
     expect(response?.status()).toBeLessThan(400);
     await expect(page.locator('.playapp')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Take the job' })).toBeVisible();
+    await expect(page.locator('.step-build')).toBeVisible();
     // let the island hydrate and any async warnings surface
     await page.waitForTimeout(1000);
     test.info().annotations.push({ type: 'pageErrors', description: JSON.stringify(pageErrors) });
@@ -65,16 +64,16 @@ test.describe('play: load and console health', () => {
   });
 });
 
-test.describe('play: entry -> budget -> build', () => {
+test.describe('play: plan (budget, then build)', () => {
   test('b. picking the 20k plan reaches build; tracker shows build current', async ({ page }) => {
     await toBuild(page);
     const compactCount = await page.locator('.tracker.compact').count();
     if (compactCount > 0) {
-      await expect(page.locator('.trackpos')).toContainText('2 of 6');
+      await expect(page.locator('.trackpos')).toContainText('1 of 5');
     } else {
       const current = page.locator('.tracker .trackitem.current');
       await expect(current).toHaveCount(1);
-      await expect(current).toContainText('Build');
+      await expect(current).toContainText('Plan');
     }
   });
 });
@@ -147,7 +146,7 @@ test.describe('play: build - assistant', () => {
     test.info().annotations.push({ type: 'assist-n', description: String(n) });
 
     const freeBefore = await freeCandidates(page).count();
-    await page.getByRole('button', { name: 'Place them for me' }).click();
+    await page.getByRole('button', { name: 'Place 10 randomly' }).click();
 
     await expect(placedCountFromMeter(page)).toHaveText(String(n));
     const freeAfter = await freeCandidates(page).count();
@@ -201,7 +200,7 @@ test.describe('play: evaluation', () => {
     });
 
     // Place >=10 stations quickly via the assistant.
-    await page.getByRole('button', { name: 'Place them for me' }).click();
+    await page.getByRole('button', { name: 'Place 10 randomly' }).click();
     await expect(placedCountFromMeter(page)).not.toHaveText('0');
 
     await page.getByRole('button', { name: 'I am done placing' }).click();
@@ -260,7 +259,7 @@ test.describe('play: evaluation', () => {
 test.describe('play: persistence', () => {
   test('g. reload keeps step, placed stations and predictions', async ({ page }) => {
     await toBuild(page);
-    await page.getByRole('button', { name: 'Place them for me' }).click();
+    await page.getByRole('button', { name: 'Place 10 randomly' }).click();
     const placedText = await placedCountFromMeter(page).textContent();
     expect(placedText).not.toBe('0');
 
@@ -285,26 +284,26 @@ test.describe('play: persistence', () => {
 });
 
 test.describe('play: hash deep links and back', () => {
-  test('h. #/step/build on a fresh session falls back; back returns to the previous step', async ({ page }) => {
-    await page.goto(`${PLAY}#/step/build`);
+  test('h. #/step/predict on a fresh session falls back to the plan; back returns to it from predict', async ({ page }) => {
+    await page.goto(`${PLAY}#/step/predict`);
     await expect(page.locator('.playapp')).toBeVisible();
-    // build is not enterable without a budget: the hook should fall back to an allowed step (entry).
-    await page.waitForTimeout(500);
+    // predict is not enterable without a budget and a station: the hook falls back to the first step.
+    await expect(page.locator('.step-build')).toBeVisible({ timeout: 5000 });
     const hash = await page.evaluate(() => window.location.hash);
     test.info().annotations.push({ type: 'resolved-hash', description: hash });
-    expect(hash).not.toBe('#/step/build');
-    await expect(page.locator('.step-build')).toHaveCount(0);
+    expect(hash).toBe('#/step/build');
+    await expect(page.locator('.step-predict')).toHaveCount(0);
 
     // Now walk forward normally and check browser back.
-    await page.getByRole('button', { name: 'Take the job' }).click();
-    await expect(page.locator('.step-budget')).toBeVisible();
-    await page.locator('.scard', { hasText: 'Starter' }).getByRole('button', { name: 'Choose this budget' }).click();
-    await page.getByRole('button', { name: 'Go and place the stations' }).click();
-    await expect(page.locator('.step-build')).toBeVisible();
+    await page.locator('.scard', { hasText: 'Starter' }).click();
+    await page.waitForTimeout(350);
+    await page.getByRole('button', { name: 'Place 10 randomly' }).click();
+    await page.getByRole('button', { name: 'I am done placing' }).click();
+    await expect(page.locator('.step-predict')).toBeVisible();
 
     await page.goBack();
-    // Back from build should land on the previous step (budget).
-    await expect(page.locator('.step-budget')).toBeVisible({ timeout: 5000 });
+    // Back from predict should land on the plan step.
+    await expect(page.locator('.step-build')).toBeVisible({ timeout: 5000 });
   });
 });
 
@@ -315,7 +314,7 @@ test.describe('play: phone layout', () => {
 
     await expect(page.locator('.playsheet')).toBeVisible();
     await expect(page.locator('.tracker.compact')).toBeVisible();
-    await expect(page.locator('.trackpos')).toContainText('2 of 6');
+    await expect(page.locator('.trackpos')).toContainText('1 of 5');
 
     // Primary action visible within viewport.
     const primaryBtn = page.getByRole('button', { name: 'I am done placing' });
@@ -369,15 +368,10 @@ test.describe('play: full demo still works', () => {
  */
 async function toOptimiser(page: Page, options: { trucksOff?: boolean } = {}) {
   await page.goto(PLAY);
-  await page.getByRole('button', { name: 'Take the job' }).click();
-  await page
-    .locator('.scard', { hasText: 'Reference' })
-    .getByRole('button', { name: 'Choose this budget' })
-    .click();
-  await page.getByRole('button', { name: 'Go and place the stations' }).click();
+  await page.locator('.scard', { hasText: 'Reference' }).click();
   await expect(page.locator('.step-build')).toBeVisible();
   await page.waitForTimeout(350);
-  await page.getByRole('button', { name: 'Place them for me' }).click();
+  await page.getByRole('button', { name: 'Place 10 randomly' }).click();
   await expect(placedCountFromMeter(page)).not.toHaveText('0');
   await page.getByRole('button', { name: 'I am done placing' }).click();
   await expect(page.locator('.step-predict')).toBeVisible();
@@ -423,31 +417,23 @@ test.describe('play: the optimiser step draws the optimiser', () => {
     const ghosts = page.locator('.mapcard g[opacity="0.6"]');
     await expect(ghosts).toHaveCount(1);
 
-    // The compare table: five rows at least, each with two numeric columns.
-    const rows = page.locator('.playcompare tbody tr');
-    expect(await rows.count()).toBeGreaterThanOrEqual(5);
-    await expect(page.locator('.playcompare tbody tr td.n')).toHaveCount((await rows.count()) * 2);
-    // It is actually laid out, not collapsed to nothing by a flex rule.
-    const tableBox = await page.locator('.playcompare').boundingBox();
-    expect(tableBox!.height).toBeGreaterThan(60);
-    // It leads with the sizing and only then with the trips.
-    const order = await page.locator('.playcompare tbody tr td:first-child').allInnerTexts();
-    expect(order.slice(0, 5)).toEqual([
-      'Stations',
-      'Docks',
-      'Bikes',
-      'Truck runs a day',
-      'Trips served',
-    ]);
-
-    // Answering the poll reveals the budget chips; no unfilled placeholder in
-    // the reveal it prints.
-    await page.locator('.playpoll .playoption').first().click();
+    // The step-4 metrics, for the optimiser's network: four tiles, the pie,
+    // the per-period bars. No poll needs answering before the chips work.
+    await expect(page.locator('.playtiles .playtile')).toHaveCount(4);
+    await expect(page.locator('.playpie')).toBeVisible();
+    await expect(page.locator('.playbars li')).not.toHaveCount(0);
     expect(await page.locator('.playstep').innerText()).not.toMatch(/[{}]/);
-    await page.getByRole('button', { name: 'See the network with a different budget' }).click();
+    const served80 = await page.locator('.playtiles .playtile').first().innerText();
+
+    // Choosing another budget redraws the map and changes the metrics.
     await page.getByRole('button', { name: /Starter/ }).click();
     await page.waitForTimeout(700);
     await expect(planStations(page)).toHaveCount(33);
+    expect(await page.locator('.playtiles .playtile').first().innerText()).not.toBe(served80);
+
+    // The poll still works and its reveal has no unfilled placeholder.
+    await page.locator('.playpoll .playoption').first().click();
+    expect(await page.locator('.playstep').innerText()).not.toMatch(/[{}]/);
 
     // Both bike legend items are toggles, and each hides its own layer. Under
     // 980 px the legend bars are hidden and the "Layers" chip carries them.
@@ -502,7 +488,7 @@ test.describe('play: phone run sheet', () => {
   }, testInfo) => {
     test.skip(testInfo.project.name !== 'phone', 'phone-only checks');
     await toBuild(page);
-    await page.getByRole('button', { name: 'Place them for me' }).click();
+    await page.getByRole('button', { name: 'Place 10 randomly' }).click();
     await expect(placedCountFromMeter(page)).not.toHaveText('0');
     await page.getByRole('button', { name: 'I am done placing' }).click();
     const questions = page.locator('.playoption');

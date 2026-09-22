@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { budgetState, maxStations, stationFloorCostEur, stationsCostEur } from './budget';
+import { budgetState, maxStations, stationLimit, stationFloorCostEur, stationsCostEur } from './budget';
 import { decodeConstants } from '../../infra/gameData';
 import { readGameJson } from '../../infra/gameFixtures';
 
@@ -62,5 +62,14 @@ describe('budget arithmetic', () => {
     expect(budgetState(20000, 0, constants).usedFraction).toBe(0);
     expect(budgetState(20000, 500, constants).usedFraction).toBe(1);
     expect(budgetState(0, 3, constants).usedFraction).toBe(0);
+  });
+
+  it('caps the stations a visitor may place at 30 / 60 / 80 / 90 per budget', () => {
+    const limits = [20000, 60000, 80000, 120000].map((b) => stationLimit(b, constants));
+    expect(limits).toEqual([30, 60, 80, 90]);
+    const full = budgetState(60000, 60, constants);
+    expect(full.roomLeft).toBe(0);
+    expect(full.overLimit).toBe(false);
+    expect(budgetState(60000, 61, constants).overLimit).toBe(true);
   });
 });

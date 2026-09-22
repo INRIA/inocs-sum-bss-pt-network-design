@@ -133,7 +133,7 @@ demo/
                            21 vectors) [see "Hard rules" exception below]
   frontend/                Astro + React static site. TWO pages: index.astro is the public demo
                            (five header-tab steps, no advanced toggle); play.astro is the
-                           "planner game" (/play, six tracked steps behind one entry screen).
+                           "planner game" (/play, five tracked steps, opening directly on the first).
                            scripts/prepare-data.mjs = the only data bridge (copies
                            results/shared/game/ verbatim, plus highs.wasm, into public/data/game/).
                            src/domain/          pure TS, no React/DOM/fetch: evaluation/ (the LP
@@ -351,7 +351,7 @@ python network-design-bss/sdk-builder/sync_requirements.py --check
   the GitHub Pages project path a relative guess resolves to the wrong place.
 - `useHashStep` must not run before the session is restored: the session always renders EMPTY
   first (server and client must match) and is hydrated in an effect after mount; resolving
-  `#/step/<id>` against that still-empty session would demote the visitor to the entry step
+  `#/step/<id>` against that still-empty session would demote the visitor to the first step
   and then persist the demotion. `useHashStep` therefore takes a `ready` flag and does nothing
   in either direction until it is true (fixed by `bcb4605` after the Playwright smoke test
   caught the reload-persistence bug it describes).

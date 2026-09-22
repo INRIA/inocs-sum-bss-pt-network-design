@@ -19,7 +19,7 @@ export type GoToStep = (step: GameStep) => StepGuard;
  * @param go   the session's guarded navigation; its guard decides the fallback.
  * @param ready false until the stored session has been restored. The session renders EMPTY first
  *             and is restored in an effect after mount; resolving the hash against that empty
- *             session would walk the visitor back to the entry step and persist the demotion, so
+ *             session would walk the visitor back to the first step and persist the demotion, so
  *             neither direction runs before `ready`.
  */
 export function useHashStep(step: GameStep, go: GoToStep, ready = true): void {

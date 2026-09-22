@@ -13,7 +13,7 @@ describe('parseStepHash', () => {
   it('reads every step, with or without the leading hash or a trailing slash', () => {
     expect(parseStepHash('#/step/build')).toBe('build');
     expect(parseStepHash('/step/conclusions')).toBe('conclusions');
-    expect(parseStepHash('#/step/entry/')).toBe('entry');
+    expect(parseStepHash('#/step/build/')).toBe('build');
   });
 
   it('names nothing for anything else', () => {
@@ -30,8 +30,8 @@ describe('parseStepHash', () => {
 
 describe('stepsBackFrom', () => {
   it('tries the step itself first, then every earlier one', () => {
-    expect(stepsBackFrom('predict')).toEqual(['predict', 'build', 'budget', 'entry']);
-    expect(stepsBackFrom('entry')).toEqual(['entry']);
+    expect(stepsBackFrom('predict')).toEqual(['predict', 'build']);
+    expect(stepsBackFrom('build')).toEqual(['build']);
   });
 
   it('falls back to the whole route, latest first, for an unknown step', () => {

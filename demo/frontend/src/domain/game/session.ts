@@ -48,6 +48,18 @@ export const BUDGET_SCENARIO: Readonly<Record<BudgetId, string>> = {
   '120k': 'budget_120k',
 };
 
+/**
+ * The number of docks each plan is presented as allowing, as briefed for the
+ * plan cards (20 / 60 / 80 / 120 k€ -> 30 / 60 / 80 / 90 docks). A label for the
+ * card, not something the game computes.
+ */
+export const BUDGET_DOCKS: Readonly<Record<BudgetId, number>> = {
+  '020k': 30,
+  '060k': 60,
+  '080k': 80,
+  '120k': 90,
+};
+
 export function isBudgetId(value: unknown): value is BudgetId {
   return typeof value === 'string' && BUDGET_IDS.includes(value as BudgetId);
 }
@@ -103,8 +115,8 @@ export const EMPTY_SESSION: Session = {
   placed: [],
   history: [],
   predictions: {},
-  step: 'entry',
-  visited: ['entry'],
+  step: 'build',
+  visited: ['build'],
   trucks: true,
   layoutHash: null,
   evaluation: null,
@@ -174,6 +186,7 @@ export type Action =
   | { readonly type: 'undo' }
   | { readonly type: 'clearLayout' }
   | { readonly type: 'answer'; readonly predictionId: PredictionId; readonly optionId: string }
+  | { readonly type: 'clearAnswer'; readonly predictionId: PredictionId }
   /** Ignored when `canEnter` refuses; the caller asks first to get the reason. */
   | { readonly type: 'go'; readonly step: GameStep }
   | { readonly type: 'setTrucks'; readonly trucks: boolean }
@@ -225,7 +238,7 @@ export function canPlace(
   if (!session.budgetId) return { ok: false, reasonKey: 'play.refuse.budget' };
   if (!constants) return { ok: true };
   const state = budgetState(BUDGET_EUR[session.budgetId], session.placed.length + 1, constants);
-  if (state.overBudget) return { ok: false, reasonKey: 'play.refuse.budget.full' };
+  if (state.overBudget || state.overLimit) return { ok: false, reasonKey: 'play.refuse.budget.full' };
   return { ok: true };
 }
 
@@ -246,8 +259,8 @@ export function reduce(session: Session, action: Action): Session {
         ...EMPTY_SESSION,
         version: session.version,
         budgetId: action.budgetId,
-        step: session.step === 'entry' ? 'entry' : 'budget',
-        visited: session.step === 'entry' ? ['entry'] : ['entry', 'budget'],
+        step: 'build',
+        visited: ['build'],
       };
     }
     case 'toggleStation': {
@@ -286,6 +299,11 @@ export function reduce(session: Session, action: Action): Session {
         ...session,
         predictions: { ...session.predictions, [action.predictionId]: action.optionId },
       };
+    }
+    case 'clearAnswer': {
+      if (!(action.predictionId in session.predictions)) return session;
+      const { [action.predictionId]: _dropped, ...rest } = session.predictions;
+      return { ...session, predictions: rest };
     }
     case 'go': {
       if (!isGameStep(action.step)) return session;
@@ -333,6 +351,8 @@ export interface SessionEnv {
   readonly candidateCount?: number;
   /** The reach table of `coverage.json`, for the assistant. */
   readonly reach?: readonly ReachRow[];
+  /** Uniform [0, 1) source for `placeRandom`; tests inject a seeded one. */
+  readonly random?: () => number;
 }
 
 export type ToggleOutcome = 'placed' | 'removed' | 'refused';
@@ -350,9 +370,13 @@ export interface SessionActions {
   toggleStation(id: StationId): ToggleResult;
   /** Places up to `n` stations with the follow-the-demand rule. Returns them. */
   assist(n: number): StationId[];
+  /** Places up to `n` free candidates chosen at random (`env.random`, default `Math.random`). */
+  placeRandom(n: number): StationId[];
   undo(): void;
   clearLayout(): void;
   answer(predictionId: PredictionId, optionId: string): void;
+  /** Skip a poll again: the visitor took their answer back. */
+  clearAnswer(predictionId: PredictionId): void;
   /** Moves if the guard allows, and returns the guard either way. */
   go(step: GameStep): StepGuard;
   setTrucks(trucks: boolean): void;
@@ -407,9 +431,35 @@ export function createActions(
       if (ids.length > 0) dispatch({ type: 'assist', ids });
       return ids;
     },
+    placeRandom: (n) => {
+      const session = getSession();
+      const candidateCount = env.candidateCount ?? 0;
+      if (candidateCount <= 0 || !session.budgetId || n <= 0) return [];
+      const taken = new Set(layoutIds(session.placed));
+      let limit = Math.floor(n);
+      if (env.constants) {
+        limit = Math.min(
+          limit,
+          budgetState(BUDGET_EUR[session.budgetId], session.placed.length, env.constants).roomLeft,
+        );
+      }
+      const free: StationId[] = [];
+      for (let id = 0; id < candidateCount; id += 1) if (!taken.has(id)) free.push(id);
+      const random = env.random ?? Math.random;
+      // Partial Fisher-Yates: the first `limit` slots end up a uniform sample.
+      const count = Math.min(limit, free.length);
+      for (let i = 0; i < count; i += 1) {
+        const j = i + Math.floor(random() * (free.length - i));
+        [free[i], free[j]] = [free[j]!, free[i]!];
+      }
+      const ids = free.slice(0, count);
+      if (ids.length > 0) dispatch({ type: 'assist', ids });
+      return ids;
+    },
     undo: () => dispatch({ type: 'undo' }),
     clearLayout: () => dispatch({ type: 'clearLayout' }),
     answer: (predictionId, optionId) => dispatch({ type: 'answer', predictionId, optionId }),
+    clearAnswer: (predictionId) => dispatch({ type: 'clearAnswer', predictionId }),
     go: (step) => {
       const guard = canEnter(step, getSession());
       if (guard.ok) dispatch({ type: 'go', step });
@@ -554,8 +604,9 @@ export function deserialize(raw: unknown): Session | null {
     history: [],
     predictions,
     step: raw.step,
-    visited: visited.includes('entry') ? visited : ['entry', ...visited],
-    trucks: raw.trucks,
+    visited: visited.includes('build') ? visited : ['build', ...visited],
+    // the results always admit service trucks: a stored "without" is not honoured
+    trucks: true,
     layoutHash: raw.layoutHash,
     evaluation,
     compareBudgetId: raw.compareBudgetId ?? null,
@@ -564,7 +615,7 @@ export function deserialize(raw: unknown): Session | null {
   // A stored step whose guard no longer holds (the blob was edited, or a guard
   // changed between builds) falls back to the furthest step that does hold.
   if (!canEnter(restored.step, restored).ok) {
-    let fallback: GameStep = 'entry';
+    let fallback: GameStep = 'build';
     for (const step of ALL_STEPS) {
       if (!canEnter(step, restored).ok) break;
       fallback = step;

@@ -1,14 +1,13 @@
-import { useRef, useState } from "react";
-import { fmtEur, fmtInt, fmtPct } from "../../../lib/format";
+import type { ReactNode } from "react";
+import { fmtEur, fmtInt, fmtPct, hh } from "../../../lib/format";
 import type { T } from "../../../lib/i18n";
 import type { Lang } from "../../../lib/types";
 import type { ModelConstants } from "../../../domain/evaluation/types";
 import type { BudgetState } from "../../../domain/placement/budget";
 import type { ReachState, TapDetail } from "../../../hooks/usePlacement";
-import { requestSnap } from "../sheetBus";
 
 /**
- * Step 2 — the panel beside the map while the visitor places stations.
+ * Step 1, second part — the panel beside the map while the visitor places stations.
  *
  * The felt constraint is money, not the station cap: at the shipped budgets
  * the cap never binds (100 candidates against 100 to 600 affordable), so what
@@ -42,10 +41,79 @@ export function perStationLeft(remainingEur: number, placed: number): number {
   return placed > 0 ? Math.max(0, remainingEur) / placed : 0;
 }
 
-/** The assistant's slider starts here, and is clamped by what is still free and affordable. */
-export const ASSIST_DEFAULT = 20;
+/** How many stations one press of the random button places. */
+export const RANDOM_BATCH = 10;
+
+/**
+ * Back, play/pause, forward, then the day's timeline and clock to the right.
+ * Back and forward move one hour and pause the clock (the visitor is looking
+ * at that hour); the slider does the same.
+ */
+export function DayTransport({
+  label,
+  playing,
+  hour,
+  periodName,
+  onTogglePlay,
+  onSeekHour,
+  t,
+}: {
+  label?: string;
+  playing: boolean;
+  hour: number;
+  periodName: string;
+  onTogglePlay: () => void;
+  onSeekHour: (hour: number) => void;
+  t: T;
+}) {
+  return (
+    <div
+      className="playtransport"
+      role="group"
+      aria-label={t("play.build.watch")}
+    >
+      <span className="playtlabel">{label ?? t("play.build.moveslabel")}</span>
+      <button
+        className="ghostbtn playtbtn"
+        onClick={() => onSeekHour(hour - 1)}
+        aria-label={t("play.build.hourback")}
+      >
+        ◀
+      </button>
+      <button
+        className="ghostbtn playtbtn playplay"
+        onClick={onTogglePlay}
+        aria-pressed={playing}
+        aria-label={t("play.build.watch")}
+      >
+        {playing ? "❚❚" : "▶"}
+      </button>
+      <button
+        className="ghostbtn playtbtn"
+        onClick={() => onSeekHour(hour + 1)}
+        aria-label={t("play.build.hourfwd")}
+      >
+        ▶▶
+      </button>
+      <input
+        className="playtimeline"
+        type="range"
+        min={0}
+        max={23}
+        value={hour}
+        onChange={(e) => onSeekHour(Number(e.target.value))}
+        aria-label={t("s2.hour.aria")}
+      />
+      <span className="playclock mono">
+        {hh(hour)}
+        <span className="playperiod">{periodName}</span>
+      </span>
+    </div>
+  );
+}
 
 export default function Build({
+  top,
   meter,
   constants,
   reach,
@@ -55,18 +123,21 @@ export default function Build({
   canUndo,
   roomLeft,
   freeLeft,
-  previewReach,
   compact,
   lastTap,
   playing,
+  hour,
   periodName,
-  onAssist,
+  onSeekHour,
+  onPlaceRandom,
   onUndo,
   onClear,
   onTogglePlay,
   t,
   lang,
 }: {
+  /** The instructions and budget cards: first in the panel, right under the phone's peek bar. */
+  top: ReactNode;
   meter: BudgetState;
   constants: ModelConstants;
   reach: ReachState;
@@ -77,28 +148,30 @@ export default function Build({
   roomLeft: number;
   /** Candidate sites nobody has taken yet: the assistant cannot offer more. */
   freeLeft: number;
-  /** Share of the day's demand the layout plus the assistant's next `n` would reach. */
-  previewReach: (n: number) => number;
   /** The sheet layout: the peek bar exists, and the controls it carries are not repeated. */
   compact: boolean;
   lastTap: TapDetail | null;
   playing: boolean;
+  /** The day clock (0-23) the city pulse follows. */
+  hour: number;
   periodName: string;
-  onAssist: (n: number) => void;
+  onSeekHour: (hour: number) => void;
+  onPlaceRandom: (n: number) => void;
   onUndo: () => void;
   onClear: () => void;
   onTogglePlay: () => void;
   t: T;
   lang: Lang;
 }) {
-  const [assistN, setAssistN] = useState(ASSIST_DEFAULT);
-  const sliderRef = useRef<HTMLInputElement | null>(null);
   const low = meter.remainingEur < lowRemaining(constants, meter.placed);
-  // The slider offers exactly what the assistant could actually place: free
-  // sites the budget still covers, never a fixed 10 or 20.
-  const maxAssist = Math.max(1, Math.min(roomLeft, freeLeft));
-  const n = Math.min(assistN, maxAssist);
-  const preview = previewReach(n);
+  // The button places what is affordable and free, up to a batch; disabled
+  // when nothing more can be placed.
+  const canRandom = Math.min(roomLeft, freeLeft) > 0;
+  const remaining = Math.max(0, meter.maxStations - meter.placed);
+  const fill =
+    meter.maxStations > 0
+      ? Math.min(100, Math.round((meter.placed / meter.maxStations) * 100))
+      : 0;
 
   const tapNote =
     lastTap?.outcome === "ambiguous"
@@ -106,12 +179,6 @@ export default function Build({
       : lastTap?.outcome === "refused"
         ? t(lastTap.reasonKey ?? "play.build.tap.refused")
         : null;
-
-  /** The chip in the peek area: open the sheet far enough to show the slider, then focus it. */
-  const openAssistant = (): void => {
-    requestSnap("half");
-    window.setTimeout(() => sliderRef.current?.focus(), 280);
-  };
 
   return (
     <>
@@ -131,39 +198,75 @@ export default function Build({
           <div className="playpeekchips">
             <button
               className="ghostbtn"
-              onClick={openAssistant}
-              disabled={roomLeft <= 0}
+              onClick={() => onPlaceRandom(RANDOM_BATCH)}
+              disabled={!canRandom}
             >
-              {t("play.build.assist")}
+              {t("play.build.assistcta", { n: RANDOM_BATCH })}
             </button>
             <button className="ghostbtn" onClick={onUndo} disabled={!canUndo}>
               ↶ {t("play.build.undo")}
             </button>
-            <button
-              className="ghostbtn playplay"
-              onClick={onTogglePlay}
-              aria-pressed={playing}
-            >
-              {playing ? "❚❚" : "▶"} {t("play.build.watch")}
-            </button>
           </div>
+          <DayTransport
+            playing={playing}
+            hour={hour}
+            periodName={periodName}
+            onTogglePlay={onTogglePlay}
+            onSeekHour={onSeekHour}
+            t={t}
+          />
         </div>
       )}
 
+      {top}
+
       <h2 className="playh2">{t("play.build.title")}</h2>
 
-      <p className="playmeter">
-        <b className="mono">{fmtInt(meter.placed)}</b>{" "}
-        {t("play.build.stations")} ·{" "}
-        <b className="mono">{fmtEur(meter.stationsEur)}</b>{" "}
-        {t("play.build.onstations")}
-      </p>
-      <p
-        className={`playleft${low ? " low" : ""}${meter.overBudget ? " over" : ""}`}
-      >
-        <b className="mono">{fmtEur(Math.max(0, meter.remainingEur))}</b>{" "}
-        <span>{t("play.build.leftfor")}</span>
-      </p>
+      <div className="playbuildrow">
+        <div className="playcounter">
+          <div
+            className="playcounterring"
+            role="img"
+            aria-label={`${fmtInt(meter.placed)} / ${fmtInt(meter.maxStations)} ${t("play.build.stations")}`}
+          >
+            <b className="mono">{fmtInt(meter.placed)}</b>
+            <span className="mono">/ {fmtInt(meter.maxStations)}</span>
+          </div>
+          <p className="playcounterlab">
+            <b className="mono">{fmtInt(remaining)}</b>{" "}
+            {t("play.build.remaining")}
+            <span className="playcounterspent">
+              <b className="mono">{fmtEur(meter.stationsEur)}</b>{" "}
+              {t("play.build.onstations")}
+            </span>
+          </p>
+        </div>
+
+        <div className="playassist">
+          <button
+            className="ghostbtn"
+            onClick={() => onPlaceRandom(RANDOM_BATCH)}
+            disabled={!canRandom}
+          >
+            {t("play.build.assistcta", { n: RANDOM_BATCH })}
+          </button>
+        </div>
+
+        <div className="playrow">
+          {!compact && (
+            <button className="ghostbtn" onClick={onUndo} disabled={!canUndo}>
+              ↶ {t("play.build.undo")}
+            </button>
+          )}
+          <button
+            className="ghostbtn"
+            onClick={onClear}
+            disabled={meter.placed === 0}
+          >
+            {t("play.build.clear")}
+          </button>
+        </div>
+      </div>
       {low && !meter.overBudget && (
         <p className="note playwarn">
           {t("play.build.lowwarn", {
@@ -175,82 +278,16 @@ export default function Build({
         <p className="note playwarn">{t("play.build.overwarn")}</p>
       )}
 
-      <p className="playreach">
-        <b className="mono">{fmtInt(reach.flow)}</b>{" "}
-        <span>
-          {t("play.build.reach", {
-            total: fmtInt(demandTotal),
-            pct: fmtPct(lang, reach.share, 0),
-          })}
-        </span>
-      </p>
-      <div
-        className="playreachbar"
-        role="img"
-        aria-label={t("play.build.reach", {
-          total: fmtInt(demandTotal),
-          pct: fmtPct(lang, reach.share, 0),
-        })}
-      >
-        <i
-          style={{ width: `${Math.min(100, Math.round(reach.share * 100))}%` }}
+      {!compact && (
+        <DayTransport
+          playing={playing}
+          hour={hour}
+          periodName={periodName}
+          onTogglePlay={onTogglePlay}
+          onSeekHour={onSeekHour}
+          t={t}
         />
-      </div>
-      <p className="note playreachcap">{t("play.build.reachcap")}</p>
-      <p className="note">{t("play.build.reachnote")}</p>
-
-      <div className="playassist card">
-        <p className="decklab">{t("play.build.assist")}</p>
-        <div className="playassistrow">
-          <input
-            ref={sliderRef}
-            type="range"
-            min={1}
-            max={maxAssist}
-            value={n}
-            onChange={(e) => setAssistN(Number(e.target.value))}
-            aria-label={t("play.build.assistcount")}
-          />
-          <span className="mono playassistn">{n}</span>
-          <button
-            className="ghostbtn"
-            onClick={() => onAssist(n)}
-            disabled={roomLeft <= 0}
-          >
-            {t("play.build.assistcta")}
-          </button>
-        </div>
-        <p className="playassistpreview">
-          {t("play.build.assistpreview", { pct: fmtPct(lang, preview, 0) })}
-        </p>
-        <p className="note">{t("play.build.assistnote")}</p>
-      </div>
-
-      <div className="playrow">
-        {!compact && (
-          <button className="ghostbtn" onClick={onUndo} disabled={!canUndo}>
-            ↶ {t("play.build.undo")}
-          </button>
-        )}
-        <button
-          className="ghostbtn"
-          onClick={onClear}
-          disabled={meter.placed === 0}
-        >
-          {t("play.build.clear")}
-        </button>
-        {!compact && (
-          <button
-            className="ghostbtn playplay"
-            onClick={onTogglePlay}
-            aria-pressed={playing}
-          >
-            {playing ? "❚❚" : "▶"} {t("play.build.watch")}
-            <span className="playperiod">{periodName}</span>
-          </button>
-        )}
-        {compact && <span className="playperiod">{periodName}</span>}
-      </div>
+      )}
 
       {tapNote && <p className="note playwarn">{tapNote}</p>}
       <p className="note">{t("play.build.hint")}</p>

@@ -22,8 +22,7 @@
 }
 
 /* ---------- header ---------- */
-.playtop .playdemolink,
-.playlink {
+.playtop .playdemolink {
   color: #fff;
   border: 1.5px solid rgba(255, 255, 255, 0.5);
   border-radius: 999px;
@@ -35,8 +34,7 @@
   display: inline-flex;
   align-items: center;
 }
-.playtop .playdemolink:hover,
-.playlink:hover {
+.playtop .playdemolink:hover {
   border-color: #fff;
   background: rgba(255, 255, 255, 0.12);
 }
@@ -62,10 +60,15 @@
   padding: 10px 0 0;
   list-style: none;
 }
+/* The rail runs from the centre of the first marker to the centre of the last
+   one, so x% of it is a position among the markers (Tracker.tsx parks the bike
+   on them). A marker's centre is 17px into its column (6px padding + half of
+   the 22px disc); columns are equal, 4px apart. */
 .trackrail {
+  --track-col: calc((100% - (var(--track-count, 5) - 1) * 4px) / var(--track-count, 5));
   position: absolute;
-  left: 4%;
-  right: 4%;
+  left: 17px;
+  right: calc(var(--track-col) - 17px);
   top: 4px;
   height: 4px;
   border-radius: 999px;
@@ -279,7 +282,61 @@
   text-align: center;
 }
 
+/* ---------- step 1: instructions, then the budget ---------- */
+.playintrohead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.playintrohead .eyebrow {
+  margin-top: 6px;
+}
+.playabout {
+  flex: none;
+  font-size: 12.5px;
+  padding: 6px 10px;
+}
+.playaboutbody p {
+  margin: 0 0 10px;
+}
+.playhow {
+  list-style: decimal;
+  margin: 8px 0 14px;
+  padding-left: 20px;
+  font-size: 14px;
+}
+.playhow li {
+  margin: 4px 0;
+}
+.playapp .playh3 {
+  margin: 14px 0 4px;
+  font-size: 17px;
+}
 /* ---------- budget cards ---------- */
+.playcards {
+  flex: none;
+  align-items: start;
+}
+.playcards .scard {
+  cursor: pointer;
+}
+/* on a phone the cards scroll sideways; each is 60% of the screen so the next one peeks in */
+@media (max-width: 980px) {
+  .playcards .scard {
+    flex: 0 0 60%;
+  }
+}
+.playcards .scard:focus-visible {
+  outline: 2px solid var(--blue, #0a4a9c);
+  outline-offset: 2px;
+}
+.playcards .playdocks {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
 .playcards .playops {
   font-size: 13px;
   font-weight: 700;
@@ -325,35 +382,124 @@
   font-size: 18px;
   color: var(--green-ink);
 }
-.playassist {
+.playbuildrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
   margin: 8px 0;
 }
-.playassistrow {
+.playcounter {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
-.playassistrow input[type='range'] {
-  flex: 1;
+.playcounterring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 84px;
+  height: 84px;
+  border: 4px solid var(--blue);
+  border-radius: 50%;
+  line-height: 1.05;
+}
+.playcounterring b {
+  font-size: 30px;
+  color: var(--blue);
+}
+.playcounterring span {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.playcounterlab {
+  margin: 0;
+  font-size: 14px;
+}
+.playcounterlab b {
+  font-size: 18px;
+}
+.playcounterspent {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.playassist {
+  flex: 1 1 160px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: stretch;
+}
+.playassist .decklab {
+  margin: 0;
+}
+.playassist .ghostbtn {
   min-height: 44px;
-}
-.playassistn {
-  min-width: 2.5ch;
-  text-align: right;
-  font-weight: 700;
 }
 .playrow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 8px 0;
 }
 .playrow .ghostbtn {
   min-height: 44px;
 }
+@media (min-width: 981px) {
+  /* one row: counter, helper, undo / clear */
+  .playbuildrow {
+    flex-wrap: nowrap;
+  }
+  .playrow {
+    flex-wrap: nowrap;
+    flex: none;
+  }
+}
 .playplay .playperiod {
   margin-left: 6px;
   font-weight: 500;
+  color: var(--ink-2);
+}
+.playtransport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+.playtlabel {
+  flex: none;
+  max-width: 20ch;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+.playtransport .playtbtn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 10px;
+  flex: none;
+}
+.playtimeline {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+}
+.playclock {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.playclock .playperiod {
+  font-weight: 500;
+  font-size: 11.5px;
   color: var(--ink-2);
 }
 .playwho {
@@ -949,6 +1095,9 @@
   background: var(--green);
   transition: width 0.25s ease;
 }
+.playcountbar i {
+  background: var(--blue);
+}
 .playreachcap {
   margin: 0 0 8px;
 }
@@ -1035,4 +1184,161 @@ a.playprimary {
   .playapp .layerchip {
     z-index: 19;
   }
+}
+
+/* ---------- step 3: the polls, two by two on a desktop ---------- */
+.playpolls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 8px 0;
+}
+.playpoll {
+  padding: 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.playpoll .playq {
+  margin: 2px 0 10px;
+  font-size: 16px;
+}
+.playpoll .playdotlab {
+  margin: 0;
+}
+@media (min-width: 900px) {
+  .playpolls {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ---------- step 4: KPI cards, trips pie, service bars ---------- */
+.playpie,
+.playbars {
+  margin: 14px 0;
+}
+.playpiebody {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.playpiesvg {
+  flex: none;
+  width: 132px;
+  height: 132px;
+}
+.playpieleg {
+  flex: 1;
+  min-width: 220px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+}
+.playpieleg li {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+}
+.playpieleg i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.playpieleg em {
+  min-width: 52px;
+  text-align: right;
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.playbars ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.playbars li {
+  display: grid;
+  grid-template-columns: 84px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.playbars b {
+  text-align: right;
+}
+.playbartrack {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--line);
+  overflow: hidden;
+}
+.playbarfill {
+  height: 100%;
+  border-radius: 7px;
+  background: var(--blue);
+}
+
+.playcharts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px 24px;
+}
+@media (min-width: 900px) {
+  .playcharts {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+@media (min-width: 981px) {
+  .playtiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* the pie card: pie left, legend right, always on one row */
+.playpiebody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  flex-wrap: nowrap;
+}
+.playpieleg {
+  min-width: 0;
+}
+.playpieleg li {
+  grid-template-columns: 12px minmax(0, 1fr) auto auto;
+}
+
+/* step 3: compact options, two columns at every width (four polls fit one screen) */
+.playpolls .playoptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.playpolls .playoption,
+.playapp[data-scale='large'] .playpolls .playoption {
+  min-height: 38px;
+  padding: 6px 10px;
+  font-size: 13.5px;
+  line-height: 1.2;
+}
+.playpoll {
+  margin: 0; /* the grid gap is the only spacing between question boxes */
+  padding: 10px 12px;
+}
+.playpoll .playq {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.playpolls {
+  gap: 6px;
+  margin: 2px 0;
 }

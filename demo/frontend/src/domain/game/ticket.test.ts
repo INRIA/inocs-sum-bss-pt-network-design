@@ -56,7 +56,6 @@ const played = (): Session => {
     { type: 'assist', ids: [10, 11, 12] },
     { type: 'answer', predictionId: 'served', optionId: '70to90' },
     { type: 'answer', predictionId: 'pt', optionId: '4in10' },
-    { type: 'answer', predictionId: 'rush', optionId: 'bit' },
     { type: 'answer', predictionId: 'trucks', optionId: 'dozens' },
     { type: 'answer', predictionId: 'rhythm', optionId: 'move' },
     { type: 'answer', predictionId: 'double', optionId: 'none' },
@@ -82,15 +81,13 @@ describe('buildTicket', () => {
     expect(ticket.predictions.map((entry) => entry.predictionId)).toEqual([
       'served',
       'pt',
-      'rush',
       'trucks',
       'rhythm',
       'double',
     ]);
-    // served, pt, rush and double were guessed right; trucks ("dozens" against
+    // served, pt and double were guessed right; trucks ("dozens" against
     // nine runs) and rhythm ("move them" against a contained plan) were not.
     expect(ticket.predictions.map((entry) => entry.matched)).toEqual([
-      true,
       true,
       true,
       false,

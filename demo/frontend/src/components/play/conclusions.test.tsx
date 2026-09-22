@@ -60,7 +60,7 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     },
   };
 
-  const answers = { served: '70to90', pt: '4in10', rush: 'bit', trucks: 'few', rhythm: 'same' };
+  const answers = { served: '70to90', pt: '4in10', trucks: 'few', rhythm: 'same' };
 
   const session = (): Session => {
     let next = reduce(EMPTY_SESSION, { type: 'chooseBudget', budgetId: '080k' });

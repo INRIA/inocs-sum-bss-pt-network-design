@@ -52,13 +52,12 @@ const question = (
 });
 
 /**
- * The five polls of step 3 and the one of step 5, in the order they are asked.
+ * The four polls of step 3 (all optional) and the one of step 5, in the order they are asked.
  * Wordings and the card each one links to: plan.md §4.
  */
 export const PREDICTIONS: readonly PredictionQuestion[] = [
   question('served', 'predict', 'q1', ['lt40', '40to70', '70to90', 'gt90']),
   question('pt', 'predict', 'q2', ['lt1in10', '2in10', '4in10', 'gt6in10']),
-  question('rush', 'predict', 'new', ['same', 'bit', 'much']),
   question('trucks', 'predict', 'q3', ['none', 'few', 'dozens']),
   question('rhythm', 'predict', 'q4', ['move', 'same']),
   question('double', 'optimiser', 'q1', ['twice', 'third', 'none']),

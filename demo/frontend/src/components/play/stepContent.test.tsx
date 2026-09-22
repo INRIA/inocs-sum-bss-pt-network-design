@@ -105,19 +105,19 @@ describe.skipIf(!ready)('useStepContent', async () => {
 
   it('renders the three last steps against a solved session', () => {
     const run = render(solved('run'));
-    expect(run).toContain(t('play.trucks.with'));
-    expect(run).toContain(t('play.loss.h'));
+    expect(run).toContain(t('play.pie.h').replace(/'/g, '&#x27;'));
 
     const optimiser = render(solved('optimiser'));
-    expect(optimiser).toContain(t('play.compare.stations'));
-    expect(optimiser).toContain(t('play.compare.truckRuns'));
+    expect(optimiser).toContain(t('play.kpi.stations'));
+    expect(optimiser).toContain(t('play.pie.h').replace(/'/g, '&#x27;'));
     // the optimiser's own network is drawn, with the visitor's underneath in
     // grey: the ghost variant is the only layer rendered at 0.6 opacity
     expect(optimiser).toContain('opacity="0.6"');
 
     const conclusions = render(solved('conclusions'));
-    expect(conclusions.split('class="playrecap').length - 1).toBe(5);
-    expect(conclusions).toContain(t('play.conclusions.closing'));
+    // the full demo's "compare plans" step, shown as is
+    expect(conclusions).toContain(t('s5.title'));
+    expect(conclusions).toContain(t('s5.all.h'));
   });
 
   it('renders every step with one map and one primary action', () => {
@@ -132,7 +132,7 @@ describe.skipIf(!ready)('useStepContent', async () => {
 
   it('draws the city pulse, the free sites and the placed stations on Build', () => {
     const html = render(at('build', [3, 7, 11]));
-    expect(html).toContain('class="trips"');
+    expect(html).toContain('class="trips trips-demand"');
     expect(html).toContain('class="candidates"');
     // three placed stations, drawn by the player variant of StationsLayer
     expect(html.split('class="trip ').length - 1).toBeGreaterThan(50);

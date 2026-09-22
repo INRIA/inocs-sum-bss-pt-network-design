@@ -1,33 +1,29 @@
-import { BUDGET_EUR, BUDGET_IDS, BUDGET_SCENARIO, type BudgetId } from '../../../domain/game/session';
+import { BUDGET_DOCKS, BUDGET_EUR, BUDGET_IDS, BUDGET_SCENARIO, type BudgetId } from '../../../domain/game/session';
 import { cardsOf } from '../../../lib/families';
-import { fmtEur } from '../../../lib/format';
-import { scenName, scenPitch } from '../../../lib/scen';
+import { fmtEur, fmtInt } from '../../../lib/format';
+import { scenName } from '../../../lib/scen';
+import { requestSnap } from '../sheetBus';
 import type { T } from '../../../lib/i18n';
 import type { GameData } from '../../../lib/types';
-import type { GameBudget } from '../../../domain/evaluation/types';
 
 /**
- * Step 1 — the four plan cards (plan.md §2), reusing the look of the full
- * demo's step 3 (`.scards` / `.scard`).
+ * The first half of step 1 — the four plan cards, reusing the look of the full
+ * demo's step 3 (`.scards` / `.scard`). The placement controls sit under it in
+ * the same panel (`steps/buildStep.tsx`).
  *
- * Two things this screen must make visible before the choice is made
- * (awareness, UX reference §5): BOTH kinds of money — the capex once and the
- * operating budget a day, read from `constants.json`'s own budget envelopes,
- * never restated here — and two trade-off tags, one `+` and one `−`.
- *
- * Choosing a card IS the decision; the primary action only moves on. Changing
- * it later clears the layout and the predictions, so the card says so.
+ * A card shows three things and nothing else: the plan's name, its budget and
+ * the number of docks it allows. The whole card is the control: tapping it IS
+ * the choice, there is no separate button. Changing the choice clears the
+ * layout and the predictions, so the cards say so once a layout exists.
  */
 export default function Budget({
   data,
-  budgets,
   selected,
   hasLayout,
   onChoose,
   t,
 }: {
   data: GameData;
-  budgets: readonly GameBudget[];
   selected: BudgetId | null;
   hasLayout: boolean;
   onChoose: (id: BudgetId) => void;
@@ -38,45 +34,45 @@ export default function Budget({
     const wanted = BUDGET_SCENARIO[id];
     return cards.find((s) => s.id === wanted) ?? data.scenarios.find((s) => s.id === wanted) ?? null;
   };
-  const opsOf = (id: BudgetId) =>
-    budgets.find((b) => b.scenario === BUDGET_SCENARIO[id])?.opsBudgetEur ?? 0;
+  const choose = (id: BudgetId) => {
+    onChoose(id);
+    requestSnap('peek');
+  };
 
   return (
     <>
-      <p className="eyebrow">{t('play.budget.eyebrow')}</p>
-      <h2>{t('play.budget.title')}</h2>
-      <p className="lede">{t('play.budget.lede')}</p>
+      <h3 className="playh3">{t('play.budget.title')}</h3>
 
       <div className={`scards playcards${selected ? ' dimmed' : ''}`}>
         {BUDGET_IDS.map((id) => {
           const sc = scenarioOf(id);
           const isSel = selected === id;
           return (
-            <article className={`card scard${isSel ? ' sel' : ''}`} key={id}>
+            <article
+              className={`card scard${isSel ? ' sel' : ''}`}
+              key={id}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSel}
+              onClick={() => choose(id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  choose(id);
+                }
+              }}
+            >
               <div className="shead">
                 <h3>{sc ? scenName(sc, t) : t(`play.budget.name.${id}`)}</h3>
               </div>
-              <div className="price">
-                {fmtEur(BUDGET_EUR[id])} <small>{t('play.budget.once')}</small>
-              </div>
-              <div className="playops">
-                {fmtEur(opsOf(id))} <small>{t('play.budget.perday')}</small>
-              </div>
-              <div className="badges">
-                <span className="badge playplus">+ {t(`play.budget.plus.${id}`)}</span>
-                <span className="badge playminus">− {t(`play.budget.minus.${id}`)}</span>
-              </div>
-              <p className="pitch">{sc ? scenPitch(sc, t) : t(`play.budget.pitch.${id}`)}</p>
-              <button className="pick" onClick={() => onChoose(id)} aria-pressed={isSel}>
-                {isSel ? t('play.budget.picked') : t('play.budget.pick')}
-              </button>
+              <div className="price">{fmtEur(BUDGET_EUR[id])}</div>
+              <p className="playdocks">{t('play.budget.docks', { n: fmtInt(BUDGET_DOCKS[id]) })}</p>
             </article>
           );
         })}
       </div>
 
       {hasLayout && <p className="note playwarn">{t('play.budget.warn')}</p>}
-      <p className="note">{t('play.budget.note')}</p>
     </>
   );
 }

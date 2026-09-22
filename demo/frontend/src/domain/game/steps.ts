@@ -1,10 +1,12 @@
 /**
  * steps.ts — the route through the game, and the guards between its steps.
  *
- * Six tracker steps (plan.md §2) preceded by one `entry` pseudo-step that the
- * tracker does not show. A step is enterable only when the previous decision
- * really was taken, so a deep link (`#/step/run`) can never drop a visitor in
- * front of results that do not exist: `canEnter` answers with an i18n reason
+ * Five steps, all shown on the tracker; there is no entry screen, the game opens
+ * on the first one. That step, `build`, holds both the budget choice and
+ * the placement of stations: which of the two the visitor is doing is read off
+ * `session.budgetId`, not a step of its own. A step is enterable only when
+ * the previous decision really was taken, so a deep link (`#/step/run`) can
+ * never drop a visitor in front of results that do not exist: `canEnter` answers with an i18n reason
  * key instead, and `useHashStep` falls back to `furthestAllowed`.
  *
  * Pure domain: no React, no DOM, no fetch, no node imports.
@@ -12,13 +14,12 @@
 import { questionsFor } from './predictions';
 import type { Session } from './session';
 
-/** The six steps the tracker shows, in order. */
-export type StepId = 'budget' | 'build' | 'predict' | 'run' | 'optimiser' | 'conclusions';
-/** Every screen the router knows, including the untracked entry. */
-export type GameStep = 'entry' | StepId;
+/** The five steps the tracker shows, in order. */
+export type StepId = 'build' | 'predict' | 'run' | 'optimiser' | 'conclusions';
+/** Every screen the router knows. */
+export type GameStep = StepId;
 
 export const STEPS: readonly StepId[] = [
-  'budget',
   'build',
   'predict',
   'run',
@@ -26,39 +27,34 @@ export const STEPS: readonly StepId[] = [
   'conclusions',
 ];
 
-export const ALL_STEPS: readonly GameStep[] = ['entry', ...STEPS];
+export const ALL_STEPS: readonly GameStep[] = STEPS;
 
 export interface StepDef {
   readonly id: GameStep;
-  /** Position among the six tracker steps; `-1` for `entry`. */
+  /** Position among the five tracker steps. */
   readonly index: number;
   /** Shown on the tracker. */
   readonly labelKey: string;
   /** The rhythm verb of plan.md §2 ("Read → Decide", "Observe", …). */
   readonly rhythmKey: string;
-  /** False for `entry`, which the tracker hides. */
-  readonly tracked: boolean;
 }
 
-const def = (id: GameStep, index: number, tracked: boolean): StepDef => ({
+const def = (id: GameStep, index: number): StepDef => ({
   id,
   index,
   labelKey: `play.step.${id}`,
   rhythmKey: `play.rhythm.${id}`,
-  tracked,
 });
 
 export const STEP_DEFS: Readonly<Record<GameStep, StepDef>> = {
-  entry: def('entry', -1, false),
-  budget: def('budget', 0, true),
-  build: def('build', 1, true),
-  predict: def('predict', 2, true),
-  run: def('run', 3, true),
-  optimiser: def('optimiser', 4, true),
-  conclusions: def('conclusions', 5, true),
+  build: def('build', 0),
+  predict: def('predict', 1),
+  run: def('run', 2),
+  optimiser: def('optimiser', 3),
+  conclusions: def('conclusions', 4),
 };
 
-/** The six tracker descriptors, in order. */
+/** The five tracker descriptors, in order. */
 export const TRACKER: readonly StepDef[] = STEPS.map((id) => STEP_DEFS[id]);
 
 export function isGameStep(value: unknown): value is GameStep {
@@ -79,25 +75,21 @@ const no = (reasonKey: string): StepGuard => ({ ok: false, reasonKey });
  * May the visitor enter `step` with this session?
  *
  * The guards are cumulative by construction: each one is the previous decision
- * made concrete (a budget, then a station, then the five answers, then an
+ * made concrete (a budget and a station, then the five answers, then an
  * evaluation, then a visit to the optimiser).
  */
 export function canEnter(step: GameStep, session: Session): StepGuard {
   switch (step) {
-    case 'entry':
-    case 'budget':
-      return OK;
     case 'build':
-      return session.budgetId ? OK : no('play.guard.budget');
+      return OK;
     case 'predict':
       if (!session.budgetId) return no('play.guard.budget');
       return session.placed.length > 0 ? OK : no('play.guard.station');
     case 'run': {
       const previous = canEnter('predict', session);
       if (!previous.ok) return previous;
-      const asked = questionsFor('predict');
-      const answered = asked.every((question) => Boolean(session.predictions[question.id]));
-      return answered ? OK : no('play.guard.predictions');
+      // The polls are optional: skipping all of them is allowed.
+      return OK;
     }
     case 'optimiser': {
       const previous = canEnter('run', session);
@@ -127,7 +119,7 @@ export function prevStep(step: GameStep): GameStep | null {
 
 /** The furthest step this session may enter. Where a bad hash lands. */
 export function furthestAllowed(session: Session): GameStep {
-  let furthest: GameStep = 'entry';
+  let furthest: GameStep = 'build';
   for (const step of ALL_STEPS) {
     if (!canEnter(step, session).ok) break;
     furthest = step;
@@ -141,10 +133,12 @@ export function furthestAllowed(session: Session): GameStep {
  * `buildTarget` so the bike advances at the pace of that budget.
  */
 export const BUILD_SOFT_TARGET = 20;
+/** The share of the `build` step that choosing the budget accounts for. */
+const BUDGET_SHARE = 0.2;
 
 export interface Progress {
   readonly step: GameStep;
-  /** Index among the six tracker steps; `-1` on the entry screen. */
+  /** Index among the five tracker steps. */
   readonly index: number;
   readonly count: number;
   /** 0..1 inside the current step. */
@@ -163,12 +157,12 @@ export function progress(session: Session, opts: { buildTarget?: number } = {}):
 function withinStep(session: Session, buildTarget: number): number {
   const clamp = (value: number): number => Math.min(1, Math.max(0, value));
   switch (session.step) {
-    case 'entry':
-      return 0;
-    case 'budget':
-      return session.budgetId ? 1 : 0;
-    case 'build':
-      return buildTarget > 0 ? clamp(session.placed.length / buildTarget) : 0;
+    case 'build': {
+      // Picking the budget is the first part of the step, placing is the rest.
+      if (!session.budgetId) return 0;
+      const placing = buildTarget > 0 ? clamp(session.placed.length / buildTarget) : 0;
+      return BUDGET_SHARE + (1 - BUDGET_SHARE) * placing;
+    }
     case 'predict': {
       const asked = questionsFor('predict');
       if (asked.length === 0) return 1;

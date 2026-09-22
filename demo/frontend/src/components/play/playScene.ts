@@ -25,7 +25,7 @@ import { makeProjection } from '../../lib/geo';
 import type { PlayData } from '../../lib/playData';
 import type { MapControls } from '../map/frame/MapFrame';
 import type { TripSprite } from '../map/layers/TripsLayer';
-import { runDurationMs, runSprites, type RunSprite } from './runSprites';
+import { PERIOD_MS, runDurationMs, runSprites, type RunSprite } from './runSprites';
 import { DEFAULT_PLAY_LAYERS, type PlayLayerKey, type PlayLayers } from './playLayers';
 
 /** How many potential-demand sprites the city pulse draws at once. */
@@ -59,6 +59,14 @@ export interface RunScene {
   readonly reduced: boolean;
   readonly period: number;
   setPeriod(period: number): void;
+  /** The day clock of the run: follows the animation, or the visitor's scrub. */
+  readonly hour: number;
+  /** Jump to an hour: pauses the run and shows that hour's period (wraps 0-23). */
+  seekHour(hour: number): void;
+  /** True once the visitor took the clock: one period plays on a loop. */
+  readonly scrubbed: boolean;
+  /** Freeze the running day where it is. */
+  pause(): void;
 }
 
 export interface PlayScene {
@@ -68,6 +76,8 @@ export interface PlayScene {
   togglePlay(): void;
   /** The day clock the city pulse and the PT demand layer follow. */
   readonly hour: number;
+  /** Jump to an hour (wraps within 0-23); pauses the clock so the visitor's choice stays put. */
+  seekHour(hour: number): void;
   readonly periodIndex: number;
   readonly placement: UsePlacement;
   onTap(point: { x: number; y: number }): void;
@@ -121,6 +131,15 @@ export function usePlayScene(options: PlaySceneOptions): PlayScene {
     pulseStarted.current = true;
     if (!reduced) togglePlayback();
   }, [step, togglePlayback, reduced]);
+
+  const { stopPlay, setHour } = playback;
+  const seekHour = useCallback(
+    (hour: number) => {
+      stopPlay();
+      setHour(((Math.round(hour) % 24) + 24) % 24);
+    },
+    [stopPlay, setHour],
+  );
 
   const hitCandidates = useMemo(
     () => play.candidates.map((candidate) => ({ id: candidate.index, x: candidate.x, y: candidate.y })),
@@ -246,6 +265,7 @@ export function usePlayScene(options: PlaySceneOptions): PlayScene {
     periods: play.periods,
     layout: useMemo(() => [...placedIds], [placedIds]),
     reduced,
+    periodBounds: options.periodBounds,
   });
 
   return {
@@ -254,6 +274,7 @@ export function usePlayScene(options: PlaySceneOptions): PlayScene {
     playing: playback.playing,
     togglePlay: playback.togglePlay,
     hour: playback.hour,
+    seekHour,
     periodIndex: periodOfHour(playback.hour, options.periodBounds),
     placement,
     onTap,
@@ -282,10 +303,15 @@ function useRunScene(input: {
   periods: number;
   layout: readonly number[];
   reduced: boolean;
+  periodBounds: readonly number[][];
 }): RunScene {
   const [replayKey, setReplayKey] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [period, setPeriod] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [scrubbed, setScrubbed] = useState(false);
+  const firstHour = input.periodBounds[0]?.[0] ?? 6;
+  const lastHour = input.periodBounds[input.periodBounds.length - 1]?.[1] ?? 22;
   const current = input.evaluation.current;
 
   const sprites = useMemo(
@@ -301,9 +327,38 @@ function useRunScene(input: {
   );
 
   const start = useCallback(() => {
+    setScrubbed(false);
+    setHour(firstHour);
     setReplayKey((key) => key + 1);
     setPlaying(true);
-  }, []);
+  }, [firstHour]);
+
+  const seekHour = useCallback(
+    (target: number) => {
+      const next = ((Math.round(target) % 24) + 24) % 24;
+      setPlaying(false);
+      setScrubbed(true);
+      setHour(next);
+      setPeriod(periodOfHour(next, input.periodBounds));
+    },
+    [input.periodBounds],
+  );
+  const pause = useCallback(() => seekHour(hour), [seekHour, hour]);
+
+  // The clock follows the run: first to last hour of the model's day over the
+  // length of the animation, so the slider reads the same as the map.
+  useEffect(() => {
+    if (!playing || scrubbed || input.reduced) return undefined;
+    const began = Date.now();
+    const span = Math.max(1, input.periods) * PERIOD_MS;
+    const timer = setInterval(() => {
+      const share = Math.min(1, (Date.now() - began) / span);
+      const next = Math.min(lastHour - 1, Math.floor(firstHour + share * (lastHour - firstHour)));
+      setHour(next);
+      setPeriod(periodOfHour(next, input.periodBounds));
+    }, 100);
+    return () => clearInterval(timer);
+  }, [playing, scrubbed, replayKey, input.reduced, input.periods, input.periodBounds, firstHour, lastHour]);
 
   // Arriving on the step with a result ready starts the day by itself; a result
   // that lands later starts it then. Either way it happens once per solve, and
@@ -330,7 +385,7 @@ function useRunScene(input: {
     return () => clearTimeout(timer);
   }, [playing, replayKey, input.periods]);
 
-  return { sprites, replay: start, replayKey, playing, reduced: input.reduced, period, setPeriod };
+  return { sprites, replay: start, replayKey, playing, reduced: input.reduced, period, setPeriod, hour, seekHour, scrubbed, pause };
 }
 
 /** `prefers-reduced-motion`, read after mount so the server render never guesses. */

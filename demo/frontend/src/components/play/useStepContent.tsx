@@ -19,8 +19,6 @@ import { buildStep } from './steps/buildStep';
 import { runStep } from './steps/runStep';
 import { optimiserStep } from './steps/optimiserStep';
 import { conclusionsStep } from './steps/conclusionsStep';
-import Entry from './screens/Entry';
-import BudgetScreen from './screens/Budget';
 import Predict from './screens/Predict';
 import type { StepView } from './stepView';
 
@@ -150,37 +148,12 @@ export function useStepContent(options: StepContentOptions): StepView {
   };
 
   switch (step) {
-    case 'entry':
-      return view(<Entry t={t} budgets={play.budgets.length || 4} />, {
-        label: t('play.entry.cta'),
-        onClick: advance,
-        go: true,
-      });
-
-    case 'budget':
-      return view(
-        <BudgetScreen
-          data={data}
-          budgets={play.budgets}
-          selected={session.budgetId}
-          hasLayout={session.placed.length > 0}
-          onChoose={actions.chooseBudget}
-          t={t}
-        />,
-        {
-          label: t('play.budget.cta'),
-          onClick: () => go('build'),
-          disabled: !session.budgetId,
-          note: nextGuard('build'),
-          go: true,
-        },
-      );
-
     case 'build': {
       const parts = buildStep({
         session,
         actions,
         play,
+        data,
         scene,
         periodName,
         compact: options.compact ?? false,
@@ -197,21 +170,27 @@ export function useStepContent(options: StepContentOptions): StepView {
           go: true,
         },
         parts.map,
-        { onSpace: scene.togglePlay },
+        // No budget yet means the cards are the task: the sheet opens on them,
+        // then drops to its usual peek once one is chosen and the map is next.
+        { snap: session.budgetId ? 'peek' : 'full', onSpace: scene.togglePlay },
       );
     }
 
     case 'predict': {
       const questions = questionsFor('predict');
-      const answered = questions.every((question) => Boolean(session.predictions[question.id]));
       const busy = evaluation.status === 'running';
       return view(
-        <Predict questions={questions} answers={session.predictions} onAnswer={actions.answer} t={t} />,
+        <Predict
+          questions={questions}
+          answers={session.predictions}
+          onAnswer={actions.answer}
+          onClear={actions.clearAnswer}
+          t={t}
+        />,
         {
           label: t('play.predict.cta'),
           onClick: () => go('run'),
-          disabled: !answered,
-          note: answered && busy ? t('play.predict.preparing') : nextGuard('run'),
+          note: busy ? t('play.predict.preparing') : nextGuard('run'),
           go: true,
         },
       );

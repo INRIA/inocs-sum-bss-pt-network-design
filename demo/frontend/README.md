@@ -140,16 +140,15 @@ A second, separate page, not part of the five-step demo above. `src/pages/play.a
 visitor's own network design against the paper's own optimiser at the same budget: place
 stations, predict, watch a day run, compare.
 
-### What the visitor does, in six tracked steps behind one untracked entry screen
+### What the visitor does, in five tracked steps (the game opens directly on the first)
 
 | # | Step | What happens |
 | - | --- | --- |
-| 1 | Budget | picks one of the four game budgets (20k / 60k / 80k / 120k €, borrowed from the committed `budget_*` scenarios) |
-| 2 | Build | places stations by tapping the map, or "help me" runs the demand-following assistant; a live "within reach" preview and a budget meter guide the choice |
-| 3 | Predict | answers five short questions about the layout, before seeing any result |
-| 4 | Run | the day plays out — trip sprites animate while the layout's own evaluation resolves (exact solve, or the estimate fallback) |
-| 5 | Optimiser | the paper's own design at the same budget, evaluated by the same engine, next to the visitor's; one more prediction ("double the budget?") is asked here |
-| 6 | Conclusions | every prediction is revealed against what actually happened, with a recap ticket |
+| 1 | Plan | one screen: the instructions and the four game budgets (20k / 60k / 80k / 120k €, borrowed from the committed `budget_*` scenarios) side by side, and under them, once a budget is picked, the controls to place stations by tapping the map, or "help me" runs the demand-following assistant; a live "within reach" preview and a budget meter guide the choice |
+| 2 | Predict | answers five short questions about the layout, before seeing any result |
+| 3 | Run | the day plays out — trip sprites animate while the layout's own evaluation resolves (exact solve, or the estimate fallback) |
+| 4 | Optimiser | the paper's own design at the same budget, evaluated by the same engine, next to the visitor's; one more prediction ("double the budget?") is asked here |
+| 5 | Conclusions | every prediction is revealed against what actually happened, with a recap ticket |
 
 Copy lives under the `play.*` keys of `src/i18n/en.json` / `fr.json` (step labels `play.step.*`,
 rhythm verbs `play.rhythm.*`, the six questions `play.q.*` and their reveals `play.reveal.*`) —
@@ -164,7 +163,7 @@ same fallback-to-English rule as the rest of the site.
 to [`AGENTS.md`](../../AGENTS.md)'s "do not duplicate model logic" rule — read there for how the
 two are kept honest); `placement/` is the hit test, budget arithmetic, the "follow the demand"
 assistant and reach; `trips/` is the run-animation's sprites; `game/` is the session
-state/reducer, the six-step route and its guards, the prediction questions, the recap ticket and
+state/reducer, the five-step route and its guards, the prediction questions, the recap ticket and
 the results view-models — documented in more depth in its own
 [`domain/game/README.md`](src/domain/game/README.md).
 

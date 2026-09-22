@@ -110,7 +110,7 @@ export function BikeLegend({
   items.push({
     key: 'pulse',
     label: mode === 'run' ? t('play.legend.run') : t('play.legend.pulse'),
-    swatch: <i style={{ background: C_EXISTING, borderRadius: '50%' }} />,
+    swatch: <i style={{ background: '#d62828', borderRadius: '50%' }} />,
     pressed: layers.pulse,
   });
   return <LegendGroup items={items} onToggle={onToggle} />;

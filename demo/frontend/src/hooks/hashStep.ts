@@ -23,7 +23,7 @@ export function parseStepHash(hash: string): GameStep | null {
 
 /**
  * The steps to try, nearest first, when a requested step is refused: the step
- * itself, then every earlier one. Walking back rather than jumping to `entry`
+ * itself, then every earlier one. Walking back rather than jumping to the first step
  * keeps a shared link as close to its intent as the session allows.
  */
 export function stepsBackFrom(step: GameStep): GameStep[] {
