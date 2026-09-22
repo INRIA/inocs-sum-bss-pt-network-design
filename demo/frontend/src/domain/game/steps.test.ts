@@ -39,7 +39,7 @@ const withAnswers = (): Session =>
     { type: 'answer', predictionId: 'served', optionId: 'gt90' },
     { type: 'answer', predictionId: 'pt', optionId: '4in10' },
     { type: 'answer', predictionId: 'trucks', optionId: 'few' },
-    { type: 'answer', predictionId: 'rhythm', optionId: 'same' },
+    { type: 'answer', predictionId: 'bikes', optionId: '5to15' },
   );
 const withEvaluation = (): Session => {
   const session = withAnswers();

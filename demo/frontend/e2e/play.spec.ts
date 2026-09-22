@@ -12,7 +12,7 @@ import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
  * class locators for markup with no accessible name (the step card, the
  * meter). Placed stations have no distinguishing class of their own, so
  * "N stations placed" is read two ways that must agree: the meter's own
- * count (`.playmeter b.mono`) and the drop in free-candidate markers
+ * count (`.playcounterring b.mono`) and the drop in free-candidate markers
  * (`.candidates > g[role="button"]`), since a placed candidate leaves the
  * free layer entirely (useStepContent.tsx `free` filters out `placedIds`).
  */
@@ -45,7 +45,9 @@ function freeCandidates(page: Page) {
 }
 
 function placedCountFromMeter(page: Page) {
-  return page.locator('.playmeter b.mono').first();
+  // The counter ring of the build panel: the same element on desktop and phone
+  // (the phone's peek bar repeats it, so `.first()` alone is not enough).
+  return page.locator('.playcounterring b.mono').first();
 }
 
 test.describe('play: load and console health', () => {

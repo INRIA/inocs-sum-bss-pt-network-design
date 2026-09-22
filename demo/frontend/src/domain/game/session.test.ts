@@ -58,7 +58,7 @@ const answeredAll = (session: Session): Session =>
     { type: 'answer', predictionId: 'served', optionId: '70to90' },
     { type: 'answer', predictionId: 'pt', optionId: '4in10' },
     { type: 'answer', predictionId: 'trucks', optionId: 'few' },
-    { type: 'answer', predictionId: 'rhythm', optionId: 'same' },
+    { type: 'answer', predictionId: 'bikes', optionId: '5to15' },
   );
 
 const evaluated = (session: Session): Session =>

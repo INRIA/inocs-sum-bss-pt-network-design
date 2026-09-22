@@ -12,14 +12,41 @@ import { BUDGET_DOCKS, BUDGET_EUR, BUDGET_IDS } from '../../domain/game/session'
 import { makeT } from '../../lib/i18n';
 import { fmtEur } from '../../lib/format';
 import type { GameData } from '../../lib/types';
+import type { GameBudget, ModelConstants } from '../../domain/evaluation/types';
 
 const t = makeT('en');
 
 const data = { scenarios: [] } as unknown as GameData;
 
-const render = (selected: '080k' | null = null, hasLayout = false): string =>
+/** The unit costs the export carries; the screen never writes one of its own. */
+const constants = {
+  station_setup_cost: 100,
+  dock_cost: 20,
+  unit_bike_cost: 60,
+  dispatch_fixed_cost: 40,
+  rebalancing_unit_cost: 20,
+} as ModelConstants;
+
+const budgets: GameBudget[] = [
+  { scenario: 'budget_080k', capexEur: 80000, opsBudgetEur: 4000, epsilon: 0.04, maxStations: 400 },
+];
+
+const render = (
+  selected: '080k' | null = null,
+  hasLayout = false,
+  costs: ModelConstants | null = constants,
+): string =>
   renderToStaticMarkup(
-    <Budget data={data} selected={selected} hasLayout={hasLayout} onChoose={() => {}} t={t} />,
+    <Budget
+      data={data}
+      selected={selected}
+      hasLayout={hasLayout}
+      constants={costs}
+      budgets={budgets}
+      onChoose={() => {}}
+      lang="en"
+      t={t}
+    />,
   );
 
 const count = (html: string, needle: string): number => html.split(needle).length - 1;
@@ -44,6 +71,19 @@ describe('Budget', () => {
     expect(html).not.toContain('badge');
     expect(html).not.toContain('class="pitch"');
     expect(html).not.toContain('playops');
+  });
+
+  it('prices what the money buys, from the export and never from a literal', () => {
+    const html = render();
+    expect(html).toContain(t('play.costs.h'));
+    for (const eur of [fmtEur(100), fmtEur(20), fmtEur(60), fmtEur(40)]) {
+      expect(html).toContain(eur);
+    }
+    // 100 + 10 docks x 20 + 8 bikes x 60
+    expect(html).toContain(fmtEur(780));
+    expect(html).toContain(t('play.costs.ops', { pct: '5 %' }));
+    // and nothing at all when the payload did not ship the constants
+    expect(render(null, false, null)).not.toContain(t('play.costs.h'));
   });
 
   it('marks the chosen card, and warns only once a layout would be lost', () => {

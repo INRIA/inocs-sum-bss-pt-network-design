@@ -9,6 +9,7 @@
  *
  * No React, no DOM: a pure adapter over `lib/types`, tested with the real data.
  */
+import type { BikesFacts } from '../../domain/game/predictions';
 import type { OptimiserPlanFacts } from '../../domain/game/results';
 import type { GameData, ScenarioData } from '../../lib/types';
 
@@ -49,6 +50,31 @@ export function budgetLadder(data: GameData): BudgetRung[] {
 /** The committed run a budget borrows its plan from. */
 export function planOf(data: GameData, scenarioId: string): ScenarioData | null {
   return data.scenarios.find((sc) => sc.id === scenarioId && solved(sc)) ?? null;
+}
+
+/**
+ * What the optimiser's plan parks at each station it opens: the answer to the
+ * "how many bikes per station?" poll, computed ONCE off the committed run.
+ *
+ * The per-station figure is `inventory[0]`, the stock the model starts the day
+ * with at that station (`model_plan.json` -> `plan_slim.json`), which is the
+ * `initial_bikes` column of `stations.json`. The mean is over the stations the
+ * plan actually builds, so it is the plan's fleet divided by its network — not
+ * a literal, and not the visitor's layout. Null when the run is not on the page.
+ */
+export function bikesPerStation(sc: ScenarioData | null): BikesFacts | null {
+  const stations = sc?.stations ?? [];
+  if (stations.length === 0) return null;
+  // The MIP's own integers, guarded against a "-0" that a re-export could carry.
+  const perStation = stations.map((station) => Math.max(0, Math.round(station.inventory[0] ?? 0)));
+  const bikes = perStation.reduce((total, value) => total + value, 0);
+  return {
+    min: Math.min(...perStation),
+    mean: bikes / perStation.length,
+    max: Math.max(...perStation),
+    stations: perStation.length,
+    bikes,
+  };
 }
 
 /** `scenario.paper` in the shape `optimiserView` takes. */

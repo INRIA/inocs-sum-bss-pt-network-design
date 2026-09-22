@@ -1,5 +1,5 @@
 /**
- * predictions.ts — the six polls, as data, plus the pure resolvers that say
+ * predictions.ts — the polls, as data, plus the pure resolvers that say
  * what the model actually answered.
  *
  * Open/closed (plan-technical §C.4): a new prediction is one entry in
@@ -15,7 +15,7 @@
  */
 import type { EvaluationSummary } from './session';
 
-export type PredictionId = 'served' | 'pt' | 'rush' | 'trucks' | 'rhythm' | 'double';
+export type PredictionId = 'served' | 'pt' | 'rush' | 'trucks' | 'bikes' | 'double';
 
 /** Where a poll is asked. `optimiser` = step 5, just before the budget CTA. */
 export type AskedIn = 'predict' | 'optimiser';
@@ -59,7 +59,7 @@ export const PREDICTIONS: readonly PredictionQuestion[] = [
   question('served', 'predict', 'q1', ['lt40', '40to70', '70to90', 'gt90']),
   question('pt', 'predict', 'q2', ['lt1in10', '2in10', '4in10', 'gt6in10']),
   question('trucks', 'predict', 'q3', ['none', 'few', 'dozens']),
-  question('rhythm', 'predict', 'q4', ['move', 'same']),
+  question('bikes', 'predict', 'q3', ['lt5', '5to15', '15to25', 'gt25']),
   question('double', 'optimiser', 'q1', ['twice', 'third', 'none']),
 ];
 
@@ -205,38 +205,44 @@ export function resolveTrucks(chosen: string | null, facts: TruckFacts): Resolut
   });
 }
 
-export interface RhythmFacts {
-  /** Station ids of the busy-weekday plan (`rhythm_sharp`). */
-  readonly sharpStations: readonly string[];
-  /** Station ids of the reference plan at the same budget. */
-  readonly referenceStations: readonly string[];
+export interface BikesFacts {
+  /** Bikes the model parks at the emptiest station of its own plan. */
+  readonly min: number;
+  /** Bikes per station on average, over the built stations of that plan. */
+  readonly mean: number;
+  readonly max: number;
+  readonly stations: number;
+  /** The plan's whole starting fleet. */
+  readonly bikes: number;
 }
 
-/** The share of the sharp plan's stations the reference plan also opens. */
-export const RHYTHM_SAME_THRESHOLD = 0.9;
+/** The cuts between the four options, in bikes per station. */
+export const BIKES_BANDS = [5, 15, 25] as const;
 
 /**
- * "Weekday rush or slow week-end: would you move the stations?"
+ * "How many bikes per station do we need?"
  *
- * Cross-scenario, never the visitor's layout. The answer is "no, same places"
- * when the busy-weekday plan is (almost) contained in the reference plan —
- * containment >= 0.9. It is computed here from the two station lists, not
- * hard-coded: a re-run that moved stations would flip the resolution.
- * Caveat the copy must carry (plan-technical §A): no run contains week-end
- * data; the slower rhythm is the same trips spread evenly through the day.
+ * Answered on the OPTIMISER's own plan at the visitor's budget, never on the
+ * visitor's layout: the question is what the model decided, and the committed
+ * runs decided it once. `mean` is the plan's starting fleet over its built
+ * stations, read off `model_plan.json`'s per-station inventory, so a re-run
+ * that resized the fleet moves the answer; nothing here is a literal.
+ *
+ * Bands between the option values: <5 - [5,15) - [15,25) - >=25. The four
+ * shipped budgets land at 5.9 (20 k€), 9.4 (60 k€), 10.0 (80 k€) and 10.6
+ * (120 k€) bikes per station, comfortably inside the second band, while the
+ * individual stations of a plan run from 0 to the 30-dock cap.
  */
-export function resolveRhythm(chosen: string | null, facts: RhythmFacts): Resolution {
-  const reference = new Set(facts.referenceStations);
-  const sharp = new Set(facts.sharpStations);
-  let shared = 0;
-  for (const station of sharp) if (reference.has(station)) shared += 1;
-  const overlap = sharp.size > 0 ? shared / sharp.size : 0;
-  const actual = overlap >= RHYTHM_SAME_THRESHOLD ? 'same' : 'move';
-  return resolution('rhythm', chosen, actual, {
-    overlap,
-    shared,
-    sharpTotal: sharp.size,
-    referenceTotal: reference.size,
+export function resolveBikes(chosen: string | null, facts: BikesFacts): Resolution {
+  const mean = facts.mean;
+  const [low, mid, high] = BIKES_BANDS;
+  const actual = mean < low ? 'lt5' : mean < mid ? '5to15' : mean < high ? '15to25' : 'gt25';
+  return resolution('bikes', chosen, actual, {
+    mean,
+    min: facts.min,
+    max: facts.max,
+    stations: facts.stations,
+    bikes: facts.bikes,
   });
 }
 
@@ -288,7 +294,7 @@ export interface ResolutionInputs {
   /** Which solve the rush tile is read on: the results switch. */
   readonly trucks: boolean;
   readonly optimiserDispatches: number;
-  readonly rhythm: RhythmFacts;
+  readonly bikes: BikesFacts;
   readonly double: DoubleFacts;
 }
 
@@ -311,8 +317,8 @@ export function resolveOne(
         withTrucks: inputs.withTrucks,
         withoutTrucks: inputs.withoutTrucks,
       });
-    case 'rhythm':
-      return resolveRhythm(chosen, inputs.rhythm);
+    case 'bikes':
+      return resolveBikes(chosen, inputs.bikes);
     case 'double':
       return resolveDouble(chosen, inputs.double);
     default:

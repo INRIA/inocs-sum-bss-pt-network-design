@@ -43,7 +43,7 @@ const inputs: ResolutionInputs = {
   withoutTrucks,
   trucks: true,
   optimiserDispatches: 9,
-  rhythm: { sharpStations: ['a', 'b'], referenceStations: ['a', 'b', 'c'] },
+  bikes: { min: 0, mean: 10, max: 30, stations: 83, bikes: 827 },
   double: { lowBudgetEur: 60000, highBudgetEur: 120000, lowServed: 1161, highServed: 1321 },
 };
 
@@ -57,7 +57,7 @@ const played = (): Session => {
     { type: 'answer', predictionId: 'served', optionId: '70to90' },
     { type: 'answer', predictionId: 'pt', optionId: '4in10' },
     { type: 'answer', predictionId: 'trucks', optionId: 'dozens' },
-    { type: 'answer', predictionId: 'rhythm', optionId: 'move' },
+    { type: 'answer', predictionId: 'bikes', optionId: 'gt25' },
     { type: 'answer', predictionId: 'double', optionId: 'none' },
   );
   return reduce(base, {
@@ -82,11 +82,11 @@ describe('buildTicket', () => {
       'served',
       'pt',
       'trucks',
-      'rhythm',
+      'bikes',
       'double',
     ]);
     // served, pt and double were guessed right; trucks ("dozens" against
-    // nine runs) and rhythm ("move them" against a contained plan) were not.
+    // nine runs) and bikes ("more than 25" against a plan averaging ten) were not.
     expect(ticket.predictions.map((entry) => entry.matched)).toEqual([
       true,
       true,

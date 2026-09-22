@@ -14,6 +14,7 @@ import PtLinesLayer from '../map/layers/PtLinesLayer';
 import PtDemandLayer from '../map/layers/PtDemandLayer';
 import StationsLayer from '../map/layers/StationsLayer';
 import { BikeLegend, PtLegend, type BikeLegendMode } from './playLayers';
+import { bikesPerStation, planOf } from './optimiserFacts';
 import { usePlayScene } from './playScene';
 import { buildStep } from './steps/buildStep';
 import { runStep } from './steps/runStep';
@@ -79,6 +80,15 @@ export function useStepContent(options: StepContentOptions): StepView {
     ? (references.get(BUDGET_EUR[session.budgetId]) ?? null)
     : null;
 
+  // The model's own bikes per station at the chosen budget, computed once off
+  // the committed run: the answer to the step-2 poll, the step-3 tile and the
+  // badge every placed station carries from the run on. It is deliberately NOT
+  // shown while the visitor places and predicts, which would give the poll away.
+  const bikes = session.budgetId
+    ? bikesPerStation(planOf(data, BUDGET_SCENARIO[session.budgetId]))
+    : null;
+  const badgeBikes = step === 'build' || step === 'predict' ? null : (bikes?.mean ?? null);
+
   const base = (
     <>
       <BaseLayer map={data.map} gridOpacity={0.5} />
@@ -102,7 +112,7 @@ export function useStepContent(options: StepContentOptions): StepView {
 
   const playerStations =
     layers.mine && scene.mine.length > 0 ? (
-      <StationsLayer variant="player" stations={[...scene.mine]} />
+      <StationsLayer variant="player" stations={[...scene.mine]} bikes={badgeBikes} />
     ) : null;
 
   const view = (
@@ -197,7 +207,7 @@ export function useStepContent(options: StepContentOptions): StepView {
     }
 
     case 'run': {
-      const parts = runStep({ session, actions, evaluation, scene, reference, t, lang });
+      const parts = runStep({ session, actions, evaluation, scene, reference, bikes, t, lang });
       // §B.2: the sheet peeks while the day plays, then rises by itself so the
       // results are read without a drag. Under reduced motion nothing animates,
       // so `playing` is never true and the rise is immediate; coming back to a

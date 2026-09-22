@@ -346,6 +346,49 @@
 .playcards .playops small {
   font-weight: 500;
 }
+/* ---------- what the money buys: the model's unit costs, under the cards ---------- */
+.playcosts {
+  margin: 10px 0 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2, transparent);
+}
+.playcosts .decklab {
+  margin: 0 0 4px;
+}
+.playcosts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px 18px;
+}
+@media (min-width: 560px) {
+  .playcosts ul {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.playcosts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  border-bottom: 1px dotted var(--line);
+  padding: 2px 0;
+}
+.playcosts li b {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.playcosts .note {
+  margin: 6px 0 0;
+}
+
 .badge.playplus {
   background: var(--green-tint);
   color: var(--green-ink);
@@ -1299,8 +1342,9 @@ a.playprimary {
 }
 
 @media (min-width: 981px) {
+  /* four tiles, or five once the "bikes per station" tile joins them */
   .playtiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
   }
 }
 

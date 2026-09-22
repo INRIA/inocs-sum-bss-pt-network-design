@@ -47,7 +47,10 @@ export function buildStep(input: BuildStepInput): StepParts {
         data={data}
         selected={session.budgetId}
         hasLayout={session.placed.length > 0}
+        constants={play.constants}
+        budgets={play.budgets}
         onChoose={actions.chooseBudget}
+        lang={lang}
         t={t}
       />
     </>

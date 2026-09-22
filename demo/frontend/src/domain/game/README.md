@@ -39,7 +39,7 @@ a dispatch, and `serialize` / `deserialize` are the only bridge to storage:
 `deserialize` never throws and returns null for an unknown version or a
 malformed blob (the undo history is not persisted).
 
-## `predictions.ts` — the six polls, as data
+## `predictions.ts` — the polls, as data
 
 `PREDICTIONS` carries each question's i18n keys, its options, where it is asked
 (`predict`, or `optimiser` for "double the budget") and which conclusion card of
@@ -50,8 +50,10 @@ it picks the tone. The bands are documented at each resolver and sit between the
 option values, so the option nearest the truth is the true one: served 40/70/90
 per cent, PT share 0.15/0.30/0.50, rush 3 and 10 percentage points, trucks 0 and
 20 runs (the optimiser's exact count, never the relaxed LP's), "double" 1.20 and
-1.70 on the served ratio. The rhythm answer is computed from the two plans'
-station lists, not hard-coded.
+1.70 on the served ratio, bikes per station 5/15/25. The bikes answer is the
+committed plan's own starting fleet over the stations it builds
+(`optimiserFacts.bikesPerStation`), not hard-coded: the same figure the step-3
+tile prints and every placed station carries as a badge on the map.
 
 ## `ticket.ts` — the recap of step 6
 

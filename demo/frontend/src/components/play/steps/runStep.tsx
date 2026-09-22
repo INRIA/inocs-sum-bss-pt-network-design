@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type { BudgetReference } from '../../../domain/evaluation/types';
+import type { BikesFacts } from '../../../domain/game/predictions';
 import { resultsView, type ResultsView } from '../../../domain/game/results';
 import { BUDGET_EUR, type Session, type SessionActions } from '../../../domain/game/session';
 import type { UseEvaluation } from '../../../hooks/useEvaluation';
@@ -32,6 +33,8 @@ export interface RunStepInput {
   readonly evaluation: UseEvaluation;
   readonly scene: PlayScene;
   readonly reference: BudgetReference | null;
+  /** The optimiser's own bikes-per-station figures at this budget, or null. */
+  readonly bikes: BikesFacts | null;
   readonly t: T;
   readonly lang: Lang;
 }
@@ -69,6 +72,7 @@ export function runStep(input: RunStepInput): StepParts {
       status={evaluation.status}
       view={view}
       answers={session.predictions}
+      bikes={input.bikes}
       trucks={session.trucks}
       onReplay={scene.run.replay}
       periodName={periodName}

@@ -21,8 +21,8 @@ import { EMPTY_SESSION, reduce, type EvaluationSummary, type Session } from '../
 import { buildTicket } from '../../domain/game/ticket';
 import { translate } from '../../lib/i18n';
 import { makeT } from '../../lib/i18n';
-import { budgetLadder, doublePair, planFacts, planOf } from './optimiserFacts';
-import { RHYTHM_SHARP, RHYTHM_SLOW, rhythmFacts, sharpMorning } from './steps/conclusionsStep';
+import { bikesPerStation, budgetLadder, doublePair, planFacts, planOf } from './optimiserFacts';
+import { sharpMorning } from './steps/conclusionsStep';
 import { revealOf } from './reveal';
 import Conclusions from './screens/Conclusions';
 
@@ -51,7 +51,7 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     withoutTrucks: asSummary(reference.optimiserWithoutTrucks),
     trucks: true,
     optimiserDispatches: facts.dispatches,
-    rhythm: rhythmFacts(data),
+    bikes: bikesPerStation(plan)!,
     double: {
       lowBudgetEur: pair.low.budgetEur,
       highBudgetEur: pair.high.budgetEur,
@@ -60,7 +60,7 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     },
   };
 
-  const answers = { served: '70to90', pt: '4in10', trucks: 'few', rhythm: 'same' };
+  const answers = { served: '70to90', pt: '4in10', trucks: 'few', bikes: '5to15' };
 
   const session = (): Session => {
     let next = reduce(EMPTY_SESSION, { type: 'chooseBudget', budgetId: '080k' });
@@ -144,28 +144,16 @@ describe.skipIf(!ready)('step 6 on the committed data', async () => {
     expect(pair.low.budgetEur).toBeLessThanOrEqual(80000);
   });
 
-  it('resolves the rhythm question from the two plans, not from a literal', () => {
-    expect(inputs.rhythm.sharpStations.length).toBeGreaterThan(0);
-    expect(inputs.rhythm.referenceStations.length).toBeGreaterThan(0);
-    const rhythm = resolveAll(answers, inputs).find((entry) => entry.predictionId === 'rhythm')!;
-    expect(['same', 'move']).toContain(rhythm.actual);
-    expect(revealOf(rhythm, 'en').noteKey).toBe('play.reveal.rhythm.note');
-  });
-
-  it('compares the busy weekday with the SLOWER rhythm, not with the budget ladder', () => {
-    // Owner's decision: "weekday, busy day" is rhythm_sharp and "a slower,
-    // week-end-like rhythm" is rhythm_uniform. The counts are read off the
-    // committed runs, so this fails if the resolver is pointed elsewhere.
-    const sharp = data.scenarios.find((sc) => sc.id === RHYTHM_SHARP)!;
-    const slow = data.scenarios.find((sc) => sc.id === RHYTHM_SLOW)!;
-    const facts = rhythmFacts(data);
-    expect(facts.sharpStations.length).toBe(sharp.stations.length);
-    expect(facts.referenceStations.length).toBe(slow.stations.length);
-    // and NOT the reference plan of the visitor's own budget
-    const ladderPlan = data.scenarios.find((sc) => sc.id === 'budget_080k')!;
-    expect(facts.referenceStations.length).not.toBe(ladderPlan.stations.length);
-    // the sentence then quotes the slower plan's own total
-    const rhythm = resolveAll(answers, inputs).find((entry) => entry.predictionId === 'rhythm')!;
-    expect(rhythm.facts.referenceTotal).toBe(slow.stations.length);
+  it('resolves "bikes per station" from the committed plan, not from a literal', () => {
+    // The plan's own starting fleet over the stations it builds: 83 stations
+    // at 80 k€, so the tile, the badge and the reveal all quote the same number.
+    expect(inputs.bikes.stations).toBe(plan!.stations.length);
+    expect(inputs.bikes.bikes).toBeGreaterThan(0);
+    expect(inputs.bikes.mean).toBeCloseTo(inputs.bikes.bikes / inputs.bikes.stations, 9);
+    expect(inputs.bikes.max).toBeLessThanOrEqual(30);
+    const bikes = resolveAll(answers, inputs).find((entry) => entry.predictionId === 'bikes')!;
+    expect(bikes.actual).toBe('5to15');
+    expect(bikes.matched).toBe(true);
+    expect(revealOf(bikes, 'en').noteKey).toBe('play.reveal.bikes.note');
   });
 });

@@ -144,14 +144,14 @@ stations, predict, watch a day run, compare.
 
 | # | Step | What happens |
 | - | --- | --- |
-| 1 | Plan | one screen: the instructions and the four game budgets (20k / 60k / 80k / 120k €, borrowed from the committed `budget_*` scenarios) side by side, and under them, once a budget is picked, the controls to place stations by tapping the map, or "help me" runs the demand-following assistant; a live "within reach" preview and a budget meter guide the choice |
-| 2 | Predict | answers five short questions about the layout, before seeing any result |
-| 3 | Run | the day plays out — trip sprites animate while the layout's own evaluation resolves (exact solve, or the estimate fallback) |
+| 1 | Plan | one screen: the instructions, the four game budgets (20k / 60k / 80k / 120k €, borrowed from the committed `budget_*` scenarios) side by side with the model's unit costs under them (station / dock / bike / truck run, read from `constants.json`), and under them, once a budget is picked, the controls to place stations by tapping the map, or "help me" runs the demand-following assistant; a live "within reach" preview and a budget meter guide the choice |
+| 2 | Predict | answers four short questions about the layout (trips served, public-transport share, trucks, bikes per station), before seeing any result |
+| 3 | Run | the day plays out — trip sprites animate while the layout's own evaluation resolves (exact solve, or the estimate fallback); the KPI tiles answer the step-2 questions, and each placed station now carries the model's bikes-per-station badge |
 | 4 | Optimiser | the paper's own design at the same budget, evaluated by the same engine, next to the visitor's; one more prediction ("double the budget?") is asked here |
 | 5 | Conclusions | every prediction is revealed against what actually happened, with a recap ticket |
 
 Copy lives under the `play.*` keys of `src/i18n/en.json` / `fr.json` (step labels `play.step.*`,
-rhythm verbs `play.rhythm.*`, the six questions `play.q.*` and their reveals `play.reveal.*`) —
+rhythm verbs `play.rhythm.*`, the five questions `play.q.*` and their reveals `play.reveal.*`) —
 same fallback-to-English rule as the rest of the site.
 
 ### Layered architecture, and its one import rule

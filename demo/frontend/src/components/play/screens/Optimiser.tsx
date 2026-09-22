@@ -1,5 +1,4 @@
-import { useState } from 'react';
-
+import type { BikesFacts } from '../../../domain/game/predictions';
 import type { ResultsView } from '../../../domain/game/results';
 import type { BudgetId } from '../../../domain/game/session';
 import { LadderChart, type LadderPoint } from '../../Charts';
@@ -19,13 +18,14 @@ import { MethodNote, ResultsBlock } from './ResultBits';
  * The four budget chips are always there: choosing one redraws the map AND the
  * results below, which are the very tiles and charts of step 4 (`ResultsBlock`)
  * computed by the same engine, so the budgets can be compared reading the same
- * numbers. The published figure stays one tap away rather than in place of them.
+ * numbers.
  */
 export interface OptimiserProps {
   contribution: ContributionFacts | null;
   /** The optimiser's network for the browsed budget, in the shape step 4 prints. */
   view: ResultsView | null;
-  published: { served: number; ratio: number };
+  /** Bikes per station of the browsed plan: the tile step 4 also prints. */
+  bikes: BikesFacts | null;
   mine: number;
   shared: number;
   trucks: boolean;
@@ -50,7 +50,6 @@ export const PLATEAU_EUR = 100000;
 
 export default function Optimiser(props: OptimiserProps) {
   const { contribution, view, lang, t } = props;
-  const [paper, setPaper] = useState(false);
   const browsedEur = props.budgets.find((budget) => budget.id === props.browsing)?.eur ?? 0;
   const plateau = Math.max(browsedEur, props.visitorBudgetEur) >= PLATEAU_EUR;
 
@@ -101,6 +100,7 @@ export default function Optimiser(props: OptimiserProps) {
         <>
           <ResultsBlock
             view={view}
+            bikes={props.bikes}
             nothingToRebalance={view.trucks.dependOnTrucks < 1 && (view.trucks.dispatches ?? 0) < 1}
             trucksSub={
               view.trucks.dispatches != null

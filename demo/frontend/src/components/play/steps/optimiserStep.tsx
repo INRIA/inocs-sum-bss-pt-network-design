@@ -1,5 +1,5 @@
 import type { BudgetReference } from '../../../domain/evaluation/types';
-import { optimiserView, optimiserResults } from '../../../domain/game/results';
+import { optimiserResults } from '../../../domain/game/results';
 import {
   BUDGET_EUR,
   BUDGET_IDS,
@@ -14,6 +14,7 @@ import type { PlayData } from '../../../lib/playData';
 import type { GameData, Lang } from '../../../lib/types';
 import StationsLayer from '../../map/layers/StationsLayer';
 import {
+  bikesPerStation,
   budgetLadder,
   contributionFacts,
   doublePair,
@@ -33,8 +34,7 @@ import { viewOf } from './runStep';
  * The map shows the optimiser's network for the budget being browsed, with the
  * visitor's own stations kept underneath in grey (plan.md §2, "legend toggle
  * Your placed stations"). Both columns of the table come from the same engine
- * (decision 4 of plan-technical §A), and the published figure travels with them
- * rather than in place of them.
+ * (decision 4 of plan-technical §A).
  */
 export interface OptimiserStepInput {
   readonly session: Session;
@@ -62,16 +62,9 @@ export function optimiserStep(input: OptimiserStepInput): StepParts {
   const browsedReference = references.get(BUDGET_EUR[browsing]) ?? null;
   const plan = planOf(data, BUDGET_SCENARIO[browsing]);
   const facts = plan ? planFacts(plan) : null;
+  // The same figure the map badges and step 4's tile print, for the plan browsed here.
+  const bikes = bikesPerStation(plan);
   const demandTotal = view?.hero.demand ?? input.play.demandTotal;
-
-  const optimiser = browsedReference
-    ? optimiserView({
-        reference: browsedReference,
-        trucks: session.trucks,
-        demandTotal,
-        plan: facts,
-      })
-    : null;
 
   // The step-4 view-model, for the optimiser's network at the browsed budget.
   const results = browsedReference
@@ -83,7 +76,7 @@ export function optimiserStep(input: OptimiserStepInput): StepParts {
     <Optimiser
       contribution={contributionFacts(data, BUDGET_EUR[browsing])}
       view={results}
-      published={optimiser ? optimiser.published : { served: 0, ratio: 0 }}
+      bikes={bikes}
       mine={session.placed.length}
       shared={overlapCount(
         session.placed.map((placed) => placed.id),

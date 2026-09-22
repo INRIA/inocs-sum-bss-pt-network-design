@@ -4,7 +4,7 @@
  *
  * The band edges are pinned because the bands ARE the honesty of the game: a
  * threshold that does not sit between two option values would make a true
- * answer read as wrong. The second half resolves `trucks`, `rhythm` and
+ * answer read as wrong. The second half resolves `trucks`, `bikes` and
  * `double` on the real artefacts (`demo/experiments/results/<id>/`), so a
  * re-run that moved the numbers fails here rather than misleading a visitor.
  */
@@ -20,9 +20,9 @@ import {
   isOptionOf,
   questionsFor,
   resolveAll,
+  resolveBikes,
   resolveDouble,
   resolvePt,
-  resolveRhythm,
   resolveRush,
   resolveServed,
   resolveTrucks,
@@ -48,10 +48,22 @@ const paperOf = (scenario: string): PaperBlock =>
     paper: PaperBlock;
   }).paper;
 
-const stationIdsOf = (scenario: string): string[] =>
-  (JSON.parse(readFileSync(join(RESULTS, scenario, 'stations.json'), 'utf8')) as {
-    stations: { station: string }[];
-  }).stations.map((row) => row.station);
+/** The run's own bikes per station, straight off `stations.json`. */
+const bikesOf = (scenario: string) => {
+  const rows = (
+    JSON.parse(readFileSync(join(RESULTS, scenario, 'stations.json'), 'utf8')) as {
+      stations: { initial_bikes: number }[];
+    }
+  ).stations.map((row) => Math.max(0, Math.round(row.initial_bikes)));
+  const bikes = rows.reduce((total, value) => total + value, 0);
+  return {
+    min: Math.min(...rows),
+    mean: bikes / rows.length,
+    max: Math.max(...rows),
+    stations: rows.length,
+    bikes,
+  };
+};
 
 /** The committed plan, read as if it were an evaluation of that layout. */
 const asEvaluation = (scenario: string) => {
@@ -73,7 +85,7 @@ describe('the question set', () => {
       'served',
       'pt',
       'trucks',
-      'rhythm',
+      'bikes',
     ]);
     expect(questionsFor('optimiser').map((q) => q.id)).toEqual(['double']);
     expect(PREDICTIONS).toHaveLength(5);
@@ -99,7 +111,7 @@ describe('the question set', () => {
         served: 'gt90',
         pt: '4in10',
         trucks: 'few',
-        rhythm: 'same',
+        bikes: '5to15',
       }),
     ).toBe(true);
     expect(allAnswered('optimiser', { double: 'none' })).toBe(true);
@@ -199,31 +211,23 @@ describe('trucks', () => {
   });
 });
 
-describe('rhythm', () => {
-  it('answers "same places" only when the sharp plan is contained in the reference', () => {
-    const contained = resolveRhythm(null, {
-      sharpStations: ['a', 'b', 'c'],
-      referenceStations: ['a', 'b', 'c', 'd'],
-    });
-    expect(contained.actual).toBe('same');
-    expect(contained.facts.overlap).toBe(1);
+describe('bikes', () => {
+  const at = (mean: number): string =>
+    resolveBikes(null, { min: 0, mean, max: 30, stations: 80, bikes: mean * 80 }).actual;
 
-    const ninety = resolveRhythm(null, {
-      sharpStations: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
-      referenceStations: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
-    });
-    expect(ninety.facts.overlap).toBeCloseTo(0.9, 6);
-    expect(ninety.actual).toBe('same');
-
-    const moved = resolveRhythm(null, {
-      sharpStations: ['a', 'b', 'c', 'd', 'e'],
-      referenceStations: ['a', 'b', 'c', 'x', 'y'],
-    });
-    expect(moved.actual).toBe('move');
+  it('bands between the option values: 5, 15 and 25 bikes per station', () => {
+    expect(at(4.99)).toBe('lt5');
+    expect(at(5)).toBe('5to15');
+    expect(at(14.99)).toBe('5to15');
+    expect(at(15)).toBe('15to25');
+    expect(at(24.99)).toBe('15to25');
+    expect(at(25)).toBe('gt25');
   });
 
-  it('does not divide by zero on an empty plan', () => {
-    expect(resolveRhythm(null, { sharpStations: [], referenceStations: [] }).actual).toBe('move');
+  it('reports the spread the reveal quotes', () => {
+    const resolved = resolveBikes('5to15', { min: 0, mean: 9.96, max: 30, stations: 83, bikes: 827 });
+    expect(resolved).toMatchObject({ predictionId: 'bikes', actual: '5to15', matched: true });
+    expect(resolved.facts).toMatchObject({ min: 0, max: 30, stations: 83, bikes: 827 });
   });
 });
 
@@ -286,14 +290,22 @@ describe('against the committed runs', () => {
     expect(resolved.facts.extraPercent as number).toBeCloseTo(13.78, 1);
   });
 
-  it('resolves the rhythm question to "same places" from the two plans', () => {
-    const resolved = resolveRhythm('same', {
-      sharpStations: stationIdsOf('rhythm_sharp'),
-      referenceStations: stationIdsOf('budget_080k'),
+  it('answers "5 to 15 bikes per station" at every shipped budget', () => {
+    const table = BUDGETS.map((scenario) => {
+      const facts = bikesOf(scenario);
+      return { scenario, actual: resolveBikes(null, facts).actual, mean: Math.round(facts.mean) };
     });
-    expect(resolved.facts.sharpTotal).toBe(75);
-    expect(resolved.facts.overlap).toBe(1);
-    expect(resolved).toMatchObject({ actual: 'same', matched: true });
+    expect(table).toEqual([
+      { scenario: 'budget_020k', actual: '5to15', mean: 6 },
+      { scenario: 'budget_060k', actual: '5to15', mean: 9 },
+      { scenario: 'budget_080k', actual: '5to15', mean: 10 },
+      { scenario: 'budget_120k', actual: '5to15', mean: 11 },
+    ]);
+    // Never more than the model's own 30-dock cap, and some stations open empty.
+    const reference = bikesOf('budget_080k');
+    expect(reference.max).toBe(30);
+    expect(reference.min).toBe(0);
+    expect(reference.stations).toBe(83);
   });
 });
 
@@ -304,10 +316,7 @@ describe('resolveAll', () => {
       withoutTrucks: fakeEvaluation({ served: 1271, demandTotal: 1453 }),
       trucks: true,
       optimiserDispatches: paperOf('budget_080k').dispatches,
-      rhythm: {
-        sharpStations: stationIdsOf('rhythm_sharp'),
-        referenceStations: stationIdsOf('budget_080k'),
-      },
+      bikes: bikesOf('budget_080k'),
       double: {
         lowBudgetEur: 60000,
         highBudgetEur: 120000,
@@ -320,7 +329,7 @@ describe('resolveAll', () => {
       'served',
       'pt',
       'trucks',
-      'rhythm',
+      'bikes',
       'double',
     ]);
     expect(resolved[0]).toMatchObject({ chosen: 'gt90', matched: true });

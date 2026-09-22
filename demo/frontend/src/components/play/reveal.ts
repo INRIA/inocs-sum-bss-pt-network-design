@@ -100,17 +100,18 @@ export function revealOf(resolution: Resolution, lang: Lang): Reveal {
       };
     }
 
-    case 'rhythm':
+    case 'bikes':
       return {
-        key: resolution.actual === 'same' ? 'play.reveal.rhythm.same' : 'play.reveal.rhythm.move',
+        key: 'play.reveal.bikes',
         vars: {
-          shared: fmtInt(number('shared')),
-          sharpTotal: fmtInt(number('sharpTotal')),
-          referenceTotal: fmtInt(number('referenceTotal')),
-          overlap: pct(lang, number('overlap')),
+          mean: fmtNum(lang, number('mean'), 1),
+          min: fmtInt(number('min')),
+          max: fmtInt(number('max')),
+          stations: fmtInt(number('stations')),
+          bikes: fmtInt(number('bikes')),
         },
         toneKey,
-        noteKey: 'play.reveal.rhythm.note',
+        noteKey: 'play.reveal.bikes.note',
       };
 
     case 'double':

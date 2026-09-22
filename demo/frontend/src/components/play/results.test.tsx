@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { optimiserView, resultsView, type ResultsView } from '../../domain/game/results';
+import { resultsView, type ResultsView } from '../../domain/game/results';
 import { fakeEvaluation } from '../../domain/game/testSupport';
 import type { BudgetReference } from '../../domain/evaluation/types';
 import { makeT } from '../../lib/i18n';
@@ -65,13 +65,17 @@ const reference: BudgetReference = {
   optimiserWithoutTrucks: {} as never,
 };
 
+/** The optimiser's plan at 80 k€: 827 bikes over 83 stations, 0 to 30 each. */
+const BIKES = { min: 0, mean: 827 / 83, max: 30, stations: 83, bikes: 827 };
+
 const runMarkup = (quality: 'exact' | 'estimate' = 'exact'): string => {
   const results = view(quality);
   return renderToStaticMarkup(
     <Run
       status={quality === 'estimate' ? 'estimate' : 'ready'}
       view={results}
-      answers={{ pt: '4in10', rush: 'bit', trucks: 'few' }}
+      answers={{ pt: '4in10', rush: 'bit', trucks: 'few', bikes: '5to15' }}
+      bikes={BIKES}
       trucks
       onReplay={() => {}}
       periodName="morning"
@@ -94,7 +98,13 @@ const runMarkup = (quality: 'exact' | 'estimate' = 'exact'): string => {
 describe('the results screen', () => {
   it('shows five KPI cards, the trips pie and the period bars', () => {
     const html = runMarkup();
-    for (const label of ['play.kpi.service', 'play.tile.pt', 'play.kpi.trucks', 'play.kpi.stations']) {
+    for (const label of [
+      'play.kpi.service',
+      'play.tile.pt',
+      'play.kpi.trucks',
+      'play.kpi.stations',
+      'play.kpi.bikes',
+    ]) {
       expect(html, label).toContain(esc(t(label)));
     }
     expect(html).toContain(esc(t('play.pie.h')));
@@ -110,8 +120,9 @@ describe('the results screen', () => {
 
   it('puts the visitor own guess next to the cards that answer one', () => {
     const html = runMarkup();
-    expect(html).toContain(t('play.tile.guess', { answer: t('play.q.pt.4in10') }));
-    expect(html).toContain(t('play.tile.guess', { answer: t('play.q.trucks.few') }));
+    expect(html).toContain(esc(t('play.tile.guess', { answer: t('play.q.pt.4in10') })));
+    expect(html).toContain(esc(t('play.tile.guess', { answer: t('play.q.trucks.few') })));
+    expect(html).toContain(esc(t('play.tile.guess', { answer: t('play.q.bikes.5to15') })));
   });
 
   it('takes every pie share from the total number of trips', () => {
@@ -132,7 +143,6 @@ describe('the results screen', () => {
 
 const optimiserMarkup = (): string => {
   const results = view();
-  const optimiser = optimiserView({ reference, trucks: true, demandTotal: results.hero.demand });
   return renderToStaticMarkup(
     <Optimiser
       contribution={{
@@ -147,7 +157,7 @@ const optimiserMarkup = (): string => {
         nextTrips: 13,
       }}
       view={results}
-      published={optimiser.published}
+      bikes={BIKES}
       mine={41}
       shared={38}
       trucks
@@ -178,9 +188,8 @@ describe('the optimiser screen', () => {
     expect(html).not.toContain(esc(t('play.q.double')));
   });
 
-  it('keeps the published figure one tap away, never in place of the engine', () => {
+  it("shows how many of the visitor's own sites the optimiser also chose", () => {
     const html = optimiserMarkup();
-    expect(html).toContain(esc(t('play.compare.paper.open')));
     expect(html).toContain(esc(t('play.compare.overlap', { shared: '38', mine: '41' })));
   });
 });

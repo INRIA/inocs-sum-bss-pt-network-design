@@ -99,7 +99,7 @@ describe.skipIf(!ready)('useStepContent', async () => {
       trucks: true,
       layoutHash: 'test',
       evaluation: { withTrucks, withoutTrucks },
-      predictions: { served: '70to90', pt: '4in10', rush: 'bit', trucks: 'few', rhythm: 'same' },
+      predictions: { served: '70to90', pt: '4in10', rush: 'bit', trucks: 'few', bikes: '5to15' },
     };
   };
 
@@ -136,18 +136,17 @@ describe.skipIf(!ready)('useStepContent', async () => {
     expect(html).toContain('class="candidates"');
     // three placed stations, drawn by the player variant of StationsLayer
     expect(html.split('class="trip ').length - 1).toBeGreaterThan(50);
-    expect(html).toContain(t('play.build.leftfor'));
   });
 
   it('shows the free sites only while building', () => {
     expect(render(at('predict', [3, 7]))).not.toContain('class="candidates"');
   });
 
-  it('reads the budget meter and the reach preview off the real payload', () => {
+  it('reads the budget meter off the real payload', () => {
     const empty = render(at('build'));
     const some = render(at('build', [3, 7, 11, 19, 27]));
-    expect(empty).toContain(t('play.build.reachnote'));
-    // five stations cost money and put real demand within reach
+    expect(empty).toContain(t('play.build.remaining'));
+    // five stations cost money and change what the counter shows
     expect(some).not.toEqual(empty);
   });
 });

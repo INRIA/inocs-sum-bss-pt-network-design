@@ -33,14 +33,15 @@ interface ShowFlags {
 
 type Props =
   | { variant: 'plan'; stations: StationMarker[]; show: ShowFlags; period: number; dropKey: number; t: T }
-  | { variant: 'player'; stations: PlayerStation[]; dropKey?: number }
+  | { variant: 'player'; stations: PlayerStation[]; dropKey?: number; bikes?: number | null }
   | { variant: 'ghost'; stations: GhostStation[]; dropKey?: number };
 
 /**
  * One layer, three variants (plan-technical.md §C.3): `plan` is the model's own output — the
  * CityMap station block, moved here verbatim — `player` is the visitor's in-progress layout
  * (haloed glyph, dashed outline when the assistant placed it), `ghost` is a past attempt (grey,
- * unhaloed, dimmed). Only `plan` reads a `show`/`period`/`t`: the game variants have no read-outs.
+ * unhaloed, dimmed). Only `plan` reads a `show`/`period`/`t`; `player` takes at most one read-out,
+ * the model's bikes-per-station badge, and `ghost` none.
  */
 export default function StationsLayer(props: Props) {
   const { unitPx } = useMapView();
@@ -112,6 +113,10 @@ export default function StationsLayer(props: Props) {
   }
 
   if (props.variant === 'player') {
+    // `bikes` is the model's own bikes-per-station figure for the chosen budget
+    // (`optimiserFacts.bikesPerStation`): ONE number for the whole plan, so every
+    // station carries the same badge — the game never sizes a visitor's station.
+    const badge = props.bikes != null ? String(Math.round(props.bikes)) : null;
     return (
       <g key={props.dropKey}>
         {props.stations.map((s, i) => {
@@ -122,6 +127,22 @@ export default function StationsLayer(props: Props) {
                 <circle r={7} fill="none" stroke={color} strokeWidth={1} strokeDasharray="2 2" />
               )}
               <BikeGlyph x={0} y={0} s={0.85} color={color} halo />
+              {badge && showLabels && (
+                <text
+                  x={4}
+                  y={LABEL_UNITS * 0.36}
+                  fontFamily='"Spline Sans Mono",monospace'
+                  fontSize={LABEL_UNITS}
+                  fontWeight={700}
+                  fill={color}
+                  paintOrder="stroke"
+                  stroke="#FFFFFF"
+                  strokeWidth={1.6}
+                  strokeLinejoin="round"
+                >
+                  {badge}
+                </text>
+              )}
             </g>
           );
         })}

@@ -1,5 +1,5 @@
 import { DayTransport } from './Build';
-import type { PredictionId } from '../../../domain/game/predictions';
+import type { BikesFacts, PredictionId } from '../../../domain/game/predictions';
 import type { ResultsView } from '../../../domain/game/results';
 import type { EvaluationStatus } from '../../../hooks/useEvaluation';
 import type { T } from '../../../lib/i18n';
@@ -23,6 +23,8 @@ export interface RunProps {
   status: EvaluationStatus;
   view: ResultsView | null;
   answers: Readonly<Partial<Record<PredictionId, string>>>;
+  /** The optimiser's plan at this budget: the "bikes per station" tile and badge. */
+  bikes: BikesFacts | null;
   trucks: boolean;
   onReplay: () => void;
   /** Null under reduced motion, where the period is stepped by hand instead. */
@@ -98,6 +100,7 @@ export default function Run(props: RunProps) {
           <ResultsBlock
             view={view}
             guess={guess}
+            bikes={props.bikes}
             nothingToRebalance={props.nothingToRebalance}
             lang={lang}
             t={t}

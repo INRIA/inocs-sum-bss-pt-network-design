@@ -49,7 +49,7 @@ describe('Predict', () => {
 
   it('promises no right answer and presses the chosen option', () => {
     const html = render({ served: 'lt40' });
-    expect(html).toContain(t('play.predict.noright'));
+    expect(html).toContain(esc(t('play.predict.noright')));
     expect(count(html, 'aria-pressed="true"')).toBe(1);
   });
 });

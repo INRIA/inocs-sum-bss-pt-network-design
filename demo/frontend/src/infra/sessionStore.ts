@@ -11,8 +11,13 @@
  */
 import type { SessionStore } from '../domain/game/ports';
 
-/** Bump when the stored shape changes. Old keys are simply never read again. */
-export const SESSION_VERSION = 1;
+/**
+ * Bump when the stored shape or the stored CONTENT changes. Old keys are simply
+ * never read again — v2 replaced the "week-end rhythm" poll with "bikes per
+ * station", so a v1 session carried an answer to a question the game no longer
+ * asks.
+ */
+export const SESSION_VERSION = 2;
 export const SESSION_KEY = `sum-play-session-v${SESSION_VERSION}`;
 
 /** The slice of the Web Storage API used here. */

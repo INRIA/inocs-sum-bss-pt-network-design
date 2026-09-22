@@ -1,9 +1,8 @@
 import type { BudgetReference } from '../../../domain/evaluation/types';
-import type { RhythmFacts } from '../../../domain/game/predictions';
 import { BUDGET_SCENARIO, type Session, type SessionActions } from '../../../domain/game/session';
 import StationsLayer from '../../map/layers/StationsLayer';
 import type { T } from '../../../lib/i18n';
-import type { GameData, Lang, ScenarioData } from '../../../lib/types';
+import type { GameData, Lang } from '../../../lib/types';
 import type { PlayScene } from '../playScene';
 import ComparePlans from '../screens/ComparePlans';
 import type { StepParts } from './runStep';
@@ -12,9 +11,6 @@ import { browsingOf } from './optimiserStep';
 
 /**
  * Step 6 — Reflect: the full demo's "compare plans" content, shown as is.
- *
- * The rhythm question is resolved across SCENARIOS, never on the visitor's
- * layout: the busy-weekday plan against the reference plan at the same budget.
  */
 export interface ConclusionsStepInput {
   readonly session: Session;
@@ -24,28 +20,6 @@ export interface ConclusionsStepInput {
   readonly reference: BudgetReference | null;
   readonly t: T;
   readonly lang: Lang;
-}
-
-/**
- * The two rhythms the question really compares (owner's decision).
- *
- * "Weekday, busy day" is the `rhythm_sharp` run; "a slower, week-end-like
- * rhythm" is `rhythm_uniform`, the same day's trips spread evenly — NOT the
- * budget ladder's reference plan, which differs by demand profile and budget
- * at once and would answer a different question. Both station lists are read
- * off the committed runs, so a re-run that moved stations flips the answer;
- * nothing here is a literal. The caveat the copy carries stays true: no run in
- * the study contains week-end demand.
- */
-export const RHYTHM_SHARP = 'rhythm_sharp';
-export const RHYTHM_SLOW = 'rhythm_uniform';
-
-export function rhythmFacts(data: GameData): RhythmFacts {
-  const ids = (sc: ScenarioData | null | undefined): string[] =>
-    sc ? sc.stations.map((station) => station.id) : [];
-  const run = (id: string): ScenarioData | null =>
-    data.scenarios.find((sc) => sc.id === id && sc.hasResults) ?? null;
-  return { sharpStations: ids(run(RHYTHM_SHARP)), referenceStations: ids(run(RHYTHM_SLOW)) };
 }
 
 /** The morning served rate of the sharp-peak run: the rush proof's third figure. */

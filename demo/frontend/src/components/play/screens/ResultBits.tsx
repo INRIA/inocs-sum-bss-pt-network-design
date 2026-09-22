@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 
+import type { BikesFacts } from '../../../domain/game/predictions';
 import type { LossRow, PeriodRow, ResultsView } from '../../../domain/game/results';
 import type { TicketMark } from '../../../domain/game/ticket';
 import { PeriodChart } from '../../Charts';
@@ -362,13 +363,20 @@ export function PeriodBars({ periods, lang, t }: { periods: readonly PeriodRow[]
 export function ResultsBlock({
   view,
   guess,
+  bikes,
   nothingToRebalance,
   trucksSub,
   lang,
   t,
 }: {
   view: ResultsView;
-  guess?: (id: 'served' | 'pt' | 'trucks') => string | null;
+  guess?: (id: 'served' | 'pt' | 'trucks' | 'bikes') => string | null;
+  /**
+   * The optimiser's own plan at this budget, for the "bikes per station" tile:
+   * one figure for the whole plan, computed off the committed run, so it is the
+   * same number whatever the visitor placed (and the same one the map badges).
+   */
+  bikes?: BikesFacts | null;
   nothingToRebalance: boolean;
   /** Overrides the trucks tile's sub-line (the optimiser knows its own run count). */
   trucksSub?: string;
@@ -411,6 +419,20 @@ export function ResultsBlock({
           guess={null}
           t={t}
         />
+        {bikes && (
+          <GuessTile
+            label={t('play.kpi.bikes')}
+            value={fmtInt(Math.round(bikes.mean))}
+            sub={t('play.kpi.bikes.sub', {
+              min: fmtInt(bikes.min),
+              max: fmtInt(bikes.max),
+              bikes: fmtInt(bikes.bikes),
+              stations: fmtInt(bikes.stations),
+            })}
+            guess={ask('bikes')}
+            t={t}
+          />
+        )}
       </div>
       <div className="playcharts">
         <TripsPie view={view} lang={lang} t={t} />
