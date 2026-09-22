@@ -1,0 +1,1388 @@
+/* ============================================================
+   play.css — the planner game (/play) only.
+
+   Built on the tokens global.css already defines (--bg, --surface,
+   --ink, --blue, --green, --red, --r, ...): no new palette, no new
+   layout system. It adds the game's own chrome — the tracker, the
+   step template, the sticky primary bar — and the responsive rules
+   of plan-technical §B.1/§B.2 on top of the existing 980px sheet.
+
+   Rules that hold everywhere (§B.4): touch targets >= 44px, the
+   primary action 56px, heights in dvh, sticky elements inside
+   env(safe-area-inset-bottom), and a reduced-motion fallback for
+   every moving element.
+   ============================================================ */
+
+/* ---------- type scale hook (guided / projector mode, P6) ---------- */
+.playapp[data-scale='large'] {
+  font-size: 125%;
+}
+.playapp[data-scale='large'] .playoption {
+  min-height: 64px;
+}
+
+/* ---------- header ---------- */
+.playtop .playdemolink {
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+}
+.playtop .playdemolink:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- tracker (UX reference §2) ---------- */
+.tracker {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 18px 6px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.tracksteps {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  margin: 0;
+  padding: 10px 0 0;
+  list-style: none;
+}
+/* The rail runs from the centre of the first marker to the centre of the last
+   one, so x% of it is a position among the markers (Tracker.tsx parks the bike
+   on them). A marker's centre is 17px into its column (6px padding + half of
+   the 22px disc); columns are equal, 4px apart. */
+.trackrail {
+  --track-col: calc((100% - (var(--track-count, 5) - 1) * 4px) / var(--track-count, 5));
+  position: absolute;
+  left: 17px;
+  right: calc(var(--track-col) - 17px);
+  top: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-2);
+}
+.trackrailfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 0.4s ease;
+}
+.trackbike {
+  position: absolute;
+  top: -12px;
+  transform: translateX(-50%);
+  font-size: 15px;
+  line-height: 1;
+  transition: left 0.4s ease;
+}
+.trackitem {
+  min-width: 0;
+}
+.trackitem > button,
+.trackitem > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 6px;
+  border-radius: 10px;
+  text-align: left;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.trackitem > button:hover {
+  background: var(--tint-2);
+}
+.trackno {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--line-2);
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 700;
+}
+.trackitem.done .trackno {
+  background: var(--green);
+  color: #22300a;
+}
+.trackitem.current > button,
+.trackitem.current > span {
+  color: var(--blue);
+}
+.trackitem.current .trackno {
+  background: var(--blue);
+  color: #fff;
+}
+.trackitem.locked > span {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.tracklab {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trackverb {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.playoff {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.playoffbtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--surface);
+}
+.playoffbtn:hover {
+  border-color: var(--blue);
+}
+
+/* compact tracker: "2 of 6 · Build" over a thin bar (§B.1) */
+.tracker.compact {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 6px 12px 8px;
+  position: relative;
+}
+.trackrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trackline {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.trackbar {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.trackfill {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 0.4s ease;
+}
+.trackroute {
+  position: absolute;
+  z-index: 40;
+  top: 100%;
+  left: 8px;
+  right: 8px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+.trackroute .trackitem > button,
+.trackroute .trackitem > span {
+  justify-content: flex-start;
+  min-height: 48px;
+}
+
+/* ---------- the step template ---------- */
+.playbrief {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 6px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.playrhythm {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-ink);
+}
+.playh2,
+.playstep h2 {
+  margin: 2px 0 8px;
+}
+.playline {
+  margin: 4px 0;
+  font-size: 14px;
+}
+.playnoright {
+  font-style: italic;
+}
+.playwarn {
+  color: var(--red-ink);
+}
+
+/* one primary action per step, 56px, inside the safe area (§B.1) */
+.playbar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0 calc(4px + env(safe-area-inset-bottom));
+}
+.playprimary {
+  min-height: 56px;
+  margin-top: 0;
+  width: 100%;
+}
+.playprimary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.playbarnote {
+  font-size: 11.5px;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/* ---------- step 1: instructions, then the budget ---------- */
+.playintrohead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.playintrohead .eyebrow {
+  margin-top: 6px;
+}
+.playabout {
+  flex: none;
+  font-size: 12.5px;
+  padding: 6px 10px;
+}
+.playaboutbody p {
+  margin: 0 0 10px;
+}
+.playhow {
+  list-style: decimal;
+  margin: 8px 0 14px;
+  padding-left: 20px;
+  font-size: 14px;
+}
+.playhow li {
+  margin: 4px 0;
+}
+.playapp .playh3 {
+  margin: 14px 0 4px;
+  font-size: 17px;
+}
+/* ---------- budget cards ---------- */
+.playcards {
+  flex: none;
+  align-items: start;
+}
+.playcards .scard {
+  cursor: pointer;
+}
+/* on a phone the cards scroll sideways; each is 60% of the screen so the next one peeks in */
+@media (max-width: 980px) {
+  .playcards .scard {
+    flex: 0 0 60%;
+  }
+}
+.playcards .scard:focus-visible {
+  outline: 2px solid var(--blue, #0a4a9c);
+  outline-offset: 2px;
+}
+.playcards .playdocks {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.playcards .playops {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin-top: -2px;
+}
+.playcards .playops small {
+  font-weight: 500;
+}
+/* ---------- what the money buys: the model's unit costs, under the cards ---------- */
+.playcosts {
+  margin: 10px 0 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2, transparent);
+}
+.playcosts .decklab {
+  margin: 0 0 4px;
+}
+.playcosts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px 18px;
+}
+@media (min-width: 560px) {
+  .playcosts ul {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.playcosts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  border-bottom: 1px dotted var(--line);
+  padding: 2px 0;
+}
+.playcosts li b {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.playcosts .note {
+  margin: 6px 0 0;
+}
+
+.badge.playplus {
+  background: var(--green-tint);
+  color: var(--green-ink);
+}
+.badge.playminus {
+  background: var(--red-tint);
+  color: var(--red-ink);
+}
+
+/* ---------- build meter ---------- */
+.playmeter {
+  margin: 6px 0 2px;
+  font-size: 13.5px;
+}
+.playleft {
+  margin: 2px 0 4px;
+  font-size: 15px;
+}
+.playleft b {
+  font-size: 22px;
+  color: var(--blue);
+}
+.playleft.low b {
+  color: var(--red-ink);
+}
+.playleft.over b {
+  color: var(--red);
+}
+.playreach {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+}
+.playreach b {
+  font-size: 18px;
+  color: var(--green-ink);
+}
+.playbuildrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin: 8px 0;
+}
+.playcounter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.playcounterring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 84px;
+  height: 84px;
+  border: 4px solid var(--blue);
+  border-radius: 50%;
+  line-height: 1.05;
+}
+.playcounterring b {
+  font-size: 30px;
+  color: var(--blue);
+}
+.playcounterring span {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.playcounterlab {
+  margin: 0;
+  font-size: 14px;
+}
+.playcounterlab b {
+  font-size: 18px;
+}
+.playcounterspent {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.playassist {
+  flex: 1 1 160px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: stretch;
+}
+.playassist .decklab {
+  margin: 0;
+}
+.playassist .ghostbtn {
+  min-height: 44px;
+}
+.playrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.playrow .ghostbtn {
+  min-height: 44px;
+}
+@media (min-width: 981px) {
+  /* one row: counter, helper, undo / clear */
+  .playbuildrow {
+    flex-wrap: nowrap;
+  }
+  .playrow {
+    flex-wrap: nowrap;
+    flex: none;
+  }
+}
+.playplay .playperiod {
+  margin-left: 6px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.playtransport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+.playtlabel {
+  flex: none;
+  max-width: 20ch;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+.playtransport .playtbtn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 10px;
+  flex: none;
+}
+.playtimeline {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+}
+.playclock {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.playclock .playperiod {
+  font-weight: 500;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.playwho {
+  margin-top: 2px;
+}
+
+/* ---------- polls ---------- */
+.playdots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+.playdot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.playdot.done {
+  background: var(--green);
+}
+.playdot.cur {
+  background: var(--blue);
+  transform: scale(1.2);
+}
+.playdotlab {
+  margin-left: 6px;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.playq {
+  font-size: 19px;
+  margin: 2px 0 12px;
+}
+.playoptions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.playoption {
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--ink);
+}
+.playoption:hover {
+  border-color: var(--blue);
+}
+.playoption[aria-pressed='true'] {
+  border-color: var(--blue);
+  background: var(--blue-tint);
+  color: var(--blue-d);
+}
+.playticket {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r);
+  background: var(--tint-2);
+}
+.playstamps {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+}
+.playstamps li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.playstampa {
+  font-weight: 700;
+  color: var(--blue);
+}
+
+/* ---------- placeholders (UX reference §9) ---------- */
+.playsoon {
+  border: 2px dashed var(--line);
+  border-radius: var(--r);
+  padding: 14px;
+  margin: 10px 0;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--tint-2),
+    var(--tint-2) 10px,
+    var(--surface) 10px,
+    var(--surface) 20px
+  );
+}
+.playsoonlab {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.playstatus {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+/* ---------- viewports ---------- */
+/* phone landscape: a 44% side panel — a sheet has no room to open (§B.1) */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 980px) {
+  .playcols {
+    display: grid;
+    grid-template-columns: 44% minmax(0, 1fr);
+  }
+  .playcols .leftcol.playsheet {
+    position: static;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-top: none;
+    border-right: 1px solid var(--line);
+    box-shadow: none;
+    z-index: 1;
+  }
+  .playcols .rightcol {
+    position: static;
+  }
+  .playcols .sheethandle {
+    display: none;
+  }
+  .tracker.compact {
+    padding: 2px 10px 4px;
+  }
+}
+
+/* phone and tablet portrait: the existing sheet, with the primary bar pinned to
+   its foot. The bar is a flex sibling of the scrolling step card, so it stays
+   put without any sticky trickery; it only needs the safe area and a rule. */
+@media (max-width: 980px) {
+  .playapp .playbar {
+    background: var(--surface);
+    border-top: 1px solid var(--line-2);
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+  }
+  .playapp .playstep {
+    padding-bottom: 4px;
+  }
+  /* the sheet is short at `peek`: the card scrolls, the action never moves */
+  .playapp .playsheet {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 981px) {
+  .playcols .playbar {
+    padding-bottom: 0;
+  }
+}
+
+/* short desktop: the existing compact rule, applied to the game's chrome */
+@media (min-width: 981px) and (max-height: 820px) {
+  .tracker {
+    padding: 4px 18px;
+  }
+  .trackitem > button,
+  .trackitem > span {
+    min-height: 38px;
+    font-size: 11.5px;
+  }
+  .playprimary {
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackrailfill,
+  .trackbike,
+  .trackfill {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Steps 4 to 6 — results, the optimiser, conclusions.
+
+   Same tokens, same idioms as above: the hero is one number and
+   one sentence, the tiles are the existing `.card .fact` block
+   with the visitor's own guess under it, and the comparison is
+   the demo's `.tw` table. Nothing here is a score, so nothing is
+   coloured as a verdict: the tone line is ink-2, never green or
+   red (plan.md §2, no win or lose).
+   ============================================================ */
+
+/* ---------- the run bar ---------- */
+.playrunbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.playrunbar .ghostbtn {
+  min-height: 44px;
+}
+.playrunbar .playperiod {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green-ink);
+}
+.playperiods button {
+  min-height: 36px;
+}
+.playtag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.playest {
+  background: var(--red-tint);
+  color: var(--red-ink);
+}
+
+/* ---------- hero + the three marks ---------- */
+.playhero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 10px 0 4px;
+}
+.playhero b {
+  font-size: 34px;
+  line-height: 1;
+  color: var(--blue);
+}
+.playhero span {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.playmarks {
+  margin: 14px 0 18px;
+}
+.playmarkrail {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-2);
+  margin-bottom: 34px;
+}
+.playmark {
+  position: absolute;
+  top: -5px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90px;
+  text-align: center;
+}
+.playmark i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--line);
+  border: 2px solid var(--surface);
+}
+.playmark b {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  line-height: 1.15;
+}
+.playmark em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-2);
+}
+.playmark-you i {
+  background: var(--green);
+}
+.playmark-you b,
+.playmark-you em {
+  color: var(--green-ink);
+}
+.playmark-optimiser i {
+  background: var(--blue);
+}
+
+/* ---------- tiles ---------- */
+.playtiles {
+  gap: 8px;
+}
+.playtile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+}
+.playtilelab {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.playtile b {
+  font-size: 20px;
+  color: var(--blue);
+}
+.playtilesub {
+  font-size: 11px;
+  color: var(--ink-2);
+  line-height: 1.3;
+}
+.playguess {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--line);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+.playswitch {
+  margin: 8px 0;
+  align-self: flex-start;
+}
+
+/* ---------- losses, chart, method ---------- */
+.playlosses {
+  margin: 12px 0;
+}
+.playlosses ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+}
+.playlosses li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.playlosses li b {
+  min-width: 4ch;
+  text-align: right;
+  color: var(--red-ink);
+}
+.playlosses li span {
+  flex: 1;
+}
+.playlosses li em {
+  font-style: normal;
+  color: var(--ink-2);
+}
+.playchart {
+  margin: 12px 0;
+}
+.playmethod {
+  margin: 10px 0;
+}
+.playmethodbody,
+.playdeeperbody {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--tint-2);
+}
+
+/* ---------- step 5 ---------- */
+.playcontrib {
+  font-size: 14px;
+  line-height: 1.45;
+}
+.playcompare {
+  margin: 10px 0 4px;
+}
+.playpaper {
+  margin-top: 4px;
+}
+.playpoll {
+  margin: 16px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.playreveal {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--blue);
+  background: var(--blue-tint);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13.5px;
+}
+.playreveal p {
+  margin: 0 0 4px;
+}
+.playchips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin: 10px 0;
+}
+.playchip {
+  flex: none;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.playchip[aria-pressed='true'] {
+  border-color: var(--blue);
+  background: var(--blue-tint);
+  color: var(--blue-d);
+}
+
+/* ---------- step 6 ---------- */
+.playfullticket {
+  margin-bottom: 14px;
+}
+.playrecap {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+.playrecap h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.playsaid,
+.playmodel {
+  margin: 2px 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.playsaid b,
+.playmodel b {
+  color: var(--ink-2);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.playtone {
+  margin-top: 4px;
+  font-style: italic;
+}
+.playrecap .proof {
+  margin-top: 8px;
+}
+.playrushproof .tw {
+  margin-bottom: 6px;
+}
+.playclosing {
+  margin: 18px 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.playcta {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+.playdeeper {
+  margin: 14px 0 4px;
+}
+
+@media (max-width: 980px) {
+  .playtiles {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Fix-and-polish pass (review of the 1366x768 / 390x844 shots).
+   Only rules; no new palette, no new layout system.
+   ============================================================ */
+
+/* ---------- the optimiser's network must land at once ----------
+   `StationsLayer` staggers its drop animation by 14 ms per station. That
+   reads well for a handful of stations in the full demo; for the 83 the
+   optimiser opens it means the layer takes 1.2 s to finish arriving, and
+   a visitor stepping onto step 5 sees an empty map. Inside the game the
+   stagger is dropped (the inline `animation-delay` needs `!important`). */
+/* The full demo's `drop` keyframes animate `transform: scale()`. On an SVG group positioned by a
+   `transform="translate(x,y)"` attribute that REPLACES the translation, so every station is drawn
+   at the map's origin for the length of its (staggered) animation: the optimiser's 83 stations
+   were effectively absent for about 1.6 s after each mount. The full demo is left as it is; the
+   game uses an opacity-only fade with no stagger so the network lands at once. */
+.playapp .mapcard .drop {
+  animation-name: playfade !important;
+  animation-delay: 0s !important;
+}
+@keyframes playfade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- tables inside the step card ----------
+   `.tw` scrolls horizontally, which gives a flex item an automatic minimum
+   size of 0: in the column-flex step card the "You · Optimiser" table was
+   collapsing to zero height. Tables never shrink here. */
+.playstep .tw {
+  flex: none;
+}
+.playplateau {
+  margin-top: 4px;
+}
+
+/* ---------- the three marks ----------
+   Two of the three labels wrap to two lines, so the rail needs real room
+   under it; `--tiers` is the number of extra rows `MarksLine` had to use
+   to keep near-coincident labels apart. */
+.playmarkrail {
+  margin-bottom: calc(52px + var(--tiers, 0) * 26px);
+}
+.playmark b,
+.playmark em {
+  transform: translate(calc(var(--nudge, 0) * 1px), calc(var(--tier, 0) * 26px));
+}
+.playmark i {
+  z-index: 1;
+}
+
+/* ---------- guided / projector mode (plan-technical §B.1, last row) ---------- */
+.playscale {
+  display: inline-flex;
+  flex: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.playscale button {
+  min-width: 34px;
+  min-height: 28px;
+  padding: 3px 9px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+}
+.playscale button[aria-pressed='true'] {
+  background: var(--green);
+  color: #22300a;
+}
+.playapp[data-scale='large'] .playstep h2 {
+  font-size: 22px;
+}
+.playapp[data-scale='large'] .playhero b {
+  font-size: 30px;
+}
+.playapp[data-scale='large'] .tracker {
+  padding: 4px 14px;
+}
+
+/* ---------- build: the trade-off before the choice (plan.md §2bis) ---------- */
+.playreachbar {
+  position: relative;
+  height: 8px;
+  margin: 4px 0 6px;
+  border-radius: 999px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.playreachbar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 0.25s ease;
+}
+.playcountbar i {
+  background: var(--blue);
+}
+.playreachcap {
+  margin: 0 0 8px;
+}
+.playassistpreview {
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--green-ink);
+  font-size: 13px;
+}
+
+/* ---------- build on a phone: one meter line and the chips at `peek` ---------- */
+.playpeekbar {
+  display: none;
+}
+@media (max-width: 980px) {
+  /* First in the card, so it is exactly what the `peek` area shows. NOT
+     sticky: at `peek` it would then cover the whole scroll window and put
+     everything below the fold out of reach, for a finger as much as for a
+     test. Dragging the sheet up scrolls it away and reveals the full panel. */
+  .playapp .step-build .playpeekbar {
+    display: block;
+    margin: 0 -14px 8px;
+    padding: 2px 14px 8px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .playpeekline {
+    margin: 0 0 6px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .playpeekline b {
+    color: var(--blue);
+  }
+  .playpeekchips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .playpeekchips .ghostbtn {
+    min-height: 40px;
+    padding: 6px 12px;
+  }
+  /* everything the peek line already says is repeated below, for the full sheet */
+  .playapp .step-build .playbrief {
+    display: none;
+  }
+  /* the circular map is centred in what is actually visible above the sheet */
+  .playapp .mapwrap {
+    align-items: center;
+    padding-bottom: var(--mapinset, 0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playreachbar i {
+    transition: none;
+  }
+}
+
+/* the last step's primary action is a link, not a button */
+a.playprimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.playagain {
+  margin-top: 8px;
+}
+
+/* A phone header has room for the brand, the way out and the language, and
+   nothing more; guided mode is a desktop and projector affair anyway. */
+@media (max-width: 639px) {
+  .playscale {
+    display: none;
+  }
+}
+
+/* On a phone the sheet covers the map when it is open; the map's own controls
+   must go behind it rather than float over the step's text. */
+@media (max-width: 980px) {
+  .playapp .mapzoom,
+  .playapp .layerchip {
+    z-index: 19;
+  }
+}
+
+/* ---------- step 3: the polls, two by two on a desktop ---------- */
+.playpolls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 8px 0;
+}
+.playpoll {
+  padding: 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.playpoll .playq {
+  margin: 2px 0 10px;
+  font-size: 16px;
+}
+.playpoll .playdotlab {
+  margin: 0;
+}
+@media (min-width: 900px) {
+  .playpolls {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ---------- step 4: KPI cards, trips pie, service bars ---------- */
+.playpie,
+.playbars {
+  margin: 14px 0;
+}
+.playpiebody {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.playpiesvg {
+  flex: none;
+  width: 132px;
+  height: 132px;
+}
+.playpieleg {
+  flex: 1;
+  min-width: 220px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+}
+.playpieleg li {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+}
+.playpieleg i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.playpieleg em {
+  min-width: 52px;
+  text-align: right;
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.playbars ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.playbars li {
+  display: grid;
+  grid-template-columns: 84px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.playbars b {
+  text-align: right;
+}
+.playbartrack {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--line);
+  overflow: hidden;
+}
+.playbarfill {
+  height: 100%;
+  border-radius: 7px;
+  background: var(--blue);
+}
+
+.playcharts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px 24px;
+}
+@media (min-width: 900px) {
+  .playcharts {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+@media (min-width: 981px) {
+  /* four tiles, or five once the "bikes per station" tile joins them */
+  .playtiles {
+    grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+  }
+}
+
+/* the pie card: pie left, legend right, always on one row */
+.playpiebody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  flex-wrap: nowrap;
+}
+.playpieleg {
+  min-width: 0;
+}
+.playpieleg li {
+  grid-template-columns: 12px minmax(0, 1fr) auto auto;
+}
+
+/* step 3: compact options, two columns at every width (four polls fit one screen) */
+.playpolls .playoptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.playpolls .playoption,
+.playapp[data-scale='large'] .playpolls .playoption {
+  min-height: 38px;
+  padding: 6px 10px;
+  font-size: 13.5px;
+  line-height: 1.2;
+}
+.playpoll {
+  margin: 0; /* the grid gap is the only spacing between question boxes */
+  padding: 10px 12px;
+}
+.playpoll .playq {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.playpolls {
+  gap: 6px;
+  margin: 2px 0;
+}

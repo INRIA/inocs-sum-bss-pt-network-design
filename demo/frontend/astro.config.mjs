@@ -16,6 +16,9 @@ export default defineConfig({
   base: process.env.BASE ?? '/inocs-sum-bss-pt-network-design',
   trailingSlash: 'ignore',
   integrations: [react()],
-  vite: { plugins: [tailwindcss()] },
+  // `worker.format: 'es'` is required by the planner game: its solver runs in a
+  // module worker (`new Worker(url, { type: 'module' })`), and Vite's default
+  // IIFE worker output cannot be code-split, which the lazy `highs` import needs.
+  vite: { plugins: [tailwindcss()], worker: { format: 'es' } },
   build: { assets: 'assets' },
 });

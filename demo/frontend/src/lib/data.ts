@@ -105,19 +105,14 @@ function buildMap(project: Project): MapData {
       line: f.properties.line as string,
       mode: f.properties.mode as 'tram' | 'bus' | 'rail',
       // Colour by MODE, not by the operator's own line colour: the design reserves blue/green/red
-      // for the three semantic registers (ux-plan section 6). The operator colour stays in the data.
-      color: f.properties.mode === 'tram' ? '#004494' : f.properties.mode === 'rail' ? '#2E2D29' : '#ff3514',
+      // for the semantic registers (ux-plan section 6). Buses/trolleybuses are the theme's light blue,
+      // trams green. The operator colour stays in the data.
+      color: f.properties.mode === 'tram' ? '#98C33A' : f.properties.mode === 'rail' ? '#2E2D29' : '#75BDFB',
       d: pathOf(f.geometry.coordinates, project),
       badge,
       headsign: f.properties.headsign ?? null,
     };
   });
-  // Second tram gets the green of the "tram = blue/green pair" convention.
-  const trams = ptLines.filter((l: any) => l.mode === 'tram');
-  if (trams[1]) trams[1].color = '#98C33A';
-  // Tram 12 wears the project theme's light blue.
-  for (const l of ptLines) if (l.line === '12') l.color = '#75BDFB';
-
   const bikes = read(join(DATA, 'city/bike_stations.geojson'));
   const bikeDots = bikes.features
     .map((f: any) => project(f.geometry.coordinates[0], f.geometry.coordinates[1]))
@@ -201,7 +196,14 @@ function buildScenario(entry: any, project: Project, periodBounds: number[][]): 
     periods = num(plan.periods, periods);
     stations = (plan.stations ?? []).map((s: any) => {
       const [x, y] = project(num(s.lon), num(s.lat));
-      return { x, y, transfer: s.type === 'TransferStation', capacity: num(s.capacity), inventory: arr(s.inventory) };
+      return {
+        id: String(s.id),
+        x,
+        y,
+        transfer: s.type === 'TransferStation',
+        capacity: num(s.capacity),
+        inventory: arr(s.inventory),
+      };
     });
   }
 

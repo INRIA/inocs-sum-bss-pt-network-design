@@ -48,6 +48,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # A handful of unit/component tests (e.g. the map markup guard) read public/data/, which is
+      # gitignored and otherwise only produced by the build's own `prebuild` hook. Generate it once
+      # here so the gates below see the same data the build will; `npm run build` regenerates it
+      # again afterwards (cheap and deterministic — no network access, reads only tracked files).
+      - name: Prepare data (so the gates below can read public/data)
+        run: npm run prepare-data
+
+      # Both gates reuse the install above (@astrojs/check, typescript and vitest are already
+      # devDependencies; no extra install step). `npm run check` needs stdin redirected: without a
+      # TTY it never prompts, so this is a safety net here rather than a workaround for a real
+      # interactive prompt (an Actions runner has no TTY on stdin regardless).
+      # Playwright/e2e is intentionally NOT added here: it needs a browser download
+      # (`npx playwright install chromium`) and a built+served site, a slower, separate concern
+      # from this gate; see demo/frontend/README.md.
+      - name: Type-check
+        run: npm run check < /dev/null
+
+      - name: Unit tests
+        run: npm test
+
       - name: Build (prebuild regenerates public/data from demo/experiments)
         run: npm run build
         env:

@@ -14,6 +14,7 @@ the interactive web demo built from those results.
 | | |
 | --- | --- |
 | 🗺️ **Interactive demo** | <https://inria.github.io/inocs-sum-bss-pt-network-design/> — *"Where should the bikes live?"*, a five-step decision experience built around the four questions the paper's sensitivity analysis answers, on the Geneva sample |
+| 🎮 **Play the planner** | [`/play`](https://inria.github.io/inocs-sum-bss-pt-network-design/play/) — place the stations yourself on a budget, then compare against what the paper's own optimiser does with the same money |
 | 📄 **Paper** | *Network Design of Bike Sharing Systems with Public Transport Integration* — see [The research](#the-research) |
 | 🇪🇺 **Project** | [SUM — Seamless Shared Urban Mobility](http://sum-project.eu/) (Horizon Europe); this tool on the [SUM Open Data Platform](https://odp.sum-project.eu/tools/resources/6) |
 | 📦 **Install without cloning** | the [built wheel](network-design-bss/sdk/) bundles the model and the Geneva sample; API docs in [`network-design-bss/sdk/docs/`](network-design-bss/sdk/docs/) |

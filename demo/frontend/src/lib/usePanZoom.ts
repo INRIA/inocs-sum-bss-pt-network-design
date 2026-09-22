@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 import { FRAME } from './geo';
+import { clientToMap, isTap, scaleOf, type TapPoint } from './panZoomMath';
 
 /**
  * viewBox-based pan & zoom for the persistent map SVG (ux-plan-v2 section 4.4).
@@ -21,7 +22,21 @@ const MARGIN = 24;
 const MIN_W = 60; // 6x
 const MAX_W = FRAME.w; // 1x
 
-export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
+export interface UsePanZoomOptions {
+  /** fired on pointer-up when exactly one pointer was involved in the gesture and it was a tap */
+  onTap?: (p: { x: number; y: number }) => void;
+  /** double-click/double-tap zoom (default true) — switched off while the game is placing stations */
+  doubleTapZoom?: boolean;
+}
+
+export function usePanZoom(ref: RefObject<SVGSVGElement | null>, opts?: UsePanZoomOptions) {
+  // kept in refs, read inside the pointer-event effect, so passing a new callback/flag each
+  // render never re-subscribes the listeners.
+  const onTapRef = useRef(opts?.onTap);
+  onTapRef.current = opts?.onTap;
+  const doubleTapZoomRef = useRef(opts?.doubleTapZoom ?? true);
+  doubleTapZoomRef.current = opts?.doubleTapZoom ?? true;
+
   const [vb, setVb] = useState<ViewBox>({ x: 0, y: 0, w: FRAME.w, h: FRAME.h });
   const vbRef = useRef(vb);
   // px per user unit — drives the "micro bikes degrade to dots" threshold (v2 section 6, note 2).
@@ -61,15 +76,7 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
     if (!svg) return;
 
     // client point -> user-space point, honouring preserveAspectRatio="xMidYMid meet"
-    const scaleOf = (r: DOMRect) => Math.min(r.width / vbRef.current.w, r.height / vbRef.current.h);
-    const pt = (clientX: number, clientY: number) => {
-      const r = svg.getBoundingClientRect();
-      const v = vbRef.current;
-      const sc = scaleOf(r);
-      const ox = (r.width - v.w * sc) / 2;
-      const oy = (r.height - v.h * sc) / 2;
-      return { x: v.x + (clientX - r.left - ox) / sc, y: v.y + (clientY - r.top - oy) / sc, sc };
-    };
+    const pt = (clientX: number, clientY: number) => clientToMap(svg.getBoundingClientRect(), vbRef.current, clientX, clientY);
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -77,6 +84,7 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
       zoomAt(e.deltaY < 0 ? 1.2 : 1 / 1.2, p.x, p.y);
     };
     const onDbl = (e: MouseEvent) => {
+      if (!doubleTapZoomRef.current) return;
       const p = pt(e.clientX, e.clientY);
       zoomAt(1.6, p.x, p.y);
     };
@@ -84,6 +92,9 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
     const ptrs = new Map<number, { x: number; y: number }>();
     let panStart: { cx: number; cy: number; vx: number; vy: number; sc: number } | null = null;
     let pinchD = 0;
+    // tap detection: set on the first pointer of a gesture, cleared as soon as a second joins
+    let tapDown: TapPoint | null = null;
+    let multiTouch = false;
 
     const onDown = (e: PointerEvent) => {
       svg.setPointerCapture(e.pointerId);
@@ -91,11 +102,15 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
       if (ptrs.size === 1) {
         const v = vbRef.current;
         panStart = { cx: e.clientX, cy: e.clientY, vx: v.x, vy: v.y, sc: pt(e.clientX, e.clientY).sc };
+        multiTouch = false;
+        tapDown = { x: e.clientX, y: e.clientY, t: e.timeStamp };
       }
       if (ptrs.size === 2) {
         const a = [...ptrs.values()];
         pinchD = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
         panStart = null;
+        multiTouch = true;
+        tapDown = null;
       }
     };
     const onMove = (e: PointerEvent) => {
@@ -118,9 +133,17 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
       }
     };
     const onUp = (e: PointerEvent) => {
+      if (ptrs.size === 1 && !multiTouch && tapDown && onTapRef.current) {
+        const up: TapPoint = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+        if (isTap(tapDown, up)) {
+          const p = pt(e.clientX, e.clientY);
+          onTapRef.current({ x: p.x, y: p.y });
+        }
+      }
       ptrs.delete(e.pointerId);
       panStart = null;
       pinchD = 0;
+      tapDown = null;
     };
 
     svg.addEventListener('wheel', onWheel, { passive: false });
@@ -130,7 +153,7 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
     svg.addEventListener('pointerup', onUp);
     svg.addEventListener('pointercancel', onUp);
 
-    const measure = () => setUnitPx(scaleOf(svg.getBoundingClientRect()));
+    const measure = () => setUnitPx(scaleOf(svg.getBoundingClientRect(), vbRef.current));
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(svg);
@@ -150,14 +173,28 @@ export function usePanZoom(ref: RefObject<SVGSVGElement | null>) {
   useEffect(() => {
     const svg = ref.current;
     if (!svg) return;
-    const r = svg.getBoundingClientRect();
-    setUnitPx(Math.min(r.width / vb.w, r.height / vb.h));
+    setUnitPx(scaleOf(svg.getBoundingClientRect(), vb));
   }, [ref, vb]);
+
+  // public client -> map conversion, for hit-testing outside this hook (domain/placement)
+  const toMap = useCallback(
+    (clientX: number, clientY: number) => {
+      const svg = ref.current;
+      if (!svg) return { x: 0, y: 0 };
+      const { x, y } = clientToMap(svg.getBoundingClientRect(), vbRef.current, clientX, clientY);
+      return { x, y };
+    },
+    [ref]
+  );
 
   return {
     viewBox: `${vb.x.toFixed(1)} ${vb.y.toFixed(1)} ${vb.w.toFixed(1)} ${vb.h.toFixed(1)}`,
     unitPx,
     zoomStep,
+    // zoom about a point in MAP units — the game's ambiguous-tap rule (ux B.3)
+    // zooms in on the tap and places nothing, so the second tap is unambiguous
+    zoomAt,
     reset,
+    toMap,
   };
 }

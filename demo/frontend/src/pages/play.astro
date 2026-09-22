@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import '../styles/play.css';
+import PlayApp from '../components/play/PlayApp';
+import { loadGameData } from '../lib/data';
+import { loadPlayData } from '../lib/playData';
+
+// Two build-time reads, two loading paths (plan-technical §C.5). `loadGameData`
+// is the full demo's projected payload — the basemap, the public-transport
+// network and the stop bubbles the game draws under everything. `loadPlayData`
+// adds what the Build step needs for its first frame: candidates, cells, the
+// reach table, the reference demand and the per-budget references. The solver's
+// own files (paths, arcs, the wasm) are NOT here: the worker fetches them from
+// `${BASE_URL}data/game/…` when the layout is frozen, so this page stays small.
+const data = loadGameData();
+const play = loadPlayData();
+
+for (const w of [...data.warnings, ...play.warnings]) console.warn(`[build] play: ${w}`);
+
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+const description =
+  'Place the stations yourself, then see what the optimiser does with the same budget — INOCS (Inria), EU SUM project, Geneva living lab.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Play the planner · SUM Geneva living lab</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
+    />
+    <meta property="og:title" content="Play the planner" />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <PlayApp data={data} play={play} baseUrl={base} client:load />
+    <noscript>
+      <div style="max-width:640px;margin:0 auto;padding:24px 16px">
+        <p class="note">
+          The planner game is interactive and needs JavaScript. The full demo lives at
+          <a href={base}>{base}</a>, and its data is plain JSON under
+          <span class="mono">{base}data/</span>.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>

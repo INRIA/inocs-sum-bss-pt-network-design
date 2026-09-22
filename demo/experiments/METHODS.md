@@ -175,5 +175,59 @@ rather than the paper's own bimodal baseline) stay until the grid is run and val
   decision.
 - Dispatch cost is computed twice from the same rebalancing decisions — once inside the frozen
   evaluator's `experiment_row` (`technical.dispatch_cost`) and again by
-  `pipeline/model_plan.py` (`paper.dispatch_cost_eur`) — expected to agree; to be confirmed once
-  the paper-grid runs exist.
+  `pipeline/model_plan.py` (`paper.dispatch_cost_eur`). **Checked equal** on all 18 committed
+  paper-grid `kpis.json` files (within the `paper` block's 2-decimal rounding); the legacy
+  `S1`/`S2`/`S3` runs predate the `technical.dispatch_cost` field and were not part of the check.
+
+## 8. The planner game's evaluator (`fixed_design.py`)
+
+`demo/experiments/fixed_design.py` is the normative definition of "evaluate a visitor's station
+layout": with the set of open stations `y` fixed, the paper's model collapses to its
+**operational sub-problem** (dock sizing, initial fleet, optional truck rebalancing, demand
+assignment), which the module solves as an LP relaxation (scipy `linprog`, `method="highs"`) —
+constants read live from `network-design-bss/src/util/{cost,util}.py`, never copied
+(`AGENTS.md` rule 2). It is the reference the browser engine in
+`demo/frontend/src/domain/evaluation/` transcribes for the `/play` planner game
+(`demo/frontend/README.md` §"Planner game"); `demo/experiments/game_export.py` writes the
+compact payload both engines read from, under `results/shared/game/`, plus 21 golden vectors
+that pin the two together.
+
+**Measured fidelity**, on the 21 committed designs (`demo/experiments/tests/test_fixed_design.py`,
+`FidelityTests`): the LP reproduces each run's published `paper` served flow within 2%
+(measured range 0.9998x–1.0157x, mean 1.005x overshoot — the relaxation of integer `x`/`w`/`v`/
+`r`/`n` can only overshoot, never undershoot by more than solver noise) and the PT-assisted
+share within 0.015 absolute. The TypeScript engine in turn reproduces the Python LP itself far
+more tightly (0.5% relative on served, 0.005 absolute on PT share, in
+`domain/evaluation/engine.test.ts`) — the two solve the identical program, so that gap is a
+transcription check, not a model-fidelity one.
+
+**What it is not**: a re-run of the MILP. `y` is fixed by the visitor, not chosen by the solver,
+so `fixed_design.py` never re-derives which stations to build — only how to operate a given set
+of them. `CAPACITY_UB = 30` docks/station (`network-design-bss/src/util/util.py:71`) still caps
+what any layout can serve once money stops binding (`AGENTS.md`'s known upstream issue 7).
+
+New assumption-register entries this module and `game_export.py` add:
+
+- **Docks and fleet are sized by the LP, for a visitor layout.** The optimiser's own committed
+  designs use the integer MILP's values; a visitor's layout is evaluated by the LP relaxation
+  above, not re-solved by Gurobi. This is why the served-flow tolerance above is 2%, not exact.
+- **Truck counts are relaxed, and not shown for a visitor's layout.** `n = r /
+  CAPACITY_REBALANCING_VEHICLE` is continuous, so the reported dispatch count runs 18–31% high
+  on the 21 committed designs. `bikes_rebalanced` / `dispatches_relaxed` are reported for the
+  optimiser's own layout (for comparison) but never headlined for what a visitor built; the game
+  shows "trips that depend on trucks" (served with trucks minus served without) instead.
+- **"Potential trips" is an upper bound, not a service figure.** `reach_options()` /
+  `reach_flow()` answer "does at least one candidate path have every station open", the same
+  test the LP's demand-gate constraint applies with `y` fixed — it ignores whether the LP can
+  actually put a bike there. Measured overestimate against the optimiser's own served flow: 1.04x
+  at 80k €, 1.90x at 20k €. The live "within reach" preview in the game and the estimate
+  evaluator's calibration both rely on this being an upper bound, never a lower one.
+- **The weekday-rush vs slower, week-end-like rhythm question has no week-end data behind it.**
+  It compares two runs of the `rhythm` family at the same 80 k€: `rhythm_sharp` (period weights
+  0.6/0.2/0.2, a sharp morning peak) stands for "a busy weekday" and `rhythm_uniform` (⅓ each
+  period) for "a slower, week-end-like rhythm". Both carry the same 1 453 trips: the second is
+  the same day flattened, not a quieter day, and Geneva's measured Sunday profile is
+  evening-heavy rather than flat. The answer is computed, not hard-coded: the share of
+  `rhythm_sharp`'s built stations that are also built in `rhythm_uniform` (75 of 75, against 84
+  stations). No run in the paper grid replays observed week-end demand, and the game's own copy
+  states that caveat explicitly.

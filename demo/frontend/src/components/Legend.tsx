@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
 import type { LayerKey, Layers, MapData, StationMarker } from '../lib/types';
 import type { T } from '../lib/i18n';
 import type { MapKind } from './CityMap';
+import LegendGroup, { type LegendItem } from './map/frame/LegendGroup';
 import { BikeSwatch, C_EXISTING, C_REGULAR, C_TRANSFER } from './glyphs';
 
 /**
@@ -13,6 +13,9 @@ import { BikeSwatch, C_EXISTING, C_REGULAR, C_TRANSFER } from './glyphs';
  * station read-outs, capacity and bikes in stock, which live in the results box over the map.
  * The same groups fill the mobile "Layers" popover, so the swatch styles must stay shared
  * (see global.css: `.maplegend i, .layerpop i`).
+ *
+ * Built on the generic `LegendGroup` (plan-technical.md §C.3): this only decides which items exist
+ * for a given group/kind, and emits the exact same markup as before.
  */
 export function LayerToggles({
   group,
@@ -31,37 +34,36 @@ export function LayerToggles({
   onToggle: (k: LayerKey) => void;
   stations?: StationMarker[];
 }) {
-  const item = (key: LayerKey, swatch: ReactNode, label: string) => (
-    <button key={key} className="legit" aria-pressed={layers[key]} onClick={() => onToggle(key)}>
-      {swatch}
-      <span>{label}</span>
-    </button>
-  );
-
   if (group === 'readouts') {
     if (kind !== 'network') return null;
     const caps = (stations ?? []).map((s) => s.capacity);
     const range = caps.length ? `${Math.min(...caps)}–${Math.max(...caps)}` : '';
-    return (
-      <>
-        {item(
-          'capacity',
-          <i style={{ background: '#fff', border: `1px solid ${C_TRANSFER}` }} />,
-          range ? t('leg.capacity.n', { range }) : t('leg.capacity')
-        )}
-        {item('inventory', <i style={{ background: C_TRANSFER, opacity: 0.55 }} />, t('leg.inventory'))}
-      </>
-    );
+    const items: LegendItem<LayerKey>[] = [
+      {
+        key: 'capacity',
+        label: range ? t('leg.capacity.n', { range }) : t('leg.capacity'),
+        swatch: <i style={{ background: '#fff', border: `1px solid ${C_TRANSFER}` }} />,
+        pressed: layers.capacity,
+      },
+      {
+        key: 'inventory',
+        label: t('leg.inventory'),
+        swatch: <i style={{ background: C_TRANSFER, opacity: 0.55 }} />,
+        pressed: layers.inventory,
+      },
+    ];
+    return <LegendGroup items={items} onToggle={onToggle} />;
   }
 
   if (group === 'bike') {
-    return (
-      <>
-        {item('bike', <BikeSwatch color={C_EXISTING} />, t('leg.bike'))}
-        {kind === 'network' && item('regular', <BikeSwatch color={C_REGULAR} />, t('leg.regular'))}
-        {kind === 'network' && item('transfer', <BikeSwatch color={C_TRANSFER} />, t('leg.transfer'))}
-      </>
-    );
+    const items: LegendItem<LayerKey>[] = [
+      { key: 'bike', label: t('leg.bike'), swatch: <BikeSwatch color={C_EXISTING} />, pressed: layers.bike },
+    ];
+    if (kind === 'network') {
+      items.push({ key: 'regular', label: t('leg.regular'), swatch: <BikeSwatch color={C_REGULAR} />, pressed: layers.regular });
+      items.push({ key: 'transfer', label: t('leg.transfer'), swatch: <BikeSwatch color={C_TRANSFER} />, pressed: layers.transfer });
+    }
+    return <LegendGroup items={items} onToggle={onToggle} />;
   }
 
   // PT-mode rows come from the real line data, so the legend can never claim a mode the GTFS
@@ -69,28 +71,38 @@ export function LayerToggles({
   const modes = [...new Set(map.ptLines.map((l) => l.mode))];
   const colorOf = (mode: string) => [...new Set(map.ptLines.filter((l) => l.mode === mode).map((l) => l.color))];
 
-  return (
-    <>
-      {kind === 'live' && item('stops', <i style={{ background: '#ff3514' }} />, t('leg.stop'))}
-      {kind === 'network' && item('stops', <i style={{ background: '#ff3514', opacity: 0.3 }} />, t('leg.ptdemand'))}
-      {modes.map((mode) =>
-        item(
-          mode,
-          mode === 'rail' ? (
-            <i className="ln" style={{ background: 'repeating-linear-gradient(90deg,#2E2D29 0 4px,transparent 4px 7px)' }} />
-          ) : (
-            <span style={{ display: 'inline-flex', gap: 3 }}>
-              {colorOf(mode)
-                .slice(0, 2)
-                .map((c) => (
-                  <i key={c} className="ln" style={{ background: c }} />
-                ))}
-            </span>
-          ),
-          t(`leg.${mode}`)
-        )
-      )}
-      {item('poi', <i className="poi" />, t('leg.poi'))}
-    </>
-  );
+  const items: LegendItem<LayerKey>[] = [];
+  if (kind === 'live') {
+    items.push({ key: 'stops', label: t('leg.stop'), swatch: <i style={{ background: '#ff3514' }} />, pressed: layers.stops });
+  }
+  if (kind === 'network') {
+    items.push({
+      key: 'stops',
+      label: t('leg.ptdemand'),
+      swatch: <i style={{ background: '#ff3514', opacity: 0.3 }} />,
+      pressed: layers.stops,
+    });
+  }
+  for (const mode of modes) {
+    items.push({
+      key: mode as LayerKey,
+      label: t(`leg.${mode}`),
+      swatch:
+        mode === 'rail' ? (
+          <i className="ln" style={{ background: 'repeating-linear-gradient(90deg,#2E2D29 0 4px,transparent 4px 7px)' }} />
+        ) : (
+          <span style={{ display: 'inline-flex', gap: 3 }}>
+            {colorOf(mode)
+              .slice(0, 2)
+              .map((c) => (
+                <i key={c} className="ln" style={{ background: c }} />
+              ))}
+          </span>
+        ),
+      pressed: layers[mode as LayerKey],
+    });
+  }
+  items.push({ key: 'poi', label: t('leg.poi'), swatch: <i className="poi" />, pressed: layers.poi });
+
+  return <LegendGroup items={items} onToggle={onToggle} />;
 }

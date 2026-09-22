@@ -134,6 +134,130 @@ when needed:
 npm run fetch-basemap   # one-off, hits the Overpass API, rewrites src/data/basemap.geojson
 ```
 
+## Planner game (`/play`)
+
+A second, separate page, not part of the five-step demo above. `src/pages/play.astro` places the
+visitor's own network design against the paper's own optimiser at the same budget: place
+stations, predict, watch a day run, compare.
+
+### What the visitor does, in five tracked steps (the game opens directly on the first)
+
+| # | Step | What happens |
+| - | --- | --- |
+| 1 | Plan | one screen: the instructions, the four game budgets (20k / 60k / 80k / 120k €, borrowed from the committed `budget_*` scenarios) side by side with the model's unit costs under them (station / dock / bike / truck run, read from `constants.json`), and under them, once a budget is picked, the controls to place stations by tapping the map, or "help me" runs the demand-following assistant; a live "within reach" preview and a budget meter guide the choice |
+| 2 | Predict | answers four short questions about the layout (trips served, public-transport share, trucks, bikes per station), before seeing any result |
+| 3 | Run | the day plays out — trip sprites animate while the layout's own evaluation resolves (exact solve, or the estimate fallback); the KPI tiles answer the step-2 questions, and each placed station now carries the model's bikes-per-station badge |
+| 4 | Optimiser | the paper's own design at the same budget, evaluated by the same engine, next to the visitor's; one more prediction ("double the budget?") is asked here |
+| 5 | Conclusions | every prediction is revealed against what actually happened, with a recap ticket |
+
+Copy lives under the `play.*` keys of `src/i18n/en.json` / `fr.json` (step labels `play.step.*`,
+rhythm verbs `play.rhythm.*`, the five questions `play.q.*` and their reveals `play.reveal.*`) —
+same fallback-to-English rule as the rest of the site.
+
+### Layered architecture, and its one import rule
+
+`src/domain` (pure TypeScript — no React, no DOM, no `fetch`, no node imports) ← `src/infra`
+(workers, storage, data loading) ← `src/hooks` (React state, kept thin) ← `src/components`
+(screens, DOM, i18n). A layer imports only from itself or the ones to its left. Inside `domain/`:
+`evaluation/` is the LP port mirroring `demo/experiments/fixed_design.py` (the declared exception
+to [`AGENTS.md`](../../AGENTS.md)'s "do not duplicate model logic" rule — read there for how the
+two are kept honest); `placement/` is the hit test, budget arithmetic, the "follow the demand"
+assistant and reach; `trips/` is the run-animation's sprites; `game/` is the session
+state/reducer, the five-step route and its guards, the prediction questions, the recap ticket and
+the results view-models — documented in more depth in its own
+[`domain/game/README.md`](src/domain/game/README.md).
+
+### The map: composed by the parent, not owned by either page
+
+`components/map/frame/MapFrame.tsx` owns the camera (pan/zoom/pinch, the zoom buttons) and four
+slots (top/bottom legend bars, an overlay, a mobile popover); it draws nothing domain-specific
+itself. The full demo's `MapPanel` / `CityMap` fill those slots with `AdvancedLayers` (map-view
+kind + legend toggles → layer props); the game's `StepShell` fills them with the game's own
+layers (`CandidatesLayer`, `StationsLayer` in its `player` / `ghost` variants, `TripsLayer`). One
+SVG, mounted once per page, survives every step change. `src/components/map/__guard__/` pins the
+full demo's `CityMap` / `MapPanel` markup byte for byte, so refactoring the map into this shared
+frame could not silently change what the existing site renders — see
+[`AGENTS.md`](../../AGENTS.md)'s hard rule 4 for how to check it (`node scripts/guard-diff.mjs`)
+and, if the markup genuinely changed on purpose, how to regenerate it.
+
+Placement does not go through a child's `onClick`: `lib/usePanZoom.ts` captures the pointer for
+its own pan/zoom/pinch gestures, so `MapFrame`'s `onTap` (fired on a pointer-up that was a tap,
+not a drag) hands map coordinates to `usePlacement`, which runs the pure hit test in
+`domain/placement/hitTest.ts` and returns one of `placed` / `removed` / `ambiguous` (zooms in on
+the tap, places nothing) / `miss` / `refused`.
+
+### Evaluation, in the browser
+
+Two engines share one `Evaluator` contract (`domain/evaluation/ports.ts`):
+
+- **`infra/highsEvaluator.ts`** — the exact evaluator: HiGHS compiled to WebAssembly, solving the
+  same LP `fixed_design.py` defines (`domain/evaluation/lpModel.ts` builds it). Loaded lazily
+  (~1.2 MB gzipped) so nothing downloads until a layout is frozen, and run inside
+  `infra/evaluator.worker.ts` in the browser because `model.run()` blocks its thread —
+  `infra/workerEvaluator.ts` is the main-thread half that talks to it.
+- **`infra/estimateEvaluator.ts`** — the fallback, used only when the worker fails to load or a
+  solve exceeds its time budget: `served ≈ withinReach(layout) × factor(budget)`, the factor
+  calibrated against the optimiser's own layout at that budget. Accurate to tens of percent, not
+  the near-exact match the HiGHS engine reaches against the Python reference (see
+  [`AGENTS.md`](../../AGENTS.md)) — never used to rank layouts, and the UI is required to show its
+  `quality: 'estimate'` tag rather than silently swap it in.
+
+`hooks/useEvaluation.ts` races the two: a worker solve that does not return within its time budget
+resolves to the estimate instead of freezing the tab.
+
+### Running the tests
+
+```bash
+cd demo/frontend
+npm test                          # vitest: domain/infra/component unit tests + the golden-vector
+                                   #   engine test (TS vs the Python reference) + the map guard
+npm run check < /dev/null         # astro check (type-check); redirect stdin, or a missing
+                                   #   @astrojs/check prompts to install and hangs on a TTY
+npx playwright install chromium   # once, before the first e2e run
+npm run build && npm run e2e      # Playwright smoke test for /play, desktop + phone viewports
+```
+
+### Regenerating the game data
+
+The browser payload is generated Python-side and committed
+([`AGENTS.md`](../../AGENTS.md) hard rules 3/4); this layer never rebuilds it itself:
+
+```bash
+python3 -m demo.experiments.game_export   # results/shared/game/** (+ golden/); needs the
+                                           #   uncommitted k-shortest-path pickle, see AGENTS.md
+```
+
+`scripts/prepare-data.mjs` then copies it verbatim into `public/data/game/` on every
+`npm run dev` / `build`, alongside the HiGHS WebAssembly binary.
+
+### Responsive behaviour
+
+Four layouts (`src/hooks/viewport.ts`), read together with `StepShell.tsx` and
+`src/styles/play.css`'s media queries:
+
+| Viewport | Width / height | Layout |
+| --- | --- | --- |
+| Desktop | > 980px wide | two columns, step card left, map right, no page scroll |
+| Desktop, short | > 980px wide, ≤ 819px tall | same, with tighter tiles and a shorter chart |
+| Tablet | 640–980px wide | full-bleed map, step content in a draggable bottom sheet |
+| Phone | ≤ 639px wide | same bottom sheet, narrower |
+| Phone landscape | ≤ 500px tall and wider than tall | a 44%-wide side panel instead of a sheet — a sheet has no room to open |
+
+The sheet's snap point (`peek` / `half` / `full`) is set per step — Build peeks so the map stays
+the task, Predict opens full — and on desktop the sheet CSS is simply inert.
+
+### What is not covered by tests
+
+`e2e/play.spec.ts` runs ten scenarios, in one browser engine only (Chromium; "desktop" and
+"phone" are both `devices['Desktop Chrome']` with a different emulated viewport, not Firefox,
+WebKit or a real device), and does not exercise: the French locale, the estimate-fallback UI path
+(the smoke test drives the exact HiGHS solve only), the tablet-portrait or phone-landscape
+layouts, or the conclusions / optimiser screens' own interactions beyond what their component
+tests check in isolation (`conclusions.test.tsx`, `results.test.tsx`). `domain/game/session.ts`'s
+bounded undo history is deliberately not persisted across a reload; nothing end-to-end checks that
+an old, incompatible stored session (from before a `SESSION_VERSION` bump) is discarded rather
+than partially restored, beyond the unit test for `deserialize`.
+
 ## Deployment
 
 `.github/workflows/deploy-pages.yml` builds and publishes on every push to `main` that touches the

@@ -168,5 +168,80 @@ class HeavyBehaviorParityTests(unittest.TestCase):
                 self.assertAlmostEqual(mine, theirs, delta=1e-9)
 
 
+class GameConstantParityTests(unittest.TestCase):
+    """Light tier: the constants demo/experiments/fixed_design.py reads out of
+    util/util.py with `ast` (importing it would pull in osmnx/geopandas/h3).
+
+    The game's LP and the TypeScript engine are built on these. They flow one
+    way -- src/ -> fixed_design.load_constants() -> constants.json -> the
+    browser -- so an upstream rename must fail here, loudly, rather than let the
+    demo drift out of parity with the model it reproduces.
+    """
+
+    #: Every name fixed_design.load_constants() expects to find as a plain
+    #: literal assignment in network-design-bss/src/util/util.py.
+    EXPECTED = ("PENALTY_COEFFICIENT", "CAPACITY_UB", "MIN_CAPACITY_IF_BUILT",
+                "CAPACITY_REBALANCING_VEHICLE", "NUM_SHORTEST_PATHS",
+                "EPSILON", "WALK_CATCHMENT_RADIUS", "TIME_PERIODS",
+                "h3_version")
+
+    def test_util_util_still_defines_them_as_literals(self):
+        from demo.experiments.fixed_design import load_constants
+        constants = load_constants()
+        for name in self.EXPECTED:
+            with self.subTest(constant=name):
+                self.assertIn(
+                    name, constants,
+                    f"network-design-bss/src/util/util.py no longer defines "
+                    f"{name!r} as a plain literal -- fixed_design.py cannot "
+                    f"read it without importing the geo stack")
+
+    def test_the_values_the_game_is_built_on(self):
+        """A second guard, on the VALUES: these four decide what the game can
+        say. CAPACITY_UB in particular is the reason the budget curve flattens
+        at 90.9 % -- a modelling parameter, not an economic finding."""
+        from demo.experiments.fixed_design import load_constants
+        constants = load_constants()
+        expected = {"CAPACITY_UB": 30, "MIN_CAPACITY_IF_BUILT": 5,
+                    "CAPACITY_REBALANCING_VEHICLE": 10,
+                    "PENALTY_COEFFICIENT": 0.1, "NUM_SHORTEST_PATHS": 3}
+        for name, value in expected.items():
+            with self.subTest(constant=name):
+                self.assertEqual(
+                    constants[name], value,
+                    f"{name} changed upstream. The game's exported payload and "
+                    f"its golden vectors were built on the old value: "
+                    f"regenerate with `python3 -m demo.experiments.game_export` "
+                    f"and review the diff.")
+
+    def test_unit_costs_reach_the_game_unchanged(self):
+        from demo.experiments.fixed_design import load_constants
+        constants = load_constants()
+        params = CostParameters()
+        for field in ("station_setup_cost", "dock_cost", "unit_bike_cost",
+                      "dispatch_fixed_cost", "rebalancing_unit_cost"):
+            with self.subTest(field=field):
+                self.assertEqual(constants[field], getattr(params, field))
+
+
+@unittest.skipIf(_UTIL_UTIL is None,
+                 f"util.util not importable, skipping heavy parity tests: "
+                 f"{_UTIL_UTIL_SKIP_REASON}")
+class GameConstantHeavyParityTests(unittest.TestCase):
+    """Heavy tier: what fixed_design.py PARSES must equal what Python IMPORTS.
+
+    `ast.literal_eval` on a module's source and importing that module can only
+    disagree if upstream starts computing a constant instead of writing it down
+    -- which would silently give the game different numbers from the model.
+    """
+
+    def test_parsed_values_equal_imported_values(self):
+        from demo.experiments.fixed_design import load_constants
+        constants = load_constants()
+        for name in GameConstantParityTests.EXPECTED:
+            with self.subTest(constant=name):
+                self.assertEqual(constants[name], getattr(_UTIL_UTIL, name))
+
+
 if __name__ == "__main__":
     unittest.main()

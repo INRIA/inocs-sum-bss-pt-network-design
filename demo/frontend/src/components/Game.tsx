@@ -11,6 +11,7 @@ import type { MapKind } from './CityMap';
 import { makeT } from '../lib/i18n';
 import { cardsOf } from '../lib/families';
 import { isMobile, useBottomSheet } from '../lib/useBottomSheet';
+import { useDayPlayback } from '../hooks/useDayPlayback';
 import type { GameData, Lang, LayerKey, Layers, Weekday } from '../lib/types';
 
 /**
@@ -37,22 +38,20 @@ const DEFAULT_LAYERS: Layers = {
   inventory: false,
 };
 
-export default function Game({ data }: { data: GameData }) {
+export default function Game({ data, baseUrl = '/' }: { data: GameData; baseUrl?: string }) {
   const [lang, setLang] = useState<Lang>('en');
   const [step, setStep] = useState(0);
   const [visited, setVisited] = useState<number[]>([0]);
   const [weekday, setWeekday] = useState<Weekday>('mon');
-  const [hour, setHour] = useState(8);
+  const { hour, setHour, playing, togglePlay, stopPlay } = useDayPlayback();
   const [layers, setLayers] = useState<Layers>(DEFAULT_LAYERS);
   const [scenario, setScenario] = useState<string | null>(null);
   const [chosen, setChosen] = useState<string | null>(null);
   const [period, setPeriod] = useState(0);
   const [dropKey, setDropKey] = useState(0);
   const [sheet, setSheet] = useState<SheetKind>(null);
-  const [playing, setPlaying] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   const [openQs, setOpenQs] = useState<number[]>([]);
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const sheetRef = useRef<HTMLElement | null>(null);
   const handleRef = useRef<HTMLDivElement | null>(null);
@@ -85,29 +84,6 @@ export default function Game({ data }: { data: GameData }) {
   useEffect(() => {
     if (isMobile()) snapTo('half');
   }, [snapTo]);
-
-  const stopPlay = useCallback(() => {
-    if (timer.current) clearInterval(timer.current);
-    timer.current = null;
-    setPlaying(false);
-  }, []);
-
-  // autoplay: one hour every 420 ms, stops cleanly at 23 and on any step change
-  const togglePlay = useCallback(() => {
-    if (timer.current) return stopPlay();
-    setPlaying(true);
-    timer.current = setInterval(() => {
-      setHour((h) => {
-        if (h >= 23) {
-          stopPlay();
-          return 23;
-        }
-        return h + 1;
-      });
-    }, 420);
-  }, [stopPlay]);
-
-  useEffect(() => () => stopPlay(), [stopPlay]);
 
   const go = useCallback(
     (n: number) => {
@@ -179,6 +155,9 @@ export default function Game({ data }: { data: GameData }) {
             </span>
           </span>
           <span className="team">INOCS · Inria</span>
+          <a className="playlink" href={`${baseUrl}play/`}>
+            {t('play.nav.enter')}
+          </a>
           <span className="lang" role="group" aria-label={t('lang.aria')}>
             <button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
               EN

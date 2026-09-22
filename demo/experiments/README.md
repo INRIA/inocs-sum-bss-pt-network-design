@@ -43,6 +43,8 @@ analysis:
 | `METHODS.md` | The scientific reference: data sources, algorithms, assumption register, limitations. |
 | `SPEC.md` | History: how the demo layer's numbers were originally derived (pre-v3); superseded by this README and `METHODS.md` for current method. |
 | `results/<scenario>/` | Per scenario: `stations.json` (design) + `metrics.json` (the model's **full** evaluator row) + `instance.json` (the instance solved, slimmed) + `model_plan.json` (the solved per-period decision) + `kpis.json` (`paper` / `technical` / `stress_test`), plus optionally `sim_monday.json` / `sim_sunday.json` (the stress test). `results/shared/bike_arcs.json` holds the model's OSM-routed arc distances, common to the whole grid (identical candidate geography). This is the data contract the front-end reads. |
+| `fixed_design.py` | The normative "evaluate a visitor's station layout" LP — the operational sub-problem with the station set fixed, solved with scipy HiGHS. The reference the `/play` game's browser engine transcribes (`AGENTS.md` rule 2's declared exception). See §8 below and `demo/frontend/README.md`. |
+| `game_export.py` | Writes the `/play` game's browser payload to `results/shared/game/` (candidates, cells, paths with explicit bike legs, arcs, demand, constants, coverage, references, 21 golden vectors). Needs the uncommitted k-shortest-path pickle; `python3 -m demo.experiments.game_export`. |
 
 ## The pipeline, end to end
 
@@ -332,6 +334,21 @@ stress-test panel that need them. So the front end stays a purely static page fe
 layer produces offline, and adding a results folder plus a scenario JSON adds a scenario with no
 code change ([`demo/frontend/README.md`](../frontend/README.md)).
 
+## The planner game (`/play`)
+
+A second front-end page lets a visitor place their own stations and see the paper's operational
+sub-problem solved on that layout, live in the browser — then compares it to what the optimiser
+did with the same budget. `fixed_design.py` is the normative definition of that evaluation
+(dock/fleet sizing and demand assignment as an LP, station set `y` fixed); `game_export.py` turns
+the committed candidates, paths, arcs and demand into the compact interned payload under
+`results/shared/game/`, plus 21 golden vectors pinning it against
+`demo/frontend/src/domain/evaluation/`, the TypeScript transcription that actually runs in the
+visitor's browser. Measured fidelity, assumption-register entries, and the tolerances both test
+suites assert: `METHODS.md` §8. Regeneration, the golden-pin policy and the map-markup guard it
+shares a "generated, golden-pinned" pattern with: `AGENTS.md`'s hard rules 3-4. Everything the
+visitor sees, and how the front-end layer is put together:
+[`demo/frontend/README.md`](../frontend/README.md) §"Planner game (`/play`)".
+
 ## The four questions and the scenario grid
 
 All 18 runs share the paper's potential-demand day (1,453 trips, 703 OD pairs, 100 candidate
@@ -412,8 +429,10 @@ with any positive assignment, not flow volume.
 New in v3: **`dispatch_cost` is computed twice** for the same rebalancing decisions — once
 inside the frozen evaluator's `experiment_row` (`technical.dispatch_cost`, written into
 `metrics.json`) and again by `pipeline/model_plan.py` (`paper.dispatch_cost_eur`, from the same
-`r`/`n` moves and the model's own unit costs, §Stage 3). The two should agree exactly; confirming
-that on the paper-grid runs is one of the checks before calling this realignment done.
+`r`/`n` moves and the model's own unit costs, §Stage 3). **Checked equal**: the two agree (within
+the `paper` block's 2-decimal rounding) on every one of the 18 committed paper-grid `kpis.json`
+files; the legacy `S1`/`S2`/`S3` runs predate `technical.dispatch_cost` and were not part of the
+check.
 
 - Today's real network (`data/stations_real.geojson`) is visualization-only: no source for
   per-station bike stocks exists. GBFS `station_status` history (manual weekly sampling) would

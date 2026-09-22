@@ -1,0 +1,99 @@
+/*
+ * TripsLayer animation (plan-technical.md §C.3, §C.5): sprites move by CSS only, driven by
+ * per-element --dx/--dy custom properties (destination minus origin, in map units) plus an
+ * animation-delay/duration React sets inline. No per-frame React state.
+ *
+ * prefers-reduced-motion swaps the moving circle for a static line along the same path.
+ */
+.trip {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: trip-move;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+.tripline {
+  display: none;
+}
+
+@keyframes trip-move {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+.trip-served,
+.trip-reached {
+  fill: #6b9410;
+  stroke: #6b9410;
+}
+
+.trip-potential {
+  fill: #949c93;
+  stroke: #949c93;
+}
+
+.trip-lost-no-station,
+.trip-lost-no-stock {
+  fill: #ff3514;
+  stroke: #ff3514;
+}
+
+.trip-unreachable {
+  fill: #5b5f5a;
+  stroke: #5b5f5a;
+}
+
+/* Trips shown as such in /play (city pulse, run): red. Lost and unreachable trips keep their own colours. */
+.trips-demand .trip-served,
+.trips-demand .trip-reached,
+.trips-demand .trip-potential {
+  fill: #d62828;
+  stroke: #d62828;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trip {
+    display: none;
+  }
+  .tripline {
+    display: inline;
+    stroke-width: 0.4;
+    opacity: 0.6;
+  }
+}
+
+/*
+ * The run animation (step 4) asks for the static route under the sprites: the
+ * ride as a faint line, and the tram or bus leg of a bike + PT trip dashed and
+ * lighter, so the public-transport half of the network is visible while the day
+ * plays. The city pulse leaves `routes` off and keeps the markup it had.
+ */
+.trips-routes .tripline {
+  display: inline;
+  fill: none;
+  stroke-width: 0.35;
+  opacity: 0.28;
+}
+.trips-routes .tripline.trip-pt {
+  stroke-dasharray: 1.6 1.4;
+  opacity: 0.45;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trips-routes .tripline {
+    opacity: 0.6;
+  }
+}

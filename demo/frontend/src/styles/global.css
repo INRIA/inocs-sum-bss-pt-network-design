@@ -201,6 +201,44 @@ button {
   color: #b9cde6;
   white-space: nowrap;
 }
+/* the way into the decision game (/play): the header's one filled button.
+   Lives here, not in play.css — the full demo's page does not load that sheet. */
+.playlink {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #23310a;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.playlink:hover {
+  background: #a9d24a;
+}
+/* a phone has no room for the brand line, the button and the language switch
+   at full size: the brand gives way (it truncates), never the two controls */
+@media (max-width: 560px) {
+  .toprow {
+    gap: 8px;
+  }
+  .toprow .brand {
+    min-width: 0;
+  }
+  .toprow .brand > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .playlink {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
 .lang {
   display: flex;
   border: 1px solid rgba(255, 255, 255, 0.5);
